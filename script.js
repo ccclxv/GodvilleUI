@@ -1,5 +1,5 @@
 var ui_data = {
-	currentVersion: '0.4.30.9',
+	currentVersion: '0.4.31.0',
 	developers: ['Neniu', 'Ryoko', 'Опытный Кролик', 'Бэдлак', 'Ui Developer', 'Шоп'],
 // base variables initialization
 	init: function() {
@@ -29,7 +29,7 @@ var ui_data = {
 	checkLastVersion: function() {
 		$.get('forums/show_topic/2812', function(response) {
 			
-			if (ui_utils.isDeveloper()) {
+			if (ui_utils.isDeveloper() || ui_storage.get('Option:forbiddenInformers') != null && !ui_storage.get('Option:forbiddenInformers').match('new_posts')) {
 				var posts = parseInt(response.match(/Сообщений\: \d+/)[0].match(/\d+/));
 				if (posts > ui_storage.get('posts')) {
 					ui_storage.set('posts', posts);
@@ -596,7 +596,7 @@ var ui_informer = {
 	// устанавливает или удаляет флаг
 	update: function(flag, value) {
 		if (value && (flag == 'pvp' || !ui_data.isArena) && !(ui_storage.get('Option:forbiddenInformers') &&
-			ui_storage.get('Option:forbiddenInformers').match(flag.replace('= ', '').replace('> ', '').replace(' ', '_')))) {
+			ui_storage.get('Option:forbiddenInformers').match(flag.replace(/= /g, '').replace(/> /g, '').replace(/ /g, '_')))) {
 			if (!(flag in this.flags)) {
 				this.flags[flag] = true;
 				this.create_label(flag);
@@ -917,7 +917,8 @@ var ui_improver = {
 		}
 		
 		// Save stats
-		ui_informer.update('pr = 100', ui_stats.setFromLabelCounter('Prana', $box, 'Прана') == 100);
+		//ui_informer.update('pr = 100', ui_stats.setFromLabelCounter('Prana', $box, 'Прана') == 100);
+		ui_informer.update('full prana', $('#control .p_val').width() == $('#control .p_bar').width());
 	},
 
 // ----------- Вести с полей ----------------
@@ -1506,7 +1507,7 @@ var ui_improver = {
 				if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || $('#news .line')[0].style.display != 'none') 
 					$('#hk_distance .voice_generator').hide();
 				//if (ui_storage.get('Stats:Prana') == 100) $('#control .voice_generator').hide();
-				if ($('#control .p_val').width() == $('#control .p_bar').width()) $('#control .voice_generator')[0].style.display = 'none';
+				if ($('#control .p_val').width() == $('#control .p_bar').width() || $('#news .line')[0].style.display != 'none') $('#control .voice_generator')[0].style.display = 'none';
 				if ($('#hk_distance .l_capt').text() == 'Город') $('#control .voice_generator')[1].style.display = 'none';
 			}
 			if ($('#hk_quests_completed .q_name').text().match(/\(выполнено\)/)) $('#hk_quests_completed .voice_generator').hide();
