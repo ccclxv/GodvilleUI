@@ -137,7 +137,8 @@ return '<p>\
 							<div class="new_line">\
 								<div class="g_desc">позволяет выбрать отображаемые информеры</div>\
 								<div class="g_desc" id="informers">\
-								<input class="informer-checkbox" id="pr_100" name="pr_100" type="checkbox"><label for="pr_100">полная прана</label><br>\
+								<input class="informer-checkbox" id="new_posts" name="new_posts" type="checkbox"><label for="new_posts">новые сообщения в теме плагина</label><br>\
+								<input class="informer-checkbox" id="full_prana" name="full_prana" type="checkbox"><label for="full_prana">полная прана</label><br>\
 								<input class="informer-checkbox" id="much_gold" name="much_gold" type="checkbox"><label for="much_gold">много золота</label><br>\
 								<input class="informer-checkbox" id="dead" name="dead" type="checkbox"><label for="dead">смерть</label><br>\
 								<input class="informer-checkbox" id="pvp" name="pvp" type="checkbox"><label for="pvp">бой</label><br>\
