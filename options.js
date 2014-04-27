@@ -159,7 +159,14 @@ function save_options(form) {
 			if ($j('#relocate_cvs:checked').length) buttons.push('cvs');
 			storage.set('Option:relocateDuelButtons', buttons.join());
 		} else storage.set('Option:relocateDuelButtons', '');
-		
+		/*============================ mine ===========================*/
+		if ($j('#relocate_duel_buttons:checked').length) {			
+			var target = "pantheons";
+			if ($j('#relocate_target_invites:checked').length) target = "invites";
+			else if ($j('#relocate_target_inventory:checked').length) target = "inventory";
+			storage.set('Option:relocateDuelButtonsTarget', target);
+		} else storage.set('Option:relocateDuelButtonsTarget', '');		
+		/*======================== END OF mine ========================*/
 		if ($j('#use_background:checked').length) {			
 			if ($j('#custom_background:checked').length) {
 				var custom_file = $j('#custom_file')[0].files[0];
@@ -275,6 +282,15 @@ function restore_options() {
 	} else {
 		$j('#relocate_duel_buttons_choice').hide();
 	}
+		/*============================ mine ===========================*/
+		if ($j('#relocate_duel_buttons:checked').length) {			
+			var target = storage.get('Option:relocateDuelButtonsTarget');
+			if (target == "invites") $j('#relocate_target_invites').attr('checked', true);
+			if (target == "inventory") $j('#relocate_target_inventory').attr('checked', true);
+			else $j('#relocate_target_pantheons').attr('checked', true);
+			
+		} 
+		/*======================== END OF mine ========================*/	
 	if ($j('input#use_background:checked').length) {		
 		$j('#background_desc').hide();
 		var bg = storage.get('Option:useBackground');

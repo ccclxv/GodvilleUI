@@ -69,6 +69,14 @@ return '<p>\
 									<!--<input type="checkbox" id="relocate_cvs" name="relocate_cvs">\
 									<label for="relocate_cvs">подземелья(для храмовиков)</label>-->\
 								</div>\
+								<div class="g_desc" style="padding-top:8px;">Поместить в блок:<br>\
+									<input type="radio" id="relocate_target_pantheons" name="relocate_target" checked="checked">\
+									<label for="relocate_target_pantheons">пантеоны</label><br>\
+									<input type="radio" id="relocate_target_invites" name="relocate_target">\
+									<label for="relocate_target_invites">приглашения</label><br>\
+									<input type="radio" id="relocate_target_inventory" name="relocate_target">\
+									<label for="relocate_target_inventory">инвентарь</label><br>\
+								</div>\
 							</div>\
 							<div class="new_line"><label class="l_capt" for="use_background">Включить фон</label>\
 								<div class="field_content">\
