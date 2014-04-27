@@ -1,0 +1,22 @@
+{
+   "content_scripts": [ {
+      "js": [ "jquery-2.1.0.min.js", "phrases.js", "gm_func.js", "script.js", "utils.js","improvements.js", "informer.js", "words.js", "logger.js", "about.js", "timeout_bar.js","constants.js" ],
+      "matches": [ "http://godville.net/superhero*", "https://godville.net/superhero*" ]
+   }, {
+      "js": [ "jquery-2.1.0.min.js", "phrases.js", "gm_func.js", "options-page.js", "options.js" ],
+      "matches": [ "http://godville.net/user/profile*", "http://godville.net/user/rk_success*", "https://godville.net/user/profile*", "https://godville.net/user/rk_success*" ]
+   } ],
+   "description": "GodVille interface improvement",
+   "homepage_url": "http://godville.net/forums/show_topic/2812",
+   "icons": {
+      "128": "logo128.png",
+      "16": "logo16.png",
+      "32": "logo32.png",
+      "48": "logo48.png"
+   },
+   "manifest_version": 2,
+   "name": "Godville UI+",
+   "permissions": [ "http://godville.net/", "https://godville.net/" ],
+   "version": "0.4.31.0",
+   "web_accessible_resources": [ "godville-ui.css", "images/background.jpg", "images/favicon_dummy.png", "images/shovel_blue_bright.gif", "images/shovel_blue_dark.gif", "images/shovel_red_bright.gif", "images/shovel_red_dark.gif" ]
+}
