@@ -10,6 +10,14 @@ contentLoad: function(event) {
 			loader.createScript(doc, 'chrome://godvilleui/content/phrases.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/gm_func.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/script.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/utils.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/improvements.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/informer.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/words.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/logger.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/timeout_bar.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/constants.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/about.js');
 		}
 	}
 	if (/http(s)?:\/\/godville\.net\/user\/(profile|rk_success).*/.test(doc.location.href)) {
