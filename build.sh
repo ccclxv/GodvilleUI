@@ -12,6 +12,3 @@ cp -r images build/tmp
 chromium --pack-extension=$path/build/tmp --pack-extension-key=$path/gv.pem --no-message-box
 mv build/tmp.crx build/$name.crx
 rm -r build/tmp
-
-
-# 920 строчка
