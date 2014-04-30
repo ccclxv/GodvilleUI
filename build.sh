@@ -4,7 +4,7 @@
 
 # find out which browsers is installed
 chrome="`which chrome || which chromium`"
-firefox="`which firefox`"
+
 #constants
 jquery_file="jquery-2.1.0.min.js"
 
@@ -43,23 +43,22 @@ if [ -n "$chrome" ]; then
 
 fi
 
-if [ -n "$firefox" ]; then
-    echo "\nPacking firefox extension..."
-    rm -rf $tmp_path
-    mkdir $tmp_path
-	cp -r firefox/content/ $tmp_path/
- 	cp -n *.js *.css *.png $tmp_path/content/
- 	cp -r images $tmp_path/content/
- 	cp logo48.png $tmp_path/icon.png
- 	cp firefox/icon64.png $tmp_path/content/images/icon64.png
- 	rm -f $tmp_path/content/images/favicon_dummy.png
+# Запаковываем расширение для firefox
+echo "\nPacking firefox extension..."
+rm -rf $tmp_path
+mkdir $tmp_path
+cp -r firefox/content/ $tmp_path/
+cp -n *.js *.css *.png $tmp_path/content/
+cp -r images $tmp_path/content/
+cp logo48.png $tmp_path/icon.png
+cp firefox/icon64.png $tmp_path/content/images/icon64.png
+rm -f $tmp_path/content/images/favicon_dummy.png
  	
-	cp firefox/chrome.manifest firefox/install.rdf $tmp_path/
-	cd $tmp_path
-	rm -f $build_path/$name.xpi
-	zip -qr $build_path/$name.xpi .
-	rm -rf $tmp_path
-	if [ -f $build_path/$name.xpi ]; then
-		echo "Successfully packed!\nOutput file: $build_path/$name.xpi"
-	fi
+cp firefox/chrome.manifest firefox/install.rdf $tmp_path/
+cd $tmp_path
+rm -f $build_path/$name.xpi
+zip -qr $build_path/$name.xpi .
+rm -rf $tmp_path
+if [ -f $build_path/$name.xpi ]; then
+	echo "Successfully packed!\nOutput file: $build_path/$name.xpi"
 fi
