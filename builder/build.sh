@@ -8,7 +8,7 @@ cd ..
 chrome="`which chrome || which chromium`"
 
 path=`pwd`
-jquery_file= "$path/jquery-2.1.0.min.js"
+jquery_file="$path/jquery-2.1.0.min.js"
 # место сборки
 build_path="$path/build"
 # имя файла расширения
@@ -53,7 +53,7 @@ if [ -n "$chrome" ]; then
 fi
 
 # Запаковываем расширение для firefox
-echo "\nСоздаём плагин для firefox..."
+echo -e "\nСоздаём плагин для firefox..."
 
 # создаем папки
 rm -rf $tmp_path
@@ -64,7 +64,7 @@ mkdir -p $tmp_path
 rm -f $build_path/$name.xpi
 
 # копируем исходные файлы
-cp -r firefox/content/ $tmp_path/
+cp -r firefox/content/ $tmp_path/content/
 cp -n *.js *.css *.png $tmp_path/content/
 cp -r images $tmp_path/content/
 cp logo48.png $tmp_path/icon.png
