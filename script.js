@@ -1,70 +1,76 @@
 
-var logger = null;
+// Обработчик событий. Рассылает всем модулям уведомления.
+// Позже можно организовать приоритеты
+// потом можно отдельно на каждое событие делать массив (для оптимизации)
+// Если вызывать функцию через [""], то не работает this. Не вижу смысла ради двух функций мучиться 
+// с bind'ами
+// Касаясь уже jquery'вского bind'a - убрать лучше, если в тек версии jq есть on 
+var Dispatcher = {
+	_modules: [],
+	
+	create: function() {
+		$('html').mousemove(function(){
+			if (this._modules) {
+				for (var i = 0; i < this._modules.length; i++) {
+					if (this._modules[i]["mousemove"]) {
+						this._modules[i].mousemove();
+					}
+				}
+			}	
+		}.bind(this));
+		
+		$(document).bind("DOMNodeInserted",function(){
+			if (this._modules) {
+				for (var i = 0; i < this._modules.length; i++) {
+					if (this._modules[i]["nodeInserted"]) {
+						this._modules[i].nodeInserted();
+					}
+				}
+			}	
+		}.bind(this));
+	},	
+	
+	registerModule : function(module) {
+		this._modules.push(module);
+		module.create();
+	},
+	
+	unregisterModule : function(module) {
+		if (module["destroy"]) {
+			module.destroy();
+		}
+		var index = this._modules.indexOf(module);
+		if (index > -1) {
+		    array.splice(index, 1);
+		}
+	},
+};
+
+
+
 // wait for stats  
 var starter = setInterval(function() {
 	// 	#m_info = #stats in duel mode (left block containing hero info)
 	if ($('#m_info').length || $('#stats').length) {
-		
+				
 		// stop waiting
 		var start = new Date();
 		clearInterval(starter);
 		
-		// init objects
 		ui_data.init();
 		ui_storage.clearStorage();
 		ui_improver.add_css();  // why here?
 		ui_words.init();
-		logger = new Logger();
 		ui_timeout_bar.create();
-		ui_menu_bar.create();
 		ui_informer.init();
 		
-		// improve interface
-		ui_improver.improve();
-		
-		// check for update ???
-		if (ui_utils.isDeveloper()) {
-			setInterval(function() {
-				$('#fader').load('forums/show/2 td', function() {
-					var posts = parseInt($('#fader .entry-title:contains("Аддоны для Firefox и Chrome - дополнения в интерфейс игры")').parent().next().text());
-					if (posts > ui_storage.get('posts')) {
-						ui_storage.set('posts', posts);
-						ui_informer.update('new posts', false);
-						ui_informer.update('new posts', true);
-					}
-					$('#fader').empty();
-				});
-			}, 300000);
-		}
+		// Инициализируем диспетчер.
+		Dispatcher.create();
+		Dispatcher.registerModule(ui_improver);
+		Dispatcher.registerModule(Logger);
 		
 		var finish = new Date();		
 		GM_log('Godville UI+ initialized in ' + (finish.getTime() - start.getTime()) + ' msec.');
 	}
 }, 200);
 
-// Update improvements when new node inserted (to diary?)
-$(document).bind("DOMNodeInserted", function() {
-	if(!ui_improver.improveInProcess){
-		ui_improver.improveInProcess = true;
-		setTimeout(function() {
-			ui_improver.improve();
-			if (ui_data.isArena) {
-				logger.update();
-			}
-		}, 0);
-	}
-});
-
-// Update logger when user moves the mouse pointer
-$('html').mousemove(function() {
-	if (!logger)
-		return;
-	if (!logger.updating) {
-		logger.updating = true;
-		if (!ui_data.isArena)
-			logger.update();
-		setTimeout(function() {
-			logger.updating = false;
-		}, 500);
-	}
-});
