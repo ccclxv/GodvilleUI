@@ -9,7 +9,7 @@
 // Modifications:
 // AUOE: code simplification  27.04.14
 
-// !requires ui_data.isArena
+// !requires ui_data.isArena ui_data.isMap ui_storage.set_with_diff
 
 
 var Logger = {
