@@ -13,6 +13,17 @@ var ui_improver = {
 	monstersOfTheDay: '',
 	trophyList: [],
 	hucksterNews: '',
+	create: function() {
+		//this.improve(); 
+	},
+	nodeInserted : function() {
+		if(!this.improveInProcess){
+			this.improveInProcess = true;
+			setTimeout(function() {
+				this.improve(); //BUG: Посмотреть что будет в console.log(this);
+			}, 0);
+		}
+	},
 	improve: function() {
 		this.improveInProcess = true;
 		try {
