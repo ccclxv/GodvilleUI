@@ -1,6 +1,10 @@
 // ------------------------
 //		MENU BAR
 // ------------------------
+/*
+Отключаем некритичную функциональность
+this.create делает все само. зависимостей больше нет
+
 var ui_menu_bar = {
 // appends element in ui dialog
 	append: function($append) {
@@ -65,3 +69,4 @@ var ui_menu_bar = {
 		return $('<a class="devel_link">' + label + '</a>').click(function() {ui_storage.dump(selector);});
 	}
 };
+*/
