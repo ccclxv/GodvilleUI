@@ -1,6 +1,6 @@
 {
    "content_scripts": [ {
-      "js": [ "jquery-2.1.0.min.js", "phrases.js", "gm_func.js", "script.js", "utils.js","improvements.js", "informer.js", "words.js", "logger.js", "about.js", "timeout_bar.js","constants.js" ],
+      "js": [ "jquery-2.1.0.min.js", "phrases.js", "gm_func.js", "TestModule.js", "logger.js", "script.js", "utils.js","improvements.js", "informer.js", "words.js", "about.js", "timeout_bar.js","constants.js"],
       "matches": [ "http://godville.net/superhero*", "https://godville.net/superhero*" ]
    }, {
       "js": [ "jquery-2.1.0.min.js", "phrases.js", "gm_func.js", "options-page.js", "options.js" ],
