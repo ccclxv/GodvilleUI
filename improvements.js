@@ -19,7 +19,7 @@ var ui_improver = {
 	nodeInserted : function() {
 		if(!this.improveInProcess){
 			this.improveInProcess = true;
-				console.log("this");
+
 				this.improve(); //BUG: Посмотреть что будет в 
 		}
 	},
