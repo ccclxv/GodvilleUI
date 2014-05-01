@@ -14,14 +14,13 @@ var ui_improver = {
 	trophyList: [],
 	hucksterNews: '',
 	create: function() {
-		//this.improve(); 
+		this.improve(); 
 	},
 	nodeInserted : function() {
 		if(!this.improveInProcess){
 			this.improveInProcess = true;
-			setTimeout(function() {
-				this.improve(); //BUG: Посмотреть что будет в console.log(this);
-			}, 0);
+				console.log("this");
+				this.improve(); //BUG: Посмотреть что будет в 
 		}
 	},
 	improve: function() {
@@ -688,7 +687,7 @@ var ui_improver = {
 				}
 			}
 			return controlWraper;
-		}
+		};
 		
 		// Перемещает кнопки
 		if (ui_storage.get('Option:relocateDuelButtons') != null) {
