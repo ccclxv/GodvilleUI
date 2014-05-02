@@ -53,7 +53,6 @@ var Logger = {
 	
 	// Appends element to logger
 	appendStr : function(id, cssClass, label, descr) {
-		console.log("append", label);
 		// append separator if needed
 		if (this.need_separator) {
 			this.need_separator = false;

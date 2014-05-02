@@ -26,8 +26,9 @@ var ui_improver = {
 	nodeInserted : function() {
 		if(!this.improveInProcess){
 			this.improveInProcess = true;
-
-				this.improve(); //BUG: Посмотреть что будет в 
+			setTimeout(function() { // похоже на защиту от чего-то типа взаимной блокировки
+				this.improve();     // у меня зависал браузер, когда отключалы
+			},0);
 		}
 	},
 	improve: function() {
