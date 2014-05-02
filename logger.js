@@ -10,7 +10,11 @@
 
 /*
  * Refactoring
- * Тут я убрал череду стройных вызовов одного метода, вынеся данные в массив.  
+ * Тут я убрал череду стройных вызовов одного метода, вынеся данные в массив. 
+ * 
+ * stats = статистика? Графики рисовать будем или диаграммы? Переименовать!
+ * Например: info, parameter, state
+ *  
  */
 // !requires ui_data.isArena ui_data.isMap ui_storage.set_with_diff
 
@@ -39,7 +43,7 @@ var Logger = {
 		this.need_separator = true;	
 	},
 	
-	// Updates stats by category
+	// Обновляет данные героя по определенной категории
 	updateStats : function(category) {
 		for (var key in constants["stats"][category]) {
 			var el = constants["stats"][category][key];
