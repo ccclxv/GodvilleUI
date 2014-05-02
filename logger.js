@@ -6,9 +6,12 @@
 // ui_logger.create -- создать объект
 // ui_logger.appendStr -- добавить строчку в конец лога
 // ui_logger.needSepratorHere -- перед первой же следующей записью вставится разделитель
-// Modifications:
-// AUOE: code simplification  27.04.14
+// 
 
+/*
+ * Refactoring
+ * Тут я убрал череду стройных вызовов одного метода, вынеся данные в массив.  
+ */
 // !requires ui_data.isArena ui_data.isMap ui_storage.set_with_diff
 
 
