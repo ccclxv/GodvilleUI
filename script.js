@@ -68,10 +68,27 @@ var starter = setInterval(function() {
 		ui_timeout_bar.create();
 		ui_informer.init();
 		
+		
 		// Инициализируем диспетчер.
 		Dispatcher.create();
 		Dispatcher.registerModule(ui_improver);
 		Dispatcher.registerModule(Logger);
+		Dispatcher.registerModule(ui_menu_bar);
+
+		// что-то типа оповещения об апдейтах
+		if (ui_utils.isDeveloper()) {
+			setInterval(function() {
+				$('#fader').load('forums/show/2 td', function() {
+					var posts = parseInt($('#fader .entry-title:contains("Аддоны для Firefox и Chrome - дополнения в интерфейс игры")').parent().next().text());
+					if (posts > ui_storage.get('posts')) {
+						ui_storage.set('posts', posts);
+						ui_informer.update('new posts', false);
+						ui_informer.update('new posts', true);
+					}
+					$('#fader').empty();
+				});
+			}, 300000);
+		}
 		
 		var finish = new Date();		
 		GM_log('Godville UI+ initialized in ' + (finish.getTime() - start.getTime()) + ' msec.');
