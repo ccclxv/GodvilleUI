@@ -27,8 +27,8 @@ var ui_improver = {
 		if(!this.improveInProcess){
 			this.improveInProcess = true;
 			setTimeout(function() { // похоже на защиту от чего-то типа взаимной блокировки
-				this.improve();     // у меня зависал браузер, когда отключалы
-			},0);
+				this.improve();     // у меня зависал браузер, когда отключал
+			}.bind(this),0);
 		}
 	},
 	improve: function() {
