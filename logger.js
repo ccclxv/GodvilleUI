@@ -47,7 +47,7 @@ var Logger = {
 	updateStats : function(category) {
 		for (var key in constants["stats"][category]) {
 			var el = constants["stats"][category][key];
-			this.watchStatsValue(key, el[0], el[1], (el.length>2)? el[2]:key);
+			this.watchStatsValue(key, el[0], el[1], (el.length>2)? el[2]:key.toLowerCase());
 		}
 	},
 	
