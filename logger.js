@@ -47,7 +47,7 @@ var Logger = {
 	updateStats : function(category) {
 		for (var key in constants["stats"][category]) {
 			var el = constants["stats"][category][key];
-			this.watchStatsValue(key, el[0], el[1], (el.length>2)? el[2]:el[0]);
+			this.watchStatsValue(key, el[0], el[1], (el.length>2)? el[2]:key);
 		}
 	},
 	
@@ -74,7 +74,6 @@ var Logger = {
 	},
 
 	watchStatsValue : function(id, name, descr, css) {
-		css = (css || id).toLowerCase();
 		var diff = ui_storage.set_with_diff('Logger:' + id, ui_stats.get(id));
 		if (diff) {
 			// Если нужно, то преобразовываем в число с одним знаком после запятой
