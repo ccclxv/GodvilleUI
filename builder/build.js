@@ -4,16 +4,16 @@ var shell = new ActiveXObject("Shell.Application");
 var wsShell = new ActiveXObject("WScript.Shell");
 
 var CurrentDirectory = WScript.ScriptFullName.slice(0, WScript.ScriptFullName.length - WScript.ScriptName.length);
-// мы находимся в подпапке, поднимаемся на уровень вверх, чтобы оказаться в папке с исходниками
+// пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 CurrentDirectory = fso.GetAbsolutePathName(CurrentDirectory + "..\\");
 
-var name = "godville_ui"; // имя выходного файла
+var name = "godville_ui"; // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 var buildPath = CurrentDirectory + "\\build";
 var tmpPath = CurrentDirectory + "\\build\\"+ name;
 
 var message = "";
 
-// Зипует всё содержимое указанной папки	
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ	
 var zip = function(source, destination) {
 
 	var zipFileHeader = "PK\x05\x06\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
@@ -61,13 +61,14 @@ var buildFirefox = function() {
 	var contentPath = fso.BuildPath(tmpPath, "content"); 
 	fso.CreateFolder(contentPath);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.js"), contentPath, false);
+	fso.DeleteFile(fso.BuildPath(contentPath, "TestModule.js"));
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.css"), fso.BuildPath(tmpPath, "content"), false);
 	fso.CreateFolder(fso.BuildPath(contentPath, "images"));
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "images\\*"), fso.BuildPath(contentPath, "images"), false);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "logo48.png"), fso.BuildPath(tmpPath, "icon.png"), false);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "firefox\\icon64.png"), fso.BuildPath(contentPath, "images\\icon64.png"), false);
 	fso.DeleteFile(fso.BuildPath(contentPath, "images\\favicon_dummy.png"));
-
+	
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "firefox\\content\\*"), contentPath, true);
 	
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "firefox\\chrome.manifest"), tmpPath + "\\");
@@ -80,8 +81,8 @@ var buildFirefox = function() {
 	fso.MoveFile(fso.BuildPath(buildPath, name + ".zip"), addonPath);
 	fso.DeleteFolder(tmpPath);
 	if (fso.FileExists(addonPath)) {	
-		message += "Сохранено: " + addonPath + "\n";
-		message += "-----Плагин для firefox собран удачно!-----\n\n\n";
+		message += "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + addonPath + "\n";
+		message += "-----пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ firefox пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!-----\n\n\n";
 	}
 }
 
@@ -101,7 +102,7 @@ var buildChrome = function() {
 
 	var chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 	if (!fso.fileExists(chrome)) {
-		WScript.Echo("Браузер Google Chrome не найден!");
+		WScript.Echo("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Google Chrome пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
 		return;
 	}
 	initBuildFolders();
@@ -111,6 +112,7 @@ var buildChrome = function() {
 	}	
 
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.js"), tmpPath);
+	fso.DeleteFile(fso.BuildPath(buildPath, "TestModule.js"));
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.json"), tmpPath);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.css"), tmpPath);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.png"), tmpPath);
@@ -126,7 +128,7 @@ var buildChrome = function() {
 		var key = files.item().Path;
 		if (fso.GetExtensionName(key) == "pem") {
 			keyParam = "--pack-extension-key=\"" + key + "\"";
-			message += "Ключ: " + key + "\n";
+			message += "пїЅпїЅпїЅпїЅ: " + key + "\n";
 		}
 		files.moveNext();
 	}
@@ -140,13 +142,13 @@ var buildChrome = function() {
 
 	fso.DeleteFolder(tmpPath);
 	if (fso.FileExists(fso.BuildPath(buildPath, name + ".crx"))) {	
-		message += "-----Плагин для chrome собран удачно!-----\n"
+		message += "-----пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ chrome пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!-----\n"
 	}	
 	
 }
 
 if (!fso.FileExists(fso.BuildPath(CurrentDirectory, "jquery-2.1.0.min.js"))){
-	WScript.Echo("Пожалуйста, загрузите jquery-2.1.0.min.js и поместите в папку с исходным кодом!");
+	WScript.Echo("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ jquery-2.1.0.min.js пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ!");
 	WScript.Quit(1);
 }
 
