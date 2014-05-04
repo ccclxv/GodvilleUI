@@ -21,15 +21,11 @@ var ui_improver = {
 	trophyList: [],
 	hucksterNews: '',
 	create: function() {
-		this.improve(); 
+		// пока пусть будет, хотя наверное можно убрать
+		setTimeout(this.improve(),0);
 	},
 	nodeInserted : function() {
-		if(!this.improveInProcess){
-			this.improveInProcess = true;
-			setTimeout(function() { // похоже на защиту от чего-то типа взаимной блокировки
-				this.improve();     // у меня зависал браузер, когда отключал
-			}.bind(this),0);
-		}
+		setTimeout(this.improve(),0);     
 	},
 	improve: function() {
 		this.improveInProcess = true;

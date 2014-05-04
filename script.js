@@ -5,35 +5,24 @@
 
 // Обработчик событий. Рассылает всем модулям уведомления.
 // Позже можно организовать приоритеты
-// потом можно отдельно на каждое событие делать массив (для оптимизации)
-// Если вызывать функцию через [""], то не работает this. Не вижу смысла ради двух функций мучиться 
-// с bind'ами
+// потом можно отдельно на каждое событие делать массив (для оптимизации) 
 // Касаясь уже jquery'вского bind'a - убрать лучше, если в тек версии jq есть on 
+			
+			
 var Dispatcher = {
 	_modules: [],
-	
+	_states : {"mousemove":false, "nodeInserted":false},
 	create: function() {
-		$('html').mousemove(function(){
-			if (this._modules) {
-				for (var i = 0; i < this._modules.length; i++) {
-					if (this._modules[i]["mousemove"]) {
-						this._modules[i].mousemove();
-					}
-				}
-			}	
-		}.bind(this));
-		
-		$(document).bind("DOMNodeInserted",function(){
-			if (this._modules) {
-				for (var i = 0; i < this._modules.length; i++) {
-					if (this._modules[i]["nodeInserted"]) {
-						this._modules[i].nodeInserted();
-					}
-				}
-			}	
-		}.bind(this));
 	},	
-	
+	// Вызывает обработчик соответствующего события
+	fire: function(event) {
+		for (var i = 0; i < this._modules.length; i++) {
+			if (this._modules[i][event]) {
+				this._modules[i][event]();
+			}
+		}
+		this._states[event] = false;
+	},	
 	registerModule : function(module) {
 		this._modules.push(module);
 		module.create();
@@ -49,7 +38,6 @@ var Dispatcher = {
 		}
 	},
 };
-
 
 
 // wait for stats  
@@ -71,10 +59,25 @@ var starter = setInterval(function() {
 		
 		// Инициализируем диспетчер.
 		Dispatcher.create();
+		$('html').mousemove(function(){
+			if (!Dispatcher._states["mousemove"]) {
+				Dispatcher._states["mousemove"] = true;
+				setTimeout(function(){Dispatcher.fire("mousemove");},500);	
+			}
+		});
+
+		$(document).bind("DOMNodeInserted", function(){
+			if (!Dispatcher._states["nodeInserted"]) {
+				Dispatcher._states["nodeInserted"] = true;
+				setTimeout(function(){Dispatcher.fire("nodeInserted");},200);	
+			}
+		});		
 		Dispatcher.registerModule(ui_improver);
 		Dispatcher.registerModule(Logger);
 		Dispatcher.registerModule(ui_menu_bar);
+		
 
+		
 		// что-то типа оповещения об апдейтах
 		if (ui_utils.isDeveloper()) {
 			setInterval(function() {
