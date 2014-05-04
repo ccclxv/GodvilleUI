@@ -20,7 +20,6 @@
 
 
 var Logger = {
-	updating : true,
 	need_separator : false,
 	elem : null,
 	
@@ -88,15 +87,7 @@ var Logger = {
 	},
 	
 	mousemove : function() {
-		// Update logger when user moves the mouse pointer
-		if (this.updating) {
-			this.updating = true;
-			if (!ui_data.isArena)
-				this.update();
-			setTimeout(function() {
-				this.updating = false;
-			}, 500);
-		}
+		this.update();
 	},
 	nodeInserted : function() {
 		if (ui_data.isArena) {
