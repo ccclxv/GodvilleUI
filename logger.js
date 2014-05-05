@@ -87,7 +87,9 @@ var Logger = {
 	},
 	
 	mousemove : function() {
-		this.update();
+		if (!ui_data.isArena) {
+			this.update();
+		}
 	},
 	nodeInserted : function() {
 		if (ui_data.isArena) {
