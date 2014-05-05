@@ -702,7 +702,7 @@ var ui_improver = {
 			}
 			// Training
 			if (buttons.match('chf')) {
-				getControlWraper().append($('.chf_link_wrap .div_link'));
+				getControlWraper().append($('.chf_link_wrap .popover-button'));
 			}
 		} 
 	},
