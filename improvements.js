@@ -127,10 +127,11 @@ var InterfaceImprover = {
 		$(window).resize(function() {
 			if ($(this).width() != ui_storage.get('windowWidth')) {
 				ui_storage.set('windowWidth', $(window).width());
-				ui_improver.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
+				InterfaceImprover.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
 			}
 		});
 		this.nodeInserted();
+		
 	},		
 	nodeInserted : function(){
 		if (ui_storage.get('Option:useBackground') == 'cloud') {
@@ -175,6 +176,42 @@ var InterfaceImprover = {
 				var background = 'linear-gradient(to right, rgba(' + color[0] + ',2) 30%, rgba(' + color[1] + ',0) 100%)';
 				$('#fader').css('background', background);
 			}
+		}
+		this.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
+	},
+	improveWindowWidthChangeAndNewElementsInsertionRelatedStuff: function() {
+		if (ui_storage.get('Option:useBackground')) {
+			//background offset
+			if (ui_storage.get('Option:useBackground') == 'cloud')
+				$('body').css('background-position', ($('#fader').offset().left ? ($('#fader').offset().left - 163.75) : 0) + 'px 0');
+			//body widening
+			$('body').width($(window).width() < $('#main_wrapper').width() ? $('#main_wrapper').width() : '');
+		}
+		
+		//proper message tabs appearance
+		if ($('.frDockCell').length && $('.frDockCell:last').position().top != 0) {
+			var row_capacity;
+			$('.frDockCell').css('clear', '');
+			for (var i = 0; i < $('.frDockCell').length; i++) {
+				if ($('.frDockCell').eq(i).position().top != 0) {
+					row_capacity = i;
+					break;
+				}
+			}
+			for (var i = $('.frDockCell').length%row_capacity; i < $('.frDockCell').length; i+=row_capacity)
+				$('.frDockCell').eq(i).css('clear', 'right');
+		}
+		
+		//padding for page settings link
+		var padding_bottom = $('.frDockCell:last').length ? Math.floor($('.frDockCell:last').position().top/26.3 + 0.5)*$('.frDockCell').height() : 0;
+		padding_bottom = Math.floor(padding_bottom*10)/10 + 40;
+		padding_bottom = (padding_bottom < 0) ? 0 : padding_bottom + 'px';
+		$('.reset_layout').css('padding-bottom', padding_bottom);
+		
+		//settings dialod
+		if (!ui_utils.isAlreadyImproved($('#facebox'))) {
+			$('#facebox').css('left', ($(window).width() - $('#facebox').width())/2 + 'px');
+			$('#facebox').css('top', ($(window).height() - $('#facebox').height())/2 + 'px');
 		}
 	}
 };
@@ -337,14 +374,14 @@ var StatsImprover = {
 };
 
 
+// ChkVsblt - разнести по соответствующим модулям
 var ui_improver = {
-	hucksterNews: '',
+
 	create: function() {
 		this.nodeInserted();
 	},
 	nodeInserted : function() {
 		ui_informer.update('pvp', ui_data.isArena);
-		this.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
 		this.checkButtonsVisibility();
 	},
 
@@ -353,12 +390,11 @@ var ui_improver = {
 		$('#merge_button,.inspect_button,.voice_generator').hide();
 		if (ui_storage.get('Stats:Prana') >= 5 && !ui_storage.get('Option:disableVoiceGenerators')) {
 			$('.voice_generator,.inspect_button').show();
-			if (LootImprover.trophyList.length) $('#merge_button').show();
-			//if ($('.f_news').text() != 'Возвращается к заданию...')
+			if (LootImprover.trophyList.length) 
+				$('#merge_button').show();
 			if (!ui_data.isArena){
 				if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || $('#news .line')[0].style.display != 'none') 
 					$('#hk_distance .voice_generator').hide();
-				//if (ui_storage.get('Stats:Prana') == 100) $('#control .voice_generator').hide();
 				if ($('#control .p_val').width() == $('#control .p_bar').width() || $('#news .line')[0].style.display != 'none') $('#control .voice_generator')[0].style.display = 'none';
 				if ($('#hk_distance .l_capt').text() == 'Город') $('#control .voice_generator')[1].style.display = 'none';
 			}
@@ -367,40 +403,6 @@ var ui_improver = {
 		}
 	},
 	
-	improveWindowWidthChangeAndNewElementsInsertionRelatedStuff: function() {
-		if (ui_storage.get('Option:useBackground')) {
-			//background offset
-			if (ui_storage.get('Option:useBackground') == 'cloud')
-				$('body').css('background-position', ($('#fader').offset().left ? ($('#fader').offset().left - 163.75) : 0) + 'px 0');
-			//body widening
-			$('body').width($(window).width() < $('#main_wrapper').width() ? $('#main_wrapper').width() : '');
-		}
-		
-		//proper message tabs appearance
-		if ($('.frDockCell').length && $('.frDockCell:last').position().top != 0) {
-			var row_capacity;
-			$('.frDockCell').css('clear', '');
-			for (var i = 0; i < $('.frDockCell').length; i++) {
-				if ($('.frDockCell').eq(i).position().top != 0) {
-					row_capacity = i;
-					break;
-				}
-			}
-			for (var i = $('.frDockCell').length%row_capacity; i < $('.frDockCell').length; i+=row_capacity)
-				$('.frDockCell').eq(i).css('clear', 'right');
-		}
-		
-		//padding for page settings link
-		var padding_bottom = $('.frDockCell:last').length ? Math.floor($('.frDockCell:last').position().top/26.3 + 0.5)*$('.frDockCell').height() : 0;
-		padding_bottom = Math.floor(padding_bottom*10)/10 + 40;
-		padding_bottom = (padding_bottom < 0) ? 0 : padding_bottom + 'px';
-		$('.reset_layout').css('padding-bottom', padding_bottom);
-		
-		//settings dialod
-		if (!ui_utils.isAlreadyImproved($('#facebox'))) {
-			$('#facebox').css('left', ($(window).width() - $('#facebox').width())/2 + 'px');
-			$('#facebox').css('top', ($(window).height() - $('#facebox').height())/2 + 'px');
-		}
-	},
+
 		
 };

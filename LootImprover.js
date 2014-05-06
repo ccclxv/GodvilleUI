@@ -1,4 +1,5 @@
 var LootImprover = {
+	hucksterNews: '',
 	create: function(){
 		this.nodeInserted();
 	},		
@@ -113,17 +114,17 @@ var LootImprover = {
 				$('#hk_health .p_val').width() == $('#hk_health .p_bar').width() &&
 				 !$('#inventory ul li:not(.heal_item)').filter(function() {return $(this).css('overflow') == 'visible';}).length &&
 				ui_storage.get('Stats:Gold') > 3000) {
-				if (!ui_improver.hucksterNews.length) {
-					ui_improver.hucksterNews = "1" + $('.f_news.line').text();
-				} else if (ui_improver.hucksterNews[0] == '1' && !ui_improver.hucksterNews.match($('.f_news.line').text())) {
-					ui_improver.hucksterNews = "2" + $('.f_news.line').text();
-				} else if (ui_improver.hucksterNews[0] == '2' && !ui_improver.hucksterNews.match($('.f_news.line').text())) {
-					ui_improver.hucksterNews = '';
+				if (!LootImprover.hucksterNews.length) {
+					LootImprover.hucksterNews = "1" + $('.f_news.line').text();
+				} else if (LootImprover.hucksterNews[0] == '1' && !LootImprover.hucksterNews.match($('.f_news.line').text())) {
+					LootImprover.hucksterNews = "2" + $('.f_news.line').text();
+				} else if (LootImprover.hucksterNews[0] == '2' && !LootImprover.hucksterNews.match($('.f_news.line').text())) {
+					LootImprover.hucksterNews = '';
 				}
 			} else {
-				ui_improver.hucksterNews = '';
+				LootImprover.hucksterNews = '';
 			}
-			ui_informer.update('SMELT TIME', ui_improver.hucksterNews && ui_improver.hucksterNews[0] == "2");
+			ui_informer.update('SMELT TIME', LootImprover.hucksterNews && LootImprover.hucksterNews[0] == "2");
 			if (ui_informer.flags['SMELT TIME'] == true && !$('#smelt_time').length) {
 				$('#fader').append('<audio loop preload="auto" id="smelt_time" src="arena.ogg"></audio>');
 				$('#smelt_time')[0].play();

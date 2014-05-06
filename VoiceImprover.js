@@ -1,4 +1,5 @@
 var VoiceImprover = {
+		voiceSubmitted: null,
 		create: function(){
 			if (!ui_data.isArena && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty'))
 				$('#voice_submit').attr('disabled', 'disabled');
@@ -33,7 +34,7 @@ var VoiceImprover = {
 					} else {
 						ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'жертвуй', 'sacrifice', 'Послать ' + ui_data.char_sex[1] + ' требование кровавой или золотой жертвы для внушительного пополнения праны');
 						ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'молись', 'pray', 'Попросить ' + ui_data.char_sex[0] + ' вознести молитву для пополнения праны');
-						$('#voice_submit').click(function () {ui_improver.voiceSubmitted = true;});
+						$('#voice_submit').click(function () {VoiceImprover.voiceSubmitted = true;});
 					}
 				}
 				//hide_charge_button

@@ -1,4 +1,6 @@
 var NewsImprover = {
+	lastNews: null,
+	news: null,
 	monstersOfTheDay: '',
 	nodeInserted: function() {
 		if (ui_data.isArena) return;
@@ -16,12 +18,12 @@ var NewsImprover = {
 			
 			var refresher = setInterval (function() {
 				if (ui_storage.get('Option:forcePageRefresh')) {
-					if (!NewsImprover.news.match($('.f_news.line').text()) || !ui_improver.news.match(ui_storage.get('Stats:HP'))) {
+					if (!NewsImprover.news.match($('.f_news.line').text()) || !NewsImprover.news.match(ui_storage.get('Stats:HP'))) {
 						NewsImprover.news = $('.f_news.line').text() + ui_storage.get('Stats:HP');
 						NewsImprover.lastNews = new Date();
 					}
 					var now = new Date();
-					if (now.getTime() - ui_improver.lastNews.getTime() > 180000) {
+					if (now.getTime() - NewsImprover.lastNews.getTime() > 180000) {
 						if ($('.t_red').length) {
 							GM_log('RED ALERT! HARD RELOADING!');
 							location.reload();
