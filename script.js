@@ -89,6 +89,7 @@ var starter = setInterval(function() {
 		Dispatcher.registerModule(PetImprover);
 		Dispatcher.registerModule(InterfaceImprover);
 		Dispatcher.registerModule(DiaryImprover);
+		Dispatcher.registerModule(StatsImprover);
 		
 		// что-то типа оповещения об апдейтах
 		if (ui_utils.isDeveloper()) {

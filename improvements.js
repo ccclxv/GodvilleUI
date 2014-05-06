@@ -122,20 +122,17 @@ var PetImprover = {
 
 var InterfaceImprover = {
 	create: function(){
+		$('a[href=#]').removeAttr('href');
+		ui_storage.set('windowWidth', $(window).width());
+		$(window).resize(function() {
+			if ($(this).width() != ui_storage.get('windowWidth')) {
+				ui_storage.set('windowWidth', $(window).width());
+				ui_improver.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
+			}
+		});
 		this.nodeInserted();
 	},		
 	nodeInserted : function(){
-		if (this.isFirstTime) {
-			$('a[href=#]').removeAttr('href');
-			ui_storage.set('windowWidth', $(window).width());
-			$(window).resize(function() {
-				if ($(this).width() != ui_storage.get('windowWidth')) {
-					ui_storage.set('windowWidth', $(window).width());
-					ui_improver.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
-				}
-			});
-		}
-
 		if (ui_storage.get('Option:useBackground') == 'cloud') {
 			if (!$('#fader.cloud').length) {
 				$('body').css('background-image', 'url(' + GM_getResource("images/background.jpg") + ')');
@@ -169,7 +166,7 @@ var InterfaceImprover = {
 		}
 		
 		if (localStorage.getItem('ui_s') != ui_storage.get('ui_s')) {
-			ui_improver.Shovel = false;
+			StatsImprover.Shovel = false;
 			ui_storage.set('ui_s', localStorage.getItem('ui_s'));
 			if (!ui_storage.get('Option:useBackground')) {
 				var color;
@@ -184,22 +181,22 @@ var InterfaceImprover = {
 
 
 var DiaryImprover = {
+		voiceSubmitted: false, 
 		create: function(){
 			if (ui_data.isArena) 
 				return;
 			$('#diary .d_msg').addClass('parsed');
 		},		
 		nodeInserted : function(){
-
 			if (ui_data.isArena) 
 				return;
 			var newMessagesCount = $('#diary .d_msg:not(.parsed)').length;
 			if (newMessagesCount) {
-				if (ui_improver.voiceSubmitted) {
+				if (DiaryImprover.voiceSubmitted) {
 					if (newMessagesCount >= 2)
 						ui_timeout_bar.start();
 					$('#god_phrase').change();
-					ui_improver.voiceSubmitted = false;
+					DiaryImprover.voiceSubmitted = false;
 				}
 				for (var i = 0; i < newMessagesCount; i++)
 					$('#diary .d_msg').eq(i).addClass('parsed');
@@ -207,67 +204,12 @@ var DiaryImprover = {
 		}
 };
 
-var ui_improver = {
 
-	Shovel: false,//improveStats
-	isFirstTime: true,
-	voiceSubmitted: false, //diary
-
-	hucksterNews: '',
-	create: function() {
-		this.nodeInserted();
-	},
-	nodeInserted : function() {
-		try {
-			ui_informer.update('pvp', ui_data.isArena);
-			if (!ui_storage.get('isStorage')) throw('No users data!');
-			this.improveStats();
-			this.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
-			this.checkButtonsVisibility();
-			this.isFirstTime = false;
-		} catch (error) {
-			GM_log(error);
-			if (GM_browser == "Firefox")
-				GM_log('^happened at ' + error.lineNumber + ' line of ' + error.fileName);
-		}	
-	},
-	
-
-// ---------- Stats --------------
-	improveStats: function() {
-		//	Парсер строки с золотом
-		var gold_parser = function(val) {
-			return parseInt(val.replace(/[^0-9]/g, '')) || 0;
-		};
-
-		if (this.isFirstTime)
-			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.isArena ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');
-		if (ui_data.isMap) {
-			ui_stats.setFromLabelCounter('Map_HP', $('#m_info'), 'Здоровье');
-			ui_stats.setFromLabelCounter('Map_Gold', $('#m_info'), 'Золота', gold_parser);
-			ui_stats.setFromLabelCounter('Map_Inv', $('#m_info'), 'Инвентарь');
-			ui_stats.set('Map_Battery',$('#m_control .acc_val').text(), parseFloat);
-			ui_stats.set('Map_Alls_HP', this.GroupHP(true));
-			if (ui_storage.get('Logger:LocationPrev') == 'Pole') {
-				ui_storage.set('Logger:LocationPrev', 'Map');
-				ui_storage.set('Logger:Map_HP', ui_stats.get('Map_HP'));
-				ui_storage.set('Logger:Map_Gold', ui_stats.get('Map_Gold'));
-				ui_storage.set('Logger:Map_Inv', ui_stats.get('Map_Inv'));
-				ui_storage.set('Logger:Map_Battery',ui_stats.get('Map_Battery'));
-				ui_storage.set('Logger:Map_Alls_HP', ui_stats.get('Map_Alls_HP'));
-			}
-			return;
-		}
-		if (ui_data.isArena) {
-			ui_stats.setFromLabelCounter('Hero_HP', $('#m_info'), 'Здоровье');
-			ui_stats.setFromLabelCounter('Hero_Gold', $('#m_info'), 'Золота', gold_parser);
-			ui_stats.setFromLabelCounter('Hero_Inv', $('#m_info'), 'Инвентарь');
-			ui_stats.set('Hero_Battery',$('#m_control .acc_val').text(), parseFloat);
-			ui_stats.setFromLabelCounter('Enemy_Gold', $('#o_info'), 'Золота', gold_parser);
-			ui_stats.setFromLabelCounter('Enemy_Inv', $('#o_info'), 'Инвентарь');
-			ui_stats.set('Hero_Alls_HP', this.GroupHP(true));
-			ui_stats.set('Enemy_HP', this.GroupHP(false));
-			if (this.isFirstTime) {
+var StatsImprover = {
+		Shovel: false,
+		create: function(){
+			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.isArena ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');			
+			if (ui_data.isArena) {
 				ui_storage.set('Logger:Hero_HP', ui_stats.get('Hero_HP'));
 				ui_storage.set('Logger:Hero_Gold', ui_stats.get('Hero_Gold'));
 				ui_storage.set('Logger:Hero_Inv', ui_stats.get('Hero_Inv'));
@@ -277,92 +219,134 @@ var ui_improver = {
 				ui_storage.set('Logger:Enemy_Inv', ui_stats.get('Enemy_Inv'));
 				ui_storage.set('Logger:Hero_Alls_HP', ui_stats.get('Hero_Alls_HP'));
 			}
-			return;
-		}
-		if (ui_storage.get('Logger:LocationPrev') != 'Pole')
-			ui_storage.set('Logger:LocationPrev', 'Pole');
-		var $box = $('#stats');
-		if (!ui_utils.isAlreadyImproved($('#stats'))) {
-			// Add links
-			ui_utils.addSayPhraseAfterLabel($box, 'Уровень', 'учись', 'exp', 'Предложить ' + ui_data.char_sex[1] + ' получить порцию опыта');
-			ui_utils.addSayPhraseAfterLabel($box, 'Здоровье', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
-			ui_utils.addSayPhraseAfterLabel($box, 'Золота', 'копай', 'dig', 'Указать ' + ui_data.char_sex[1] + ' место для копания клада или босса');
-			ui_utils.addSayPhraseAfterLabel($box, 'Задание', 'отмени', 'cancel_task', 'Убедить ' + ui_data.char_sex[0] + ' отменить текущее задание');
-			ui_utils.addSayPhraseAfterLabel($box, 'Задание', 'делай', 'do_task', 'Открыть ' + ui_data.char_sex[1] + ' секрет более эффективного выполнения задания');
-			//ui_utils.addSayPhraseAfterLabel($box, 'Смертей', 'умри', 'die');	
-		}
-		if (!$('#hk_distance .voice_generator').length)
-			ui_utils.addSayPhraseAfterLabel($box, 'Столбов от столицы', $('#main_wrapper.page_wrapper_5c').length ? '回' : 'дом', 'town', 'Наставить ' + ui_data.char_sex[0] + ' на путь в ближайший город');
-
-		ui_stats.setFromProgressBar('Exp', $('#hk_level .p_bar'));
-		ui_stats.setFromProgressBar('Task', $('#hk_quests_completed .p_bar'));
-		ui_stats.setFromLabelCounter('Level', $box, 'Уровень');
-		ui_stats.setFromLabelCounter('Monster', $box, 'Убито монстров');
-		ui_stats.setFromLabelCounter('Death', $box, 'Смертей');
-		ui_stats.setFromLabelCounter('Brick', $box, 'Кирпичей для храма', parseFloat);
-		ui_stats.setFromLabelCounter('Wood', $box, 'Дерева для ковчега', parseFloat);
-		ui_stats.setFromLabelCounter('Retirement', $box, 'Сбережения', gold_parser);
-		ui_stats.set('Battery',$('#control .acc_val').text(), parseFloat);
-		if (ui_storage.get('Stats:Inv') != ui_stats.setFromLabelCounter('Inv', $box, 'Инвентарь') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length)
-			LootImprover.inventoryChanged = true;
-		ui_informer.update('much_gold', ui_stats.setFromLabelCounter('Gold', $box, 'Золота', gold_parser) >= (ui_stats.get('Brick') > 1000 ? 10000 : 3000));
-		ui_informer.update('dead', ui_stats.setFromLabelCounter('HP', $box, 'Здоровье') == 0);
-
-		//Shovel pictogramm start
-		var digVoice = $('#hk_gold_we .voice_generator');
-		//$('#hk_gold_we .l_val').text('где-то 20 монет');
-		if ($('#hk_gold_we .l_val').text().length > 16 - 2*$('#main_wrapper.page_wrapper_5c').length) {
-			if (!ui_improver.Shovel) {
-				var path = GM_getResource('images/shovel_');
-				var brightness = (ui_storage.get('ui_s') == 'th_nightly') ? 'dark' : 'bright';
-				digVoice.empty();
-				digVoice.append('<img id="red" src="' + path + 'red_' + brightness + '.gif" style="display: none; cursor: pointer; margin: auto;">' + 
-							 '<img id="blue" src="' + path + 'blue_' + brightness + '.gif" style="display: inline; cursor: pointer; margin: auto;">');
-				ui_improver.Shovel = 'blue';
+			this.nodeInserted();
+		},		
+		nodeInserted : function(){
+			//	Парсер строки с золотом
+			var gold_parser = function(val) {
+				return parseInt(val.replace(/[^0-9]/g, '')) || 0;
+			};
+				
+			if (ui_data.isMap) {
+				ui_stats.setFromLabelCounter('Map_HP', $('#m_info'), 'Здоровье');
+				ui_stats.setFromLabelCounter('Map_Gold', $('#m_info'), 'Золота', gold_parser);
+				ui_stats.setFromLabelCounter('Map_Inv', $('#m_info'), 'Инвентарь');
+				ui_stats.set('Map_Battery',$('#m_control .acc_val').text(), parseFloat);
+				ui_stats.set('Map_Alls_HP', this.GroupHP(true));
+				if (ui_storage.get('Logger:LocationPrev') == 'Pole') {
+					ui_storage.set('Logger:LocationPrev', 'Map');
+					ui_storage.set('Logger:Map_HP', ui_stats.get('Map_HP'));
+					ui_storage.set('Logger:Map_Gold', ui_stats.get('Map_Gold'));
+					ui_storage.set('Logger:Map_Inv', ui_stats.get('Map_Inv'));
+					ui_storage.set('Logger:Map_Battery',ui_stats.get('Map_Battery'));
+					ui_storage.set('Logger:Map_Alls_HP', ui_stats.get('Map_Alls_HP'));
+				}
+				return;
 			}
-			if ($('#hk_gold_we .l_val').text().length > 20 - 2*$('#main_wrapper.page_wrapper_5c').length) {
-				digVoice.css('margin', "4px -4px 0 0");
+			if (ui_data.isArena) {
+				ui_stats.setFromLabelCounter('Hero_HP', $('#m_info'), 'Здоровье');
+				ui_stats.setFromLabelCounter('Hero_Gold', $('#m_info'), 'Золота', gold_parser);
+				ui_stats.setFromLabelCounter('Hero_Inv', $('#m_info'), 'Инвентарь');
+				ui_stats.set('Hero_Battery',$('#m_control .acc_val').text(), parseFloat);
+				ui_stats.setFromLabelCounter('Enemy_Gold', $('#o_info'), 'Золота', gold_parser);
+				ui_stats.setFromLabelCounter('Enemy_Inv', $('#o_info'), 'Инвентарь');
+				ui_stats.set('Hero_Alls_HP', this.GroupHP(true));
+				ui_stats.set('Enemy_HP', this.GroupHP(false));
+				return;
+			}
+			if (ui_storage.get('Logger:LocationPrev') != 'Pole')
+				ui_storage.set('Logger:LocationPrev', 'Pole');
+			var $box = $('#stats');
+			if (!ui_utils.isAlreadyImproved($('#stats'))) {
+				// Add links
+				ui_utils.addSayPhraseAfterLabel($box, 'Уровень', 'учись', 'exp', 'Предложить ' + ui_data.char_sex[1] + ' получить порцию опыта');
+				ui_utils.addSayPhraseAfterLabel($box, 'Здоровье', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
+				ui_utils.addSayPhraseAfterLabel($box, 'Золота', 'копай', 'dig', 'Указать ' + ui_data.char_sex[1] + ' место для копания клада или босса');
+				ui_utils.addSayPhraseAfterLabel($box, 'Задание', 'отмени', 'cancel_task', 'Убедить ' + ui_data.char_sex[0] + ' отменить текущее задание');
+				ui_utils.addSayPhraseAfterLabel($box, 'Задание', 'делай', 'do_task', 'Открыть ' + ui_data.char_sex[1] + ' секрет более эффективного выполнения задания');
+				//ui_utils.addSayPhraseAfterLabel($box, 'Смертей', 'умри', 'die');	
+			}
+			if (!$('#hk_distance .voice_generator').length)
+				ui_utils.addSayPhraseAfterLabel($box, 'Столбов от столицы', $('#main_wrapper.page_wrapper_5c').length ? '回' : 'дом', 'town', 'Наставить ' + ui_data.char_sex[0] + ' на путь в ближайший город');
+
+			ui_stats.setFromProgressBar('Exp', $('#hk_level .p_bar'));
+			ui_stats.setFromProgressBar('Task', $('#hk_quests_completed .p_bar'));
+			ui_stats.setFromLabelCounter('Level', $box, 'Уровень');
+			ui_stats.setFromLabelCounter('Monster', $box, 'Убито монстров');
+			ui_stats.setFromLabelCounter('Death', $box, 'Смертей');
+			ui_stats.setFromLabelCounter('Brick', $box, 'Кирпичей для храма', parseFloat);
+			ui_stats.setFromLabelCounter('Wood', $box, 'Дерева для ковчега', parseFloat);
+			ui_stats.setFromLabelCounter('Retirement', $box, 'Сбережения', gold_parser);
+			ui_stats.set('Battery',$('#control .acc_val').text(), parseFloat);
+			if (ui_storage.get('Stats:Inv') != ui_stats.setFromLabelCounter('Inv', $box, 'Инвентарь') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length)
+				LootImprover.inventoryChanged = true;
+			ui_informer.update('much_gold', ui_stats.setFromLabelCounter('Gold', $box, 'Золота', gold_parser) >= (ui_stats.get('Brick') > 1000 ? 10000 : 3000));
+			ui_informer.update('dead', ui_stats.setFromLabelCounter('HP', $box, 'Здоровье') == 0);
+
+			//Shovel pictogramm start
+			var digVoice = $('#hk_gold_we .voice_generator');
+			//$('#hk_gold_we .l_val').text('где-то 20 монет');
+			if ($('#hk_gold_we .l_val').text().length > 16 - 2*$('#main_wrapper.page_wrapper_5c').length) {
+				if (!StatsImprover.Shovel) {
+					var path = GM_getResource('images/shovel_');
+					var brightness = (ui_storage.get('ui_s') == 'th_nightly') ? 'dark' : 'bright';
+					digVoice.empty();
+					digVoice.append('<img id="red" src="' + path + 'red_' + brightness + '.gif" style="display: none; cursor: pointer; margin: auto;">' + 
+								 '<img id="blue" src="' + path + 'blue_' + brightness + '.gif" style="display: inline; cursor: pointer; margin: auto;">');
+					StatsImprover.Shovel = 'blue';
+				}
+				if ($('#hk_gold_we .l_val').text().length > 20 - 2*$('#main_wrapper.page_wrapper_5c').length) {
+					digVoice.css('margin', "4px -4px 0 0");
+				} else {
+					digVoice.css('margin', "4px 0 0 3px");
+				}
+				digVoice.hover(function() {
+					if (StatsImprover.Shovel == 'blue') {
+						StatsImprover.Shovel = 'red';
+						$('#red').show();
+						$('#blue').hide();
+					}
+				}, function() {
+					if (StatsImprover.Shovel == 'red') {
+						StatsImprover.Shovel = 'blue';
+						$('#red').hide();
+						$('#blue').show();
+					}
+				});
 			} else {
-				digVoice.css('margin', "4px 0 0 3px");
+				StatsImprover.Shovel = false;
+				digVoice.empty();
+				digVoice.append('копай');
+				digVoice.css('margin', "");
 			}
-			digVoice.hover(function() {
-				if (ui_improver.Shovel == 'blue') {
-					ui_improver.Shovel = 'red';
-					$('#red').show();
-					$('#blue').hide();
+		//Shovel pictogramm end			
+		},
+		GroupHP: function(flag) {		
+			var seq = 0;
+			var $box = flag ? $('#alls .opp_h') : $('#opps .opp_h');
+			var GroupCount =	$box.length;
+			if (GroupCount > 0)
+			{
+				for (var i = 0; i < GroupCount;) {
+					if (parseInt($box[i].textContent)) seq += parseInt($box[i].textContent);
+					i++;
 				}
-			}, function() {
-				if (ui_improver.Shovel == 'red') {
-					ui_improver.Shovel = 'blue';
-					$('#red').hide();
-					$('#blue').show();
-				}
-			});
-		} else {
-			ui_improver.Shovel = false;
-			digVoice.empty();
-			digVoice.append('копай');
-			digVoice.css('margin', "");
-		}
-	//Shovel pictogramm end
-	},
-	
-// ---------- Group HP --------------
-	GroupHP: function(flag) {		
-		var seq = 0;
-		var $box = flag ? $('#alls .opp_h') : $('#opps .opp_h');
-		var GroupCount =	$box.length;
-		if (GroupCount > 0)
-		{
-			for (var i = 0; i < GroupCount;) {
-				if (parseInt($box[i].textContent)) seq += parseInt($box[i].textContent);
-				i++;
 			}
-		}
-		return seq; 
+			return seq; 
+		},		
+};
+
+
+var ui_improver = {
+	hucksterNews: '',
+	create: function() {
+		this.nodeInserted();
 	},
-		
-	
+	nodeInserted : function() {
+		ui_informer.update('pvp', ui_data.isArena);
+		this.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
+		this.checkButtonsVisibility();
+	},
 
 	checkButtonsVisibility: function() {
 		
