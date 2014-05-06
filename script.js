@@ -25,7 +25,9 @@ var Dispatcher = {
 	},	
 	registerModule : function(module) {
 		this._modules.push(module);
-		module.create();
+		if (module["create"]) {
+			module.create();
+		}
 	},
 	
 	unregisterModule : function(module) {
@@ -51,7 +53,9 @@ var starter = setInterval(function() {
 		
 		ui_data.init();
 		ui_storage.clearStorage();
-		ui_improver.add_css();  // why here?
+		if ($('#ui_css').length == 0) {
+			GM_addGlobalStyleURL('godville-ui.css', 'ui_css');
+		}  // why here?
 		ui_words.init();
 		ui_timeout_bar.create();
 		ui_informer.init();
@@ -72,11 +76,19 @@ var starter = setInterval(function() {
 				setTimeout(function(){Dispatcher.fire("nodeInserted");},200);	
 			}
 		});		
+
+		Dispatcher.registerModule(ButtonRelocator);
+		Dispatcher.registerModule(EquipmentImprover);
+		Dispatcher.registerModule(ChatImprover);
+		Dispatcher.registerModule(DungeonImprover);
+		Dispatcher.registerModule(LootImprover);
+		Dispatcher.registerModule(VoiceImprover);
 		Dispatcher.registerModule(ui_improver);
 		Dispatcher.registerModule(Logger);
 		Dispatcher.registerModule(ui_menu_bar);
-		
-
+		Dispatcher.registerModule(PetImprover);
+		Dispatcher.registerModule(InterfaceImprover);
+		Dispatcher.registerModule(DiaryImprover);
 		
 		// что-то типа оповещения об апдейтах
 		if (ui_utils.isDeveloper()) {
