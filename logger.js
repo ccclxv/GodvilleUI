@@ -80,7 +80,7 @@ var Logger = {
 				diff = diff.toFixed(1);
 			// Добавление плюсика
 			var s = (diff < 0) 
-					? ("exp,tsk".match(name) ? '→' + ui_stats.get(id) : diff) 
+					? ("exp".match(name) ? '→' + ui_stats.get(id) : diff) 
 					: '+' + diff;
 			this.appendStr(id, css, name + s, descr);
 		}
