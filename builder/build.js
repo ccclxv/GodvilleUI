@@ -112,7 +112,7 @@ var buildChrome = function() {
 	}	
 
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.js"), tmpPath);
-	fso.DeleteFile(fso.BuildPath(buildPath, "TestModule.js"));
+	fso.DeleteFile(fso.BuildPath(tmpPath, "TestModule.js"));
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.json"), tmpPath);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.css"), tmpPath);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.png"), tmpPath);
