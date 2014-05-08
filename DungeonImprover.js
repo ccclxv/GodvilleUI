@@ -7,7 +7,7 @@ var DungeonImprover = {
 			var $box = $('#cntrl .voice_generator');
 			var $boxML = $('#map .dml');
 			var $boxMC = $('#map .dmc');
-			var kRow = $boxM.length;
+			var kRow = $boxML.length;
 			var kColumn = $boxML[0].textContent.length;
 			//	Гласы направления делаем невидимыми
 			for (var i = 0; i < 4; i++){
