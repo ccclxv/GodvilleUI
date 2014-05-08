@@ -10,9 +10,17 @@ var VoiceImprover = {
 					$('#voice_submit').attr('disabled', 'disabled');
 				}
 			});
-			this.nodeInserted();
+			if (!ui_data.isArena) {
+				$('#diary .d_msg').addClass('parsed');	
+			}
+			this.appendVoiceLinks();
+
 		},		
 		nodeInserted: function() {
+			this.appendVoiceLinks();
+			this.startBarIfMessage();
+		},
+		appendVoiceLinks: function() {
 
 			var $box = $('#cntrl');
 			if (!ui_utils.isAlreadyImproved($box)) {
@@ -47,6 +55,22 @@ var VoiceImprover = {
 			// Save stats
 			//ui_informer.update('pr = 100', ui_stats.setFromLabelCounter('Prana', $box, 'Прана') == 100);
 			ui_stats.setFromLabelCounter('Prana', $box, 'Прана');
-			ui_informer.update('full prana', $('#control .p_val').width() == $('#control .p_bar').width());		
+			ui_informer.update('full prana', $('#control .p_val').width() == $('#control .p_bar').width());	
+		},
+		
+		startBarIfMessage: function() {
+			if (ui_data.isArena) 
+				return;
+			var newMessagesCount = $('#diary .d_msg:not(.parsed)').length;
+			if (newMessagesCount) {
+				if (VoiceImprover.voiceSubmitted) {
+					if (newMessagesCount >= 2)
+						ui_timeout_bar.start();
+					$('#god_phrase').change();
+					VoiceImprover.voiceSubmitted = false;
+				}
+				for (var i = 0; i < newMessagesCount; i++)
+					$('#diary .d_msg').eq(i).addClass('parsed');
+			}	
 		}
 };

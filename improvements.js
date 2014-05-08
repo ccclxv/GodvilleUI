@@ -72,6 +72,7 @@ var EquipmentImprover = {
 	}
 };
 
+// Может его в интерфейс сунуть?
 var ChatImprover = {
 		create: function(){
 			this.nodeInserted();
@@ -120,32 +121,6 @@ var PetImprover = {
 	},
 };
 
-
-
-
-var DiaryImprover = {
-		voiceSubmitted: false, 
-		create: function(){
-			if (ui_data.isArena) 
-				return;
-			$('#diary .d_msg').addClass('parsed');
-		},		
-		nodeInserted : function(){
-			if (ui_data.isArena) 
-				return;
-			var newMessagesCount = $('#diary .d_msg:not(.parsed)').length;
-			if (newMessagesCount) {
-				if (DiaryImprover.voiceSubmitted) {
-					if (newMessagesCount >= 2)
-						ui_timeout_bar.start();
-					$('#god_phrase').change();
-					DiaryImprover.voiceSubmitted = false;
-				}
-				for (var i = 0; i < newMessagesCount; i++)
-					$('#diary .d_msg').eq(i).addClass('parsed');
-			}			
-		}
-};
 
 // Оно вообще вне контекста логгера используется?
 var StatsImprover = {
