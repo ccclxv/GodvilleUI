@@ -8,7 +8,7 @@ var DungeonImprover = {
 			var $boxML = $('#map .dml');
 			var $boxMC = $('#map .dmc');
 			var kRow = $boxM.length;
-			var kColumn = $boxM[0].textContent.length;
+			var kColumn = $boxML[0].textContent.length;
 			//	Гласы направления делаем невидимыми
 			for (var i = 0; i < 4; i++){
 				$box[i].style.visibility = 'hidden';
@@ -29,13 +29,13 @@ var DungeonImprover = {
 				var j = $boxML[si].textContent.indexOf('@');
 				if (j != -1){ 
 					//	Проверяем куда можно пройти
-					if ($boxM[si-1].textContent[j] != '#' || isJumping && (si == 1 || si != 1 && $boxM[si-2].textContent[j] != '#'))
+					if ($boxML[si-1].textContent[j] != '#' || isJumping && (si == 1 || si != 1 && $boxML[si-2].textContent[j] != '#'))
 						$box[0].style.visibility = '';	//	Север
-					if ($boxM[si+1].textContent[j] != '#' || isJumping && (si == kRow - 2 || si != kRow - 2 && $boxM[si+2].textContent[j] != '#'))
+					if ($boxML[si+1].textContent[j] != '#' || isJumping && (si == kRow - 2 || si != kRow - 2 && $boxML[si+2].textContent[j] != '#'))
 						$box[1].style.visibility = '';	//	Юг
-					if ($boxM[si].textContent[j-1] != '#' || isJumping && $boxM[si].textContent[j-2] != '#')
+					if ($boxML[si].textContent[j-1] != '#' || isJumping && $boxML[si].textContent[j-2] != '#')
 						$box[2].style.visibility = '';	//	Запад
-					if ($boxM[si].textContent[j+1] != '#' || isJumping && $boxM[si].textContent[j+2] != '#')
+					if ($boxML[si].textContent[j+1] != '#' || isJumping && $boxML[si].textContent[j+2] != '#')
 						$box[3].style.visibility = '';	//	Восток
 				}
 				//	Ищем указатели
