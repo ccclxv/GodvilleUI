@@ -11,6 +11,7 @@
       "LootImprover.js",
       "VoiceImprover.js",
       "NewsImprover.js",
+      "InterfaceImprover.js",      
       "informer.js",
       "words.js", "about.js", "timeout_bar.js","constants.js"],
       "matches": [ "http://godville.net/superhero*", "https://godville.net/superhero*" ]

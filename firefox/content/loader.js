@@ -16,6 +16,7 @@ contentLoad: function(event) {
 			loader.createScript(doc, 'chrome://godvilleui/content/LootImprover.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/VoiceImprover.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/NewsImprover.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/InterfaceImprover.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/informer.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/words.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/logger.js');
