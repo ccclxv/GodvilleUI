@@ -7,9 +7,9 @@ var NewsImprover = {
 		// наверное проверка на то дерется ли герой с монстром
 		if ($('#news .line')[0].style.display != 'none') {
 			var currentMonster = $('#news .l_val').text();
-			var monstersTypes = ['Врачующий', 'Дарующий', 'Зажиточный', 'Запасливый', 'Кирпичный', 'Латающий', 'Лучезарный', 'Сияющий', 'Сюжетный', 'Линяющий'];
+			var monsterTypes = ['Врачующий', 'Дарующий', 'Зажиточный', 'Запасливый', 'Кирпичный', 'Латающий', 'Лучезарный', 'Сияющий', 'Сюжетный', 'Линяющий'];
 			ui_informer.update('monster of the day', ui_utils.monstersOfTheDay.match(currentMonster));
-			for (var i = 0; i < monstersTypes.length; i++) {
+			for (var i = 0; i < monsterTypes.length; i++) {
 				ui_informer.update('monster with capabilities', currentMonster.match(monsterTypes[i]));
 			}
 		}
