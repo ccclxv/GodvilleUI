@@ -5,235 +5,118 @@ var DungeonImprover = {
 	nodeInserted: function() {
 		if (ui_data.isMap){
 			var $box = $('#cntrl .voice_generator');
-			var $boxM = $('#map .dml');
-			var kRow = $boxM.length;
-			var kColumn = $boxM[0].textContent.length;
-			//	Для клада
-			//	NW - NE			N
-			//	 |	 |		W		E
-			//	SW - SE			S
-			
+			var $boxML = $('#map .dml');
+			var $boxMC = $('#map .dmc');
+			var kRow = $boxML.length;
+			var kColumn = $boxML[0].textContent.length;
 			//	Гласы направления делаем невидимыми
 			for (var i = 0; i < 4; i++){
 				$box[i].style.visibility = 'hidden';
 			}
 			var isJumping = $('#map')[0].textContent.match('Прыгучести'); 
-			//	Отрсовываем возможный клад 
-			var MaxMap = 1;
+
+			var MaxMap = 0;	//	Счетчик указателей
+			//	Карта возможного клада
 			var MapArray = [];
 			for (var i = 0; i < kRow; i++){
 				MapArray[i] = [];
 				for (var j = 0; j < kColumn; j++)
-					MapArray[i][j] = ($boxM[i].textContent[j] == '?' || $boxM[i].textContent[j] == '!') ? 1 : 0;
+					MapArray[i][j] = ('?!@'.indexOf($boxML[i].textContent[j]) != - 1) ? 0 : -1;
 			}
 
-			for (var i = 0; i < kRow; i++){
+			for (var si = 0; si < kRow; si++){
 				//	Ищем где мы находимся
-				var j = $boxM[i].textContent.indexOf('@');
+				var j = $boxML[si].textContent.indexOf('@');
 				if (j != -1){ 
 					//	Проверяем куда можно пройти
-					if ($boxM[i-1].textContent[j] != '#' || isJumping && (i == 1 || i != 1 && $boxM[i-2].textContent[j] != '#'))
+					if ($boxML[si-1].textContent[j] != '#' || isJumping && (si == 1 || si != 1 && $boxML[si-2].textContent[j] != '#'))
 						$box[0].style.visibility = '';	//	Север
-					if ($boxM[i+1].textContent[j] != '#' || isJumping && (i == kRow - 2 || i != kRow - 2 && $boxM[i+2].textContent[j] != '#'))
+					if ($boxML[si+1].textContent[j] != '#' || isJumping && (si == kRow - 2 || si != kRow - 2 && $boxML[si+2].textContent[j] != '#'))
 						$box[1].style.visibility = '';	//	Юг
-					if ($boxM[i].textContent[j-1] != '#' || isJumping && $boxM[i].textContent[j-2] != '#')
+					if ($boxML[si].textContent[j-1] != '#' || isJumping && $boxML[si].textContent[j-2] != '#')
 						$box[2].style.visibility = '';	//	Запад
-					if ($boxM[i].textContent[j+1] != '#' || isJumping && $boxM[i].textContent[j+2] != '#')
+					if ($boxML[si].textContent[j+1] != '#' || isJumping && $boxML[si].textContent[j+2] != '#')
 						$box[3].style.visibility = '';	//	Восток
 				}
-				j = $boxM[i].textContent.indexOf('→');	//	E
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var jk = j + 1; jk < kColumn; jk++){
-						var istep = parseInt((Math.abs(jk - j) - 1)/5);
-						for (var ik = (i < istep ? 0 : i - istep); ik <= (i + istep < kRow ? i + istep : kRow - 1); ik++){
-							MapArray[ik][jk] = MapArray[ik][jk] + 1;
-							if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('←');	//	W
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var jk = 0; jk < j - 1; jk++){
-						var istep = parseInt((Math.abs(jk - j) - 1)/5);
-						for (var ik = (i < istep ? 0 : i - istep); ik <= (i + istep < kRow ? i + istep : kRow - 1); ik++){
-							MapArray[ik][jk] = MapArray[ik][jk] + 1;
-							if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('↓');	//	S
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var ik = i + 1; ik < kRow; ik++){
-						var jstep = parseInt((Math.abs(ik - i) - 1)/5);
-						for (var jk = (j < jstep ? 0 : j - jstep); jk <= (j + jstep < kColumn ? j + jstep : kColumn - 1); jk++){
-							MapArray[ik][jk] = MapArray[ik][jk] + 1;
-							if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('↑');	//	N
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var ik = 0; ik < i - 1; ik++){
-						var jstep = parseInt((Math.abs(ik - i) - 1)/5);
-						for (var jk = (j < jstep ? 0 : j - jstep); jk <= (j + jstep < kColumn ? j + jstep : kColumn - 1); jk++){
-							MapArray[ik][jk] = MapArray[ik][jk] + 1;
-							if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-						}
-					}
-				}
-
-				j = $boxM[i].textContent.indexOf('↘');	//	SE
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var ik = i + 1; ik < kRow; ik++){
-						for (var jk = j +1; jk < kColumn; jk++){
-							var istep = parseInt((Math.abs(jk - j) - 1)/5);
-							var jstep = parseInt((Math.abs(ik - i) - 1)/5);
-							if (ik > i + istep)
-								if (jk > j + jstep){
-									MapArray[ik][jk] = MapArray[ik][jk] + 1;
-									if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-								}
-						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('↙');	//	SW
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var ik = i + 1; ik < kRow; ik++){
-						for (var jk = 0; jk < j - 1; jk++){
-							var istep = parseInt((Math.abs(jk - j) - 1)/5);
-							var jstep = parseInt((Math.abs(ik - i) - 1)/5);
-							if (ik > i + istep)
-								if (jk < j - jstep){
-									MapArray[ik][jk] = MapArray[ik][jk] + 1;
-									if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-								}
-						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('↖');	//	NW
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var ik = 0; ik < i - 1; ik++){
-						for (var jk = 0; jk < j - 1; jk++){
-							var istep = parseInt((Math.abs(jk - j) - 1)/5);
-							var jstep = parseInt((Math.abs(ik - i) - 1)/5);
-							if (ik < i - istep)
-								if (jk < j - jstep){
-									MapArray[ik][jk] = MapArray[ik][jk] + 1;
-									if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-								}
-						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('↗');	//	NE
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					for (var ik = 0; ik < i - 1; ik++){
-						for (var jk = j + 1; jk < kColumn; jk++){
-							var istep = parseInt((Math.abs(jk - j) - 1)/5);
-							var jstep = parseInt((Math.abs(ik - i) - 1)/5);
-							if (ik < i - istep)
-								if (jk > j + jstep){
-									MapArray[ik][jk] = MapArray[ik][jk] + 1;
-									if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-								}
-						}
-					}
-				}
-
-				//	✺ - очень горячо(1-2);
-				//	☀ - горячо(3-5);
-				//	♨ - тепло(6-9);
-				//	☁ - свежо(10-13);
-				//	❄ - холодно(14-18)
-				//	✵ - очень холодно(19);
-				var step = 0;
-				j = $boxM[i].textContent.indexOf('✺');	//	очень горячо
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					step = 2; 
-					for (var ik = ((i - step) > 0 ? i - step : 0); ik < ((i + step) < kRow ? i + step : kRow); ik++){
-						for (var jk = ((j - step) > 0 ? j - step : 0); jk < ((j + step) < kColumn ? j + step : kColumn); jk++){
-							var kstep = Math.abs(jk - j) + Math.abs(ik - i);
-							if (kstep <= step){
-								MapArray[ik][jk] = MapArray[ik][jk] + 1;
-								if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
+				//	Ищем указатели
+				for (var sj = 0; sj < kColumn; sj++) {
+					var Pointer = $boxML[si].textContent[sj];
+					if ('←→↓↑↙↘↖↗'.indexOf(Pointer) != - 1) {
+						MaxMap++;
+						$boxMC[si * kColumn + sj].style.color = 'green';
+						for (var ik = 0; ik < kRow; ik++) 
+							for (var jk = 0; jk < kColumn; jk++) {
+								var istep = parseInt((Math.abs(jk - sj) - 1) / 5);
+								var jstep = parseInt((Math.abs(ik - si) - 1) / 5);
+								if ('←→'.indexOf(Pointer) != - 1 && ik >= si - istep && ik <= si + istep ||
+										Pointer == '↓' && ik >= si + istep ||
+										Pointer == '↑' && ik <= si - istep ||
+										'↙↘'.indexOf(Pointer) != - 1 && ik > si + istep ||
+										'↖↗'.indexOf(Pointer) != - 1 && ik < si - istep)
+									if (Pointer == '→' && jk >= sj + jstep ||
+											Pointer == '←' && jk <= sj - jstep ||
+											'↓↑'.indexOf(Pointer) != - 1 && jk >= sj - jstep && jk <= sj + jstep ||
+											'↘↗'.indexOf(Pointer) != - 1 && jk > sj + jstep ||
+											'↙↖'.indexOf(Pointer) != - 1 && jk < sj - jstep)
+										if (MapArray[ik][jk] >= 0)
+											MapArray[ik][jk]++;
 							}
-						}
 					}
-				}
-				j = $boxM[i].textContent.indexOf('☀');	//	горячо
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					step = 5;
-					for (var ik = ((i - step) > 0 ? i - step : 0); ik < ((i + step) < kRow ? i + step : kRow); ik++){
-						for (var jk = ((j - step) > 0 ? j - step : 0); jk < ((j + step) < kColumn ? j + step : kColumn); jk++){
-							var kstep = Math.abs(jk - j) + Math.abs(ik - i);
-							if (kstep <= step){
-								MapArray[ik][jk] = MapArray[ik][jk] + 1;
-								if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-							}
+					if ('✺☀♨☁❄✵'.indexOf(Pointer) != - 1) {
+						MaxMap++;
+						$boxMC[si * kColumn + sj].style.color = 'green';
+						var TermoMinStep = 0;	//	Минимальное количество шагов до клада
+						var TermoMaxStep = 0;	//	Максимальное количество шагов до клада
+						switch(Pointer){
+							case '✺': TermoMinStep = 1; TermoMaxStep = 2; break;	//	✺ - очень горячо(1-2)
+							case '☀': TermoMinStep = 3; TermoMaxStep = 5; break;	//	☀ - горячо(3-5)
+							case '♨': TermoMinStep = 6; TermoMaxStep = 9; break;	//	♨ - тепло(6-9)
+							case '☁': TermoMinStep = 10; TermoMaxStep = 13; break;	//	☁ - свежо(10-13)
+							case '❄': TermoMinStep = 14; TermoMaxStep = 18; break;	//	❄ - холодно(14-18)
+							case '✵': TermoMinStep = 19; TermoMaxStep = 0; break;	//	✵ - очень холодно(19)
 						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('♨');	//	тепло
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					step = 9;
-					for (var ik = ((i - step) > 0 ? i - step : 0); ik < ((i + step) < kRow ? i + step : kRow); ik++){
-						for (var jk = ((j - step) > 0 ? j - step : 0); jk < ((j + step) < kColumn ? j + step : kColumn); jk++){
-							var kstep = Math.abs(jk - j) + Math.abs(ik - i);
-							if (kstep <= step){
-								MapArray[ik][jk] = MapArray[ik][jk] + 1;
-								if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-							}
+						//	Функция итерации
+						var MapIteration = function (MapTermo, iPointer, jPointer, step) {
+							step++;
+							for (var iStep = -1; iStep <= 1; iStep++)
+								for (var jStep = -1; jStep <= 1; jStep++)
+									if (iStep != jStep & (iStep == 0 || jStep == 0)){
+										 var iNext = iPointer + iStep;
+										 var jNext = jPointer + jStep;
+										 if (iNext >= 0 & iNext < kRow & jNext >= 0 & jNext < kColumn)
+												if (MapTermo[iNext][jNext] != -1)
+													if (MapTermo[iNext][jNext] > step || MapTermo[iNext][jNext] == 0) {
+														MapTermo[iNext][jNext] = step;
+														MapIteration(MapTermo, iNext, jNext, step);
+													}
+									}
+						};
+						//	Временная карта возможных ходов
+						var MapTermo = [];
+						for (var ik = 0; ik < kRow; ik++) {
+							MapTermo[ik] = [];
+							for (var jk = 0; jk < kColumn; jk++)
+								MapTermo[ik][jk] = ($boxML[ik].textContent[jk] == '#' || ((Math.abs(jk - sj) + Math.abs(ik - si)) > TermoMaxStep & TermoMaxStep != 0)) ? -1 : 0;
 						}
+						//	Запускаем итерацию
+						MapIteration(MapTermo, si, sj, 0);
+						//	Метим возможный клад
+						for (var ik = ((si - TermoMaxStep) > 0 ? si - TermoMaxStep : 0); ik <= ((si + TermoMaxStep) < kRow ? si + TermoMaxStep : kRow - 1); ik++)
+							for (var jk = ((sj - TermoMaxStep) > 0 ? sj - TermoMaxStep : 0); jk <= ((sj + TermoMaxStep) < kColumn ? sj + TermoMaxStep : kColumn - 1); jk++)
+								if (MapTermo[ik][jk] >= TermoMinStep & (MapTermo[ik][jk] <= TermoMaxStep || TermoMaxStep == 0))
+									if (MapArray[ik][jk] >= 0)
+										MapArray[ik][jk]++;
 					}
-				}
-				j = $boxM[i].textContent.indexOf('☁');	//	свежо
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					step = 13;
-					for (var ik = ((i - step) > 0 ? i - step : 0); ik < ((i + step) < kRow ? i + step : kRow); ik++){
-						for (var jk = ((j - step) > 0 ? j - step : 0); jk < ((j + step) < kColumn ? j + step : kColumn); jk++){
-							var kstep = Math.abs(jk - j) + Math.abs(ik - i);
-							if (kstep <= step){
-								MapArray[ik][jk] = MapArray[ik][jk] + 1;
-								if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-							}
-						}
-					}
-				}
-				j = $boxM[i].textContent.indexOf('❄');	//	холодно
-				if (j != -1){
-					$('#map .dmc')[i * kColumn + j].style.color = 'green';
-					step = 18;
-					for (var ik = ((i - step) > 0 ? i - step : 0); ik < ((i + step) < kRow ? i + step : kRow); ik++){
-						for (var jk = ((j - step) > 0 ? j - step : 0); jk < ((j + step) < kColumn ? j + step : kColumn); jk++){
-					//for (var ik = 0; ik < kRow; ik++){
-						//for (var jk = 0; jk < kColumn; jk++){
-							var kstep = Math.abs(jk - j) + Math.abs(ik - i);
-							if (kstep <= step){
-								MapArray[ik][jk] = MapArray[ik][jk] + 1;
-								if (MapArray[ik][jk] > MaxMap) MaxMap = MapArray[ik][jk];
-							}
-						}
-					}
+					//	На будущее
+					//	↻	↬
 				}
 			}
 			//	Отрсовываем возможный клад 
-			if (MaxMap != 1)
+			if (MaxMap != 0)
 				for (var i = 0; i < kRow; i++)
 					for (var j = 0; j < kColumn; j++){
-						if ($boxM[i].textContent[j] == '?' || $boxM[i].textContent[j] == '!')
-							if (MapArray[i][j] == MaxMap)
-								$('#map .dmc')[i * kColumn + j].style.color = 'red';
+						if (MapArray[i][j] == MaxMap)
+							$boxMC[i * kColumn + j].style.color = 'red';
 			}
 		}
 	},
