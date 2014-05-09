@@ -1,38 +1,21 @@
+// В данном объекте перемешана логика :
+// мониторинга событий
 var NewsImprover = {
-	lastNews: null,
-	news: null,
-	monstersOfTheDay: '',
-	nodeInserted: function() {
-		if (ui_data.isArena) return;
-		if (!ui_utils.isAlreadyImproved($('#news'))) {
-			ui_utils.addSayPhraseAfterLabel($('#news'), 'Противник', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
+	create: function() {
+	},
+	nodeInserted: function() {	
+		// наверное проверка на то дерется ли герой с монстром
+		if ($('#news .line')[0].style.display != 'none') {
+			var currentMonster = $('#news .l_val').text();
+			var monstersTypes = ['Врачующий', 'Дарующий', 'Зажиточный', 'Запасливый', 'Кирпичный', 'Латающий', 'Лучезарный', 'Сияющий', 'Сюжетный', 'Линяющий'];
+			ui_informer.update('monster of the day', ui_utils.monstersOfTheDay.match(currentMonster));
+			for (var i = 0; i < monstersTypes.length; i++) {
+				ui_informer.update('monster with capabilities', currentMonster.match(monsterTypes[i]));
+			}
 		}
-		var currentMonster = $('#news .line')[0].style.display != 'none' ? $('#news .l_val').text() : '';
-		ui_informer.update('monster of the day', currentMonster != '' && NewsImprover.monstersOfTheDay.match(currentMonster));
-		ui_informer.update('monster with capabilities', currentMonster != '' && (currentMonster.match('Врачующий') || currentMonster.match('Дарующий')
-			|| currentMonster.match('Зажиточный') || currentMonster.match('Запасливый') || currentMonster.match('Кирпичный') || currentMonster.match('Латающий')
-			|| currentMonster.match('Лучезарный') || currentMonster.match('Сияющий') || currentMonster.match('Сюжетный') || currentMonster.match('Линяющий')));
-		if (this.isFirstTime) {
-			this.news = $('.f_news.line').text() + ui_storage.get('Stats:HP');
-			this.lastNews = new Date();
-			
-			var refresher = setInterval (function() {
-				if (ui_storage.get('Option:forcePageRefresh')) {
-					if (!NewsImprover.news.match($('.f_news.line').text()) || !NewsImprover.news.match(ui_storage.get('Stats:HP'))) {
-						NewsImprover.news = $('.f_news.line').text() + ui_storage.get('Stats:HP');
-						NewsImprover.lastNews = new Date();
-					}
-					var now = new Date();
-					if (now.getTime() - NewsImprover.lastNews.getTime() > 180000) {
-						if ($('.t_red').length) {
-							GM_log('RED ALERT! HARD RELOADING!');
-							location.reload();
-						}
-						GM_log('Soft reloading');
-						$('#d_refresh').click();
-					}
-				}
-			}, 60000);
-		}
+		ui_informer.update('full prana', $('#control .p_val').width() == $('#control .p_bar').width());
+		ui_informer.update('pvp', ui_data.isArena);
+		ui_informer.update('much_gold', ui_stats.setFromLabelCounter('Gold', $box, 'Золота', gold_parser) >= (ui_stats.get('Brick') > 1000 ? 10000 : 3000));
+		ui_informer.update('dead', ui_stats.setFromLabelCounter('HP', $box, 'Здоровье') == 0);
 	},
 };

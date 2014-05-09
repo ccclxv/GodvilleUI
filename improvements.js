@@ -199,7 +199,6 @@ var StatsImprover = {
 			if (ui_storage.get('Stats:Inv') != ui_stats.setFromLabelCounter('Inv', $box, 'Инвентарь') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length)
 				LootImprover.inventoryChanged = true;
 			ui_informer.update('much_gold', ui_stats.setFromLabelCounter('Gold', $box, 'Золота', gold_parser) >= (ui_stats.get('Brick') > 1000 ? 10000 : 3000));
-			ui_informer.update('dead', ui_stats.setFromLabelCounter('HP', $box, 'Здоровье') == 0);
 
 			//Shovel pictogramm start
 			var digVoice = $('#hk_gold_we .voice_generator');
@@ -262,7 +261,6 @@ var ui_improver = {
 		this.nodeInserted();
 	},
 	nodeInserted : function() {
-		ui_informer.update('pvp', ui_data.isArena);
 		this.checkButtonsVisibility();
 	},
 

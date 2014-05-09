@@ -2,6 +2,7 @@
 //		UTILS
 // ------------------------
 var ui_utils = {
+	monstersOfTheDay: '',
 	isDeveloper: function () {
 		return ui_data.developers.indexOf(ui_data.god_name) >= 0;
 	},
@@ -205,7 +206,7 @@ var ui_data = {
 			
 			$('<div>', {id:"motd"}).insertAfter($('#menu_bar')).hide();
 			$('#motd').load('news .game.clearfix:first a', function() {
-				ui_improver.monstersOfTheDay = $('#motd a').text();
+				ui_utils.monstersOfTheDay = $('#motd a').text();
 				$('#motd').remove()
 			});
 		},

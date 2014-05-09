@@ -13,6 +13,10 @@ var VoiceImprover = {
 			if (!ui_data.isArena) {
 				$('#diary .d_msg').addClass('parsed');	
 			}
+			
+			if (!ui_data.isArena) {
+				ui_utils.addSayPhraseAfterLabel($('#news'), 'Противник', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
+			}
 			this.appendVoiceLinks();
 
 		},		
@@ -52,10 +56,7 @@ var VoiceImprover = {
 					$('#control .hch_link')[0].style.visibility = ui_storage.get('Option:hideChargeButton') ? 'hidden' : '';
 			}
 			
-			// Save stats
-			//ui_informer.update('pr = 100', ui_stats.setFromLabelCounter('Prana', $box, 'Прана') == 100);
-			ui_stats.setFromLabelCounter('Prana', $box, 'Прана');
-			ui_informer.update('full prana', $('#control .p_val').width() == $('#control .p_bar').width());	
+			ui_stats.setFromLabelCounter('Prana', $box, 'Прана');	
 		},
 		
 		startBarIfMessage: function() {

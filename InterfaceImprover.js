@@ -9,7 +9,6 @@ var InterfaceImprover = {
 			}
 		});
 		this.nodeInserted();
-		
 	},		
 	nodeInserted : function(){
 		if (ui_storage.get('Option:useBackground') == 'cloud') {
