@@ -27,6 +27,8 @@ var LootImprover = {
 	},
 	nodeInserted: function() {
 		if (ui_data.isArena) return;
+		if (ui_storage.get('Stats:Inv') != ui_stats.get('Inv') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length)
+			this.inventoryChanged = true;
 		if (this.inventoryChanged) {
 			setTimeout(function() {
 				$('#inventory li:hidden').remove();
