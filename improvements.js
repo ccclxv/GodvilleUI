@@ -127,79 +127,9 @@ var StatsImprover = {
 		Shovel: false,
 		create: function(){
 			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.isArena ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');			
-			if (ui_data.isArena) {
-				ui_storage.set('Logger:Hero_HP', ui_stats.get('Hero_HP'));
-				ui_storage.set('Logger:Hero_Gold', ui_stats.get('Hero_Gold'));
-				ui_storage.set('Logger:Hero_Inv', ui_stats.get('Hero_Inv'));
-				ui_storage.set('Logger:Hero_Battery',ui_stats.get('Hero_Battery'));
-				ui_storage.set('Logger:Enemy_HP', ui_stats.get('Enemy_HP'));
-				ui_storage.set('Logger:Enemy_Gold', ui_stats.get('Enemy_Gold'));
-				ui_storage.set('Logger:Enemy_Inv', ui_stats.get('Enemy_Inv'));
-				ui_storage.set('Logger:Hero_Alls_HP', ui_stats.get('Hero_Alls_HP'));
-			}
 			this.nodeInserted();
 		},		
-		nodeInserted : function(){
-			//	Парсер строки с золотом
-			var gold_parser = function(val) {
-				return parseInt(val.replace(/[^0-9]/g, '')) || 0;
-			};
-				
-			if (ui_data.isMap) {
-				ui_stats.setFromLabelCounter('Map_HP', $('#m_info'), 'Здоровье');
-				ui_stats.setFromLabelCounter('Map_Gold', $('#m_info'), 'Золота', gold_parser);
-				ui_stats.setFromLabelCounter('Map_Inv', $('#m_info'), 'Инвентарь');
-				ui_stats.set('Map_Battery',$('#m_control .acc_val').text(), parseFloat);
-				ui_stats.set('Map_Alls_HP', this.GroupHP(true));
-				if (ui_storage.get('Logger:LocationPrev') == 'Pole') {
-					ui_storage.set('Logger:LocationPrev', 'Map');
-					ui_storage.set('Logger:Map_HP', ui_stats.get('Map_HP'));
-					ui_storage.set('Logger:Map_Gold', ui_stats.get('Map_Gold'));
-					ui_storage.set('Logger:Map_Inv', ui_stats.get('Map_Inv'));
-					ui_storage.set('Logger:Map_Battery',ui_stats.get('Map_Battery'));
-					ui_storage.set('Logger:Map_Alls_HP', ui_stats.get('Map_Alls_HP'));
-				}
-				return;
-			}
-			if (ui_data.isArena) {
-				ui_stats.setFromLabelCounter('Hero_HP', $('#m_info'), 'Здоровье');
-				ui_stats.setFromLabelCounter('Hero_Gold', $('#m_info'), 'Золота', gold_parser);
-				ui_stats.setFromLabelCounter('Hero_Inv', $('#m_info'), 'Инвентарь');
-				ui_stats.set('Hero_Battery',$('#m_control .acc_val').text(), parseFloat);
-				ui_stats.setFromLabelCounter('Enemy_Gold', $('#o_info'), 'Золота', gold_parser);
-				ui_stats.setFromLabelCounter('Enemy_Inv', $('#o_info'), 'Инвентарь');
-				ui_stats.set('Hero_Alls_HP', this.GroupHP(true));
-				ui_stats.set('Enemy_HP', this.GroupHP(false));
-				return;
-			}
-			if (ui_storage.get('Logger:LocationPrev') != 'Pole')
-				ui_storage.set('Logger:LocationPrev', 'Pole');
-			var $box = $('#stats');
-			if (!ui_utils.isAlreadyImproved($('#stats'))) {
-				// Add links
-				ui_utils.addSayPhraseAfterLabel($box, 'Уровень', 'учись', 'exp', 'Предложить ' + ui_data.char_sex[1] + ' получить порцию опыта');
-				ui_utils.addSayPhraseAfterLabel($box, 'Здоровье', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
-				ui_utils.addSayPhraseAfterLabel($box, 'Золота', 'копай', 'dig', 'Указать ' + ui_data.char_sex[1] + ' место для копания клада или босса');
-				ui_utils.addSayPhraseAfterLabel($box, 'Задание', 'отмени', 'cancel_task', 'Убедить ' + ui_data.char_sex[0] + ' отменить текущее задание');
-				ui_utils.addSayPhraseAfterLabel($box, 'Задание', 'делай', 'do_task', 'Открыть ' + ui_data.char_sex[1] + ' секрет более эффективного выполнения задания');
-				//ui_utils.addSayPhraseAfterLabel($box, 'Смертей', 'умри', 'die');	
-			}
-			if (!$('#hk_distance .voice_generator').length)
-				ui_utils.addSayPhraseAfterLabel($box, 'Столбов от столицы', $('#main_wrapper.page_wrapper_5c').length ? '回' : 'дом', 'town', 'Наставить ' + ui_data.char_sex[0] + ' на путь в ближайший город');
-
-			ui_stats.setFromProgressBar('Exp', $('#hk_level .p_bar'));
-			ui_stats.setFromProgressBar('Task', $('#hk_quests_completed .p_bar'));
-			ui_stats.setFromLabelCounter('Level', $box, 'Уровень');
-			ui_stats.setFromLabelCounter('Monster', $box, 'Убито монстров');
-			ui_stats.setFromLabelCounter('Death', $box, 'Смертей');
-			ui_stats.setFromLabelCounter('Brick', $box, 'Кирпичей для храма', parseFloat);
-			ui_stats.setFromLabelCounter('Wood', $box, 'Дерева для ковчега', parseFloat);
-			ui_stats.setFromLabelCounter('Retirement', $box, 'Сбережения', gold_parser);
-			ui_stats.set('Battery',$('#control .acc_val').text(), parseFloat);
-			if (ui_storage.get('Stats:Inv') != ui_stats.setFromLabelCounter('Inv', $box, 'Инвентарь') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length)
-				LootImprover.inventoryChanged = true;
-			ui_informer.update('much_gold', ui_stats.setFromLabelCounter('Gold', $box, 'Золота', gold_parser) >= (ui_stats.get('Brick') > 1000 ? 10000 : 3000));
-
+		nodeInserted : function(){			
 			//Shovel pictogramm start
 			var digVoice = $('#hk_gold_we .voice_generator');
 			//$('#hk_gold_we .l_val').text('где-то 20 монет');
@@ -238,19 +168,7 @@ var StatsImprover = {
 			}
 		//Shovel pictogramm end			
 		},
-		GroupHP: function(flag) {		
-			var seq = 0;
-			var $box = flag ? $('#alls .opp_h') : $('#opps .opp_h');
-			var GroupCount =	$box.length;
-			if (GroupCount > 0)
-			{
-				for (var i = 0; i < GroupCount;) {
-					if (parseInt($box[i].textContent)) seq += parseInt($box[i].textContent);
-					i++;
-				}
-			}
-			return seq; 
-		},		
+	
 };
 
 
