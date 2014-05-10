@@ -12,8 +12,6 @@
  * Refactoring
  * Тут я убрал череду стройных вызовов одного метода, вынеся данные в массив. 
  * 
- * stats = статистика? Графики рисовать будем или диаграммы? Переименовать!
- * Например: info, parameter, state
  *  
  */
 // !requires ui_data.isArena ui_data.isMap ui_storage.set_with_diff
