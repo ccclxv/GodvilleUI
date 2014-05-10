@@ -10,7 +10,7 @@
       "DungeonImprover.js",
       "LootImprover.js",
       "VoiceImprover.js",
-      "NewsImprover.js",
+      "Monitor.js",
       "InterfaceImprover.js",      
       "informer.js",
       "words.js", "about.js", "timeout_bar.js","constants.js"],
