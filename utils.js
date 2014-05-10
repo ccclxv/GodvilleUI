@@ -181,6 +181,49 @@ var ui_stats = {
 		var value = parser($field.text());
 		if (id == 'Brick' || id == 'Wood') return this.set(id, Math.floor(value*10 + 0.5))
 		else return this.set(id, value);
+	},
+	
+	/*
+	 * Эта функция сохраняет указанные элементы DOM страницы superhero.
+	 * пример
+	params = {
+		'label': { 
+			'#id_блока': {				
+				'внутренний_id_значения': ['Текст, после которого идет значение',
+				 парсер(gold_parser/parseInt/parseFloat)],
+			},
+		},
+		'progress': {		
+			'внутренний_id_значения': '#hk_level .p_bar',
+			'Task': '#hk_quests_completed .p_bar'
+		},
+		'value': {
+			'внутренний_id_значения': 'значение'
+		} 
+	}
+	 */
+	saveElements: function(params) {
+		for (var type in params) {
+			if (type == 'label') {
+				for (var container in params[type]) {
+					var a = params[type][container];
+					var $container = $(container);
+					for (var id in a) {
+						this.setFromLabelCounter(id, $container, a[id][0], a[id][1]);
+					}
+				}
+			}
+			if (type == 'progress') {
+				for (var id in params[type]) {
+					this.setFromProgressBar(id, $(params[type][id]));
+				}
+			}
+			if (type == 'value') {
+				for (var id in params[type]) {
+					this.set(id, params[type][id]);
+				}
+			}
+		}
 	}
 };
 
