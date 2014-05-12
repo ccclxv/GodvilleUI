@@ -1,5 +1,6 @@
 var VoiceImprover = {
 		voiceSubmitted: null,
+		Shovel: false,
 		create: function(){
 			if (!ui_data.isArena && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty'))
 				$('#voice_submit').attr('disabled', 'disabled');
@@ -18,11 +19,71 @@ var VoiceImprover = {
 				ui_utils.addSayPhraseAfterLabel($('#news'), 'Противник', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
 			}
 			this.appendVoiceLinks();
-
-		},		
+			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.isArena ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');
+			this.shovelPic();
+			this.checkButtonsVisibility();
+		},	
+		shovelPic: function() {
+			//Shovel pictogramm start
+			var digVoice = $('#hk_gold_we .voice_generator');
+			//$('#hk_gold_we .l_val').text('где-то 20 монет');
+			if ($('#hk_gold_we .l_val').text().length > 16 - 2*$('#main_wrapper.page_wrapper_5c').length) {
+				if (!VoiceImprover.Shovel) {
+					var path = GM_getResource('images/shovel_');
+					var brightness = (ui_storage.get('ui_s') == 'th_nightly') ? 'dark' : 'bright';
+					digVoice.empty();
+					digVoice.append('<img id="red" src="' + path + 'red_' + brightness + '.gif" style="display: none; cursor: pointer; margin: auto;">' + 
+								 '<img id="blue" src="' + path + 'blue_' + brightness + '.gif" style="display: inline; cursor: pointer; margin: auto;">');
+					VoiceImprover.Shovel = 'blue';
+				}
+				if ($('#hk_gold_we .l_val').text().length > 20 - 2*$('#main_wrapper.page_wrapper_5c').length) {
+					digVoice.css('margin', "4px -4px 0 0");
+				} else {
+					digVoice.css('margin', "4px 0 0 3px");
+				}
+				digVoice.hover(function() {
+					if (VoiceImprover.Shovel == 'blue') {
+						VoiceImprover.Shovel = 'red';
+						$('#red').show();
+						$('#blue').hide();
+					}
+				}, function() {
+					if (VoiceImprover.Shovel == 'red') {
+						VoiceImprover.Shovel = 'blue';
+						$('#red').hide();
+						$('#blue').show();
+					}
+				});
+			} else {
+				VoiceImprover.Shovel = false;
+				digVoice.empty();
+				digVoice.append('копай');
+				digVoice.css('margin', "");
+			}
+		//Shovel pictogramm end	
+		},
+		checkButtonsVisibility: function() {
+			
+			$('#merge_button,.inspect_button,.voice_generator').hide();
+			if (ui_storage.get('Stats:Prana') >= 5 && !ui_storage.get('Option:disableVoiceGenerators')) {
+				$('.voice_generator,.inspect_button').show();
+				if (LootImprover.trophyList.length) 
+					$('#merge_button').show();
+				if (!ui_data.isArena){
+					if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || $('#news .line')[0].style.display != 'none') 
+						$('#hk_distance .voice_generator').hide();
+					if ($('#control .p_val').width() == $('#control .p_bar').width() || $('#news .line')[0].style.display != 'none') $('#control .voice_generator')[0].style.display = 'none';
+					if ($('#hk_distance .l_capt').text() == 'Город') $('#control .voice_generator')[1].style.display = 'none';
+				}
+				if ($('#hk_quests_completed .q_name').text().match(/\(выполнено\)/)) $('#hk_quests_completed .voice_generator').hide();
+				if ($('#hk_health .p_val').width() == $('#hk_health .p_bar').width()) $('#hk_health .voice_generator').hide();
+			}
+		},
 		nodeInserted: function() {
 			this.appendVoiceLinks();
 			this.startBarIfMessage();
+			this.shovelPic();
+			this.checkButtonsVisibility();
 		},
 		appendVoiceLinks: function() {
 
