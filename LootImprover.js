@@ -3,7 +3,6 @@ var LootImprover = {
 	create: function(){
 		this.nodeInserted();
 	},		
-	inventoryChanged: true,
 	trophyList: [],
 	_createInspectButton: function(item_name) {
 		return $('<a class="inspect_button" style="margin-left:0.3em" title="Упросить ' + ui_data.char_sex[0] + ' потрясти ' + item_name + '">?</a>')
@@ -27,9 +26,7 @@ var LootImprover = {
 	},
 	nodeInserted: function() {
 		if (ui_data.isArena) return;
-		if (ui_storage.get('Stats:Inv') != ui_stats.get('Inv') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length)
-			this.inventoryChanged = true;
-		if (this.inventoryChanged) {
+		if (ui_storage.get('Stats:Inv') != ui_storage.getOld('Stats:Inv') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length){
 			setTimeout(function() {
 				$('#inventory li:hidden').remove();
 			}, 1000);
@@ -100,14 +97,10 @@ var LootImprover = {
 			//ui_informer.update(flags[11], types[11] && !bold_item);
 			//ui_informer.update('transform!', types[11] && bold_item);
 			
-			ui_informer.update('good box', good_box);
-			
+			ui_informer.update('good box', good_box);		
 			ui_informer.update('smelt!', types[9] && ui_storage.get('Stats:Gold') >= 3000);
 			ui_informer.update(flags[9], types[9] && !(ui_storage.get('Stats:Gold') >= 3000));
-			
-			ui_informer.update('to arena box', to_arena_box);
-		
-			this.inventoryChanged = false;
+			ui_informer.update('to arena box', to_arena_box);	
 		}
 		
 		if (!ui_data.isArena && ui_storage.get('Option:forbiddenInformers') && ui_storage.get('Option:forbiddenInformers').match('SMELT_TIME')) {
