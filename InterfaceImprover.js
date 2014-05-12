@@ -44,7 +44,7 @@ var InterfaceImprover = {
 		}
 		
 		if (localStorage.getItem('ui_s') != ui_storage.get('ui_s')) {
-			StatsImprover.Shovel = false;
+			VoiceImprover.Shovel = false;
 			ui_storage.set('ui_s', localStorage.getItem('ui_s'));
 			if (!ui_storage.get('Option:useBackground')) {
 				var color;
