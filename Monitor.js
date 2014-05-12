@@ -57,6 +57,11 @@ var Monitor = {
 					}
 				});
 			}
+			if (!ui_data.isArena && !ui_data.isMap) {
+				for (var i = 0; i < 7; i++) {
+					ui_stats.set('Equip' + (i+1), parseInt($('#eq_' + i + ' .eq_level').text()) || 0);
+				}
+			}
 			ui_stats.saveElements({
 				'label': {
 					'#stats': {				
