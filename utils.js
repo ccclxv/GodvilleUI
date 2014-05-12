@@ -64,11 +64,16 @@ var ui_utils = {
 //		STORAGE
 // ------------------------
 var ui_storage = {
+	_old: {},
+	getOld: function(id) {
+		return this._old[id];
+	},
 	get_key: function(key) {
 		return "GM_" + ui_data.god_name + ':' + key;
 	},
 // stores a value
 	set: function(id, value) {
+		this._old[id] = this.get(id);
 		localStorage.setItem(this.get_key(id), value);
 		return value;
 	},
@@ -194,8 +199,7 @@ var ui_stats = {
 			},
 		},
 		'progress': {		
-			'внутренний_id_значения': '#hk_level .p_bar',
-			'Task': '#hk_quests_completed .p_bar'
+			'внутренний_id_значения': 'селектор',
 		},
 		'value': {
 			'внутренний_id_значения': 'значение'
