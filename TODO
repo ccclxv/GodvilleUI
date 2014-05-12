@@ -1,28 +1,52 @@
-+ Monitor
-+ ButtonRelocator
-+ EquipmentImprover
-+ ChatImprover
-+ DungeonImprover
-+ Logger
-+ ui_menu_bar
-+ PetImprover
-~ VoiceImprover
-~ InterfaceImprover
 
-- LootImprover
-- ui_improver -> VoiceImprover, ButtonRelocator
-- StatsImprover -> VoiceImprover
+=================================== Этап 2: Базовые объекты =============================
+ 
+"script.js" - диспетчер и инициализация
+"utils.js" - вспомогательные функции, обертки local storage,
+ ui_data - тут надо переделать логику флага арены (чтобы не работал в подземелье)
+"informer.js" - информер
+"phrases.js" - а это авторские константы
+"words.js" - а это то, что обрабатывает эти константы
+"timeout_bar.js" - это бы преобразовать в отдельный модуль, который запрещает кнопку 
+"изречь" и выдаёт эту полоску
+"constants.js" - Константы в модуле или вне модуля? Наверное внесу обратно в logger.
+      
+      
+======================================= Этап 1: Модули =================================
+Интересная идея. А если монитор делать классом, который будет посылать событие
+при изменении значения какого-либо. Типа диспетчера (интеграция?)
+// ......................
+watchValue(this, "gold");
+// ......................
+valueChanged(id, value) {
+	// do usefull things
+}
+Сделает добро для Logger, ButtonRelocator,  EquipmentImprover, 
+ChatImprover - nodeInserted(chat)
+ 
++ Monitor - мониторит состояние героя
 
-Monitor +
-Logger +
+
++ DungeonImprover - улучшение подземелий
++ Logger - лог 
+
+
+~ VoiceImprover - ссылки на гласы | добавлять ссылки надо только один раз.
+~ LootImprover - ссылки на гласы для инвентаря
+
+~ InterfaceImprover - фон (интерфейс)
++ ButtonRelocator - перемещает кнопки (интерфейс)
+- EquipmentImprover - добавляет badge (интерфейс)
++ PetImprover - добавляет badge (интерфейс)
++ ChatImprover - улучшение чата 
+
+// Вообще не нужен
++ ui_menu_bar - эбаут
+
 InformerUpdater + <---
-
-LootImprover -
 
 Пока засунул обновления информера в монитор. Перенести в информер полную слежку пока не получится:
 лут импрувер дает очень много обновлений, которые завязаны на его логику. Может оно и не надо?
-
-Далее
 
 ЛутИмпрувер - есть часть логическая войсимпрувера. Значит... значит их надо засунуть в один файл, 
 а может и собрать вместе ().
