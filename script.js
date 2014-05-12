@@ -11,7 +11,7 @@
 			
 var Dispatcher = {
 	_modules: [],
-	_states : {"mousemove":false, "nodeInserted":false},
+	_states : {"mousemove": false, "nodeInserted": false},
 	create: function() {
 	},	
 	// Вызывает обработчик соответствующего события
@@ -83,12 +83,10 @@ var starter = setInterval(function() {
 		Dispatcher.registerModule(DungeonImprover);
 		Dispatcher.registerModule(LootImprover);
 		Dispatcher.registerModule(VoiceImprover);
-		Dispatcher.registerModule(ui_improver);
 		Dispatcher.registerModule(Logger);
 		Dispatcher.registerModule(ui_menu_bar);
 		Dispatcher.registerModule(PetImprover);
-		Dispatcher.registerModule(InterfaceImprover);
-		Dispatcher.registerModule(StatsImprover);	
+		Dispatcher.registerModule(InterfaceImprover);	
 		
 		var finish = new Date();		
 		GM_log('Godville UI+ initialized in ' + (finish.getTime() - start.getTime()) + ' msec.');
