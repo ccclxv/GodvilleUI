@@ -2,24 +2,24 @@ var VoiceImprover = {
 		voiceSubmitted: null,
 		Shovel: false,
 		create: function(){
-			if (!ui_data.isArena && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty'))
+			if (ui_data.location == "field" && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty'))
 				$('#voice_submit').attr('disabled', 'disabled');
 			$(document).on('change keypress paste focus textInput input', '#god_phrase', function() {
-				if (!ui_data.isArena && $(this).val() && !(ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('after_voice') && ui_timeout_bar.elem.width())) {
+				if (ui_data.location == "field" && $(this).val() && !(ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('after_voice') && ui_timeout_bar.elem.width())) {
 					$('#voice_submit').removeAttr('disabled');
-				} else if (!ui_data.isArena && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty')) {
+				} else if (ui_data.location == "field" && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty')) {
 					$('#voice_submit').attr('disabled', 'disabled');
 				}
 			});
-			if (!ui_data.isArena) {
+			if (ui_data.location == "field") {
 				$('#diary .d_msg').addClass('parsed');	
 			}
 			
-			if (!ui_data.isArena) {
+			if (ui_data.location == "field") {
 				ui_utils.addSayPhraseAfterLabel($('#news'), 'Противник', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
 			}
 			this.appendVoiceLinks();
-			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.isArena ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');
+			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.location != "field" ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');
 			this.shovelPic();
 			this.checkButtonsVisibility();
 		},	
@@ -69,7 +69,7 @@ var VoiceImprover = {
 				$('.voice_generator,.inspect_button').show();
 				if (LootImprover.trophyList.length) 
 					$('#merge_button').show();
-				if (!ui_data.isArena){
+				if (ui_data.location == "field"){
 					if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || $('#news .line')[0].style.display != 'none') 
 						$('#hk_distance .voice_generator').hide();
 					if ($('#control .p_val').width() == $('#control .p_bar').width() || $('#news .line')[0].style.display != 'none') $('#control .voice_generator')[0].style.display = 'none';
@@ -91,7 +91,7 @@ var VoiceImprover = {
 			if (!ui_utils.isAlreadyImproved($box)) {
 				$('.gp_label').addClass('l_capt');
 				$('.gp_val').addClass('l_val');
-				if (ui_data.isMap){
+				if (ui_data.location == "dungeon"){
 					var isContradictions = $('#map')[0].textContent.match('Противоречия');
 					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'Восток', (isContradictions ? 'walk_w' : 'walk_e'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Восток');
 					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'Запад', (isContradictions ? 'walk_e' : 'walk_w'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Запад');
@@ -99,7 +99,7 @@ var VoiceImprover = {
 					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'Север', (isContradictions ? 'walk_n' : 'walk_s'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Север');
 					if ($('#map')[0].textContent.match('Бессилия'))
 						$('#actions').hide();
-				} else if (ui_data.isArena) {
+				} else if (ui_data.location != "field") {
 					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'молись', 'pray', 'Попросить ' + ui_data.char_sex[0] + ' вознести молитву для пополнения праны');
 					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
 					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
@@ -116,7 +116,7 @@ var VoiceImprover = {
 						ui_utils.addSayPhraseAfterLabel($box, 'Столбов от столицы', $('#main_wrapper.page_wrapper_5c').length ? '回' : 'дом', 'town', 'Наставить ' + ui_data.char_sex[0] + ' на путь в ближайший город');
 				}
 				//hide_charge_button
-				if (ui_data.isArena)
+				if (ui_data.location != "field")
 					$('#m_control .hch_link')[0].style.visibility = ui_storage.get('Option:hideChargeButton') ? 'hidden' : '';
 				else
 					$('#control .hch_link')[0].style.visibility = ui_storage.get('Option:hideChargeButton') ? 'hidden' : '';
@@ -124,7 +124,7 @@ var VoiceImprover = {
 		},
 		
 		startBarIfMessage: function() {
-			if (ui_data.isArena) 
+			if (ui_data.location != "field") 
 				return;
 			var newMessagesCount = $('#diary .d_msg:not(.parsed)').length;
 			if (newMessagesCount) {
