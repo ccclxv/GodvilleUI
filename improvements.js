@@ -1,12 +1,11 @@
 
 // надо еще сделать проверку, чтобы все время не заменять
 var ButtonRelocator = {
+	moduleProperties: {"locations": "field"},
 	create: function(){
 		this.nodeInserted();
 	},	
 	nodeInserted: function() {
-		if (ui_data.isArena) 
-			return;
 		
 		var controlWraper = null;
 		var targets = {"pantheons":"#pantheons_content", "invites":"#invite_friend", "inventory":"#inv_block_content"};
@@ -45,15 +44,15 @@ var ButtonRelocator = {
 };
 
 var EquipmentImprover = {
+	moduleProperties: {"locations": "field"},	
 	create: function(){
 		this.nodeInserted();
 	},		
 	nodeInserted: function() {
-		if (ui_data.isArena) return;
 		// Save stats
 		var seq = 0;
 		for (var i = 1; i < 8; i++) {
-			seq += parseInt(ui_stats.get('Equip' + i));
+			seq += parseInt(ui_storage.get('Stats:Equip' + i));
 		}
 		
 		if (!ui_utils.isAlreadyImproved($('#equipment'))){
@@ -90,11 +89,11 @@ var ChatImprover = {
 };
 
 var PetImprover = {
+	moduleProperties: {"locations": "field"},
 	create: function() {
 		this.nodeInserted();
 	},
 	nodeInserted: function() {
-		if (ui_data.isArena) return;
 		if (ui_utils.findLabel($('#pet'), 'Статус')[0].style.display!='none'){
 			if (!ui_utils.isAlreadyImproved($('#pet'))){
 				$('#pet .block_title').after($('<div id="pet_badge" class="fr_new_badge gc_new_badge gu_new_badge_pos" style="display: block;">0</div>'));
