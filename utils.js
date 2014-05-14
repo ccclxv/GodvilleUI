@@ -2,7 +2,6 @@
 //		UTILS
 // ------------------------
 var ui_utils = {
-	monstersOfTheDay: '',
 	isDeveloper: function () {
 		return ui_data.developers.indexOf(ui_data.god_name) >= 0;
 	},
@@ -68,6 +67,56 @@ var ui_storage = {
 	getOld: function(id) {
 		return this._old[id];
 	},
+	/*
+	 * Эта функция сохраняет указанные элементы DOM страницы superhero.
+	 * пример
+	params = {
+		'label': { 
+			'#id_блока': {				
+				'внутренний_id_значения': ['Текст, после которого идет значение',
+				 парсер(gold_parser/parseInt/parseFloat)],
+			},
+		},
+		'progress': {		
+			'внутренний_id_значения': 'селектор',
+		},
+		'value': {
+			'внутренний_id_значения': 'значение'
+		} 
+	}
+	 */
+	saveElements: function(params) {
+		for (var type in params) {
+			if (type == 'label') {
+				for (var container in params[type]) {
+					var a = params[type][container];
+					var $container = $(container);
+					for (var id in a) {
+						parser = a[id][1] || parseInt;
+						var $label = ui_utils.findLabel($container, a[id][0]);
+						var $field = $label.siblings('.l_val');
+						var value = parser($field.text());
+						if (id == 'Brick' || id == 'Wood') return this.set(id, Math.floor(value*10 + 0.5))
+						else return this.set(id, value);
+					}
+				}
+			}
+			if (type == 'progress') {
+				for (var id in params[type]) {
+					if ($(params[type][id]).length > 0) {
+						//this.setFromProgressBar(id, $(params[type][id]));
+						var value =  $(params[type][id]).attr('title').replace(/[^0-9]/g, '');
+						return this.set(id, value);
+					}
+				}
+			}
+			if (type == 'value') {
+				for (var id in params[type]) {
+					this.set(id, params[type][id]);
+				}
+			}
+		}
+	},
 	get_key: function(key) {
 		return "GM_" + ui_data.god_name + ':' + key;
 	},
@@ -84,21 +133,6 @@ var ui_storage = {
 		if (val == 'true') return true;
 		if (val == 'false') return false;
 		return val;
-	},
-// gets diff with a value
-	diff: function(id, value) {
-		var diff = null;
-		var old = this.get(id);
-		if (old != null) {
-			diff = value - old;
-		}
-		return diff;
-	},
-// stores value and gets diff with old
-	set_with_diff: function(id, value) {
-		var diff = this.diff(id, value);
-		this.set(id, value);
-		return diff;
 	},
 // dumps all values related to current god_name
 	dump: function(selector) {
@@ -162,84 +196,25 @@ var ui_storage = {
 	}
 };
 
-// ------------------------
-// Stats storage
-// ------------------------
-var ui_stats = {
-	get: function(key) {
-		return ui_storage.get('Stats:' + key);
-	},
-	
-	set: function(key, value) {
-		return ui_storage.set('Stats:' + key, value);
-	},
-	
-	setFromProgressBar: function(id, $elem) {	
-		var value = $elem.attr('title').replace(/[^0-9]/g, '');
-		return this.set(id, value);
-	},
-	
-	setFromLabelCounter: function(id, $container, label, parser) {
-		parser = parser || parseInt;
-		var $label = ui_utils.findLabel($container, label);
-		var $field = $label.siblings('.l_val');
-		var value = parser($field.text());
-		if (id == 'Brick' || id == 'Wood') return this.set(id, Math.floor(value*10 + 0.5))
-		else return this.set(id, value);
-	},
-	
-	/*
-	 * Эта функция сохраняет указанные элементы DOM страницы superhero.
-	 * пример
-	params = {
-		'label': { 
-			'#id_блока': {				
-				'внутренний_id_значения': ['Текст, после которого идет значение',
-				 парсер(gold_parser/parseInt/parseFloat)],
-			},
-		},
-		'progress': {		
-			'внутренний_id_значения': 'селектор',
-		},
-		'value': {
-			'внутренний_id_значения': 'значение'
-		} 
-	}
-	 */
-	saveElements: function(params) {
-		for (var type in params) {
-			if (type == 'label') {
-				for (var container in params[type]) {
-					var a = params[type][container];
-					var $container = $(container);
-					for (var id in a) {
-						this.setFromLabelCounter(id, $container, a[id][0], a[id][1]);
-					}
-				}
-			}
-			if (type == 'progress') {
-				for (var id in params[type]) {
-					this.setFromProgressBar(id, $(params[type][id]));
-				}
-			}
-			if (type == 'value') {
-				for (var id in params[type]) {
-					this.set(id, params[type][id]);
-				}
-			}
-		}
-	}
-};
-
 var ui_data = {
+		monstersOfTheDay: '',
 		currentVersion: '0.4.31.0',
 		developers: ['Neniu', 'Ryoko', 'Опытный Кролик', 'Бэдлак', 'Ui Developer', 'Шоп'],
 	// base variables initialization
 		init: function() {
+			if ($('#m_info').length == 0) {
+				this.location = "field";
+			} else if ($('#map .dml').length > 0) {
+				this.location = "dungeon";
+			} else if ($('#o_info .line').length > 0) {
+				this.location = "boss";
+			} else {
+				this.location = "arena";
+			}
+							
 			this.isArena = ($('#m_info').length > 0);
-			this.isBoss = ($('#o_info .line').length > 0);
 			this.isMap = ($('#map .dml').length > 0);
-			if (this.isArena) {
+			if (this.location != "field") {
 				this.god_name = $('#m_info .l_val')[0].textContent.replace('庙','').replace('畜','').replace('舟','');
 				this.char_name = $('#m_info .l_val')[1].textContent;
 			} else {
@@ -253,7 +228,7 @@ var ui_data = {
 			
 			$('<div>', {id:"motd"}).insertAfter($('#menu_bar')).hide();
 			$('#motd').load('news .game.clearfix:first a', function() {
-				ui_utils.monstersOfTheDay = $('#motd a').text();
+				ui_data.monstersOfTheDay = $('#motd a').text();
 				$('#motd').remove()
 			});
 		},
