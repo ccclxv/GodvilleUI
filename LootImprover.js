@@ -1,4 +1,5 @@
 var LootImprover = {
+	moduleProperties: {"locations": "field"},	
 	hucksterNews: '',
 	create: function(){
 		this.nodeInserted();
@@ -25,7 +26,6 @@ var LootImprover = {
 			});
 	},
 	nodeInserted: function() {
-		if (ui_data.isArena) return;
 		if (ui_storage.get('Stats:Inv') != ui_storage.getOld('Stats:Inv') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length){
 			setTimeout(function() {
 				$('#inventory li:hidden').remove();
@@ -103,7 +103,7 @@ var LootImprover = {
 			ui_informer.update('to arena box', to_arena_box);	
 		}
 		
-		if (!ui_data.isArena && ui_storage.get('Option:forbiddenInformers') && ui_storage.get('Option:forbiddenInformers').match('SMELT_TIME')) {
+		if (ui_data.location == "field" && ui_storage.get('Option:forbiddenInformers') && ui_storage.get('Option:forbiddenInformers').match('SMELT_TIME')) {
 			if (ui_storage.get('Stats:Prana') == 100 &&
 				$('#hk_distance .l_capt').text() == 'Город' &&
 				$('#hk_health .p_val').width() == $('#hk_health .p_bar').width() &&
