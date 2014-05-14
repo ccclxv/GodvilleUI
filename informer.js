@@ -24,7 +24,7 @@ var ui_informer = {
 	},
 	// устанавливает или удаляет флаг
 	update: function(flag, value) {
-		if (value && (flag == 'pvp' || !ui_data.isArena) && !(ui_storage.get('Option:forbiddenInformers') &&
+		if (value && (flag == 'pvp' || ui_data.location == "field") && !(ui_storage.get('Option:forbiddenInformers') &&
 			ui_storage.get('Option:forbiddenInformers').match(flag.replace(/= /g, '').replace(/> /g, '').replace(/ /g, '_')))) {
 			if (!(flag in this.flags)) {
 				this.flags[flag] = true;
