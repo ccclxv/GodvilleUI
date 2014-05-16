@@ -21,7 +21,6 @@ contentLoad: function(event) {
 			loader.createScript(doc, 'chrome://godvilleui/content/informer.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/words.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/logger.js');
-			loader.createScript(doc, 'chrome://godvilleui/content/timeout_bar.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/about.js');
 			
 		}
