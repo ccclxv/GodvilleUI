@@ -9,6 +9,9 @@ var ui_menu_bar = {
 	append: function($append) {
 		this.content.append($append);
 	},
+	isDeveloper: function () {
+		return ui_data.developers.indexOf(ui_data.god_name) >= 0;
+	},
 // toggles ui dialog	
 	toggle: function(visible) {
 		ui_storage.set('uiMenuVisible', !ui_storage.get('uiMenuVisible'));
@@ -44,7 +47,7 @@ var ui_menu_bar = {
 						'<a href="skype:angly_cat">скайп</a>,' + 
 						' богу <a href="http://godville.net/gods/Бэдлак" title="Откроется в новом окне" target="about:blank">Бэдлак</a>' + 
 						' или в <a href="https://godville.net/forums/show_topic/2812" title="Откроется в новой вкладке" target="about:blank">данную тему на форуме</a>.</div>');
-		if (ui_utils.isDeveloper()) {
+		if (this.isDeveloper()) {
 			this.append($('<span>dump: </span>'));
 			this.append(this.getDumpButton('all'));
 			this.append($('<span>, </span>'));
@@ -53,8 +56,7 @@ var ui_menu_bar = {
 			this.append(this.getDumpButton('stats', 'Stats'));
 			this.append($('<span>, </span>'));
 			this.append(this.getDumpButton('logger', 'Logger'));
-		} else this.append('<br>')
-		ui_data.checkLastVersion();
+		} else this.append('<br>');
 		$('.hint_bar_close', this.bar).append(this.getToggleButton('закрыть'));
 		$('#menu_bar').after(this.bar);
 		$('#menu_bar ul').append($('<li> | </li>')).append(this.getToggleButton('<strong>ui</strong>'));
