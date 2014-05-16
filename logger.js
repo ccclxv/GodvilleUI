@@ -8,8 +8,6 @@
 // ui_logger.needSepratorHere -- перед первой же следующей записью вставится разделитель
 // 
 
-// !requires ui_data.isArena ui_data.isMap ui_storage.set_with_diff
-
 
 var Logger = {
 	need_separator : false,
@@ -65,7 +63,7 @@ var Logger = {
 		this.need_separator = true;
 	},
 	stats: 	{	
-		// ID      label     decription   css class  
+		// ID      label     decription   css_class  
 		'Map_HP': ['hp', 'Здоровье героя', 'hp'],
 		'Map_Inv': ['inv', 'Инвентарь', 'inv'],
 		'Map_Gold': ['gld', 'Золото', 'gold'],
