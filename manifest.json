@@ -13,7 +13,7 @@
       "Monitor.js",
       "InterfaceImprover.js",      
       "informer.js",
-      "words.js", "about.js", "timeout_bar.js","constants.js"],
+      "words.js", "about.js", "timeout_bar.js"],
       "matches": [ "http://godville.net/superhero*", "https://godville.net/superhero*" ]
    }, {
       "js": [ "jquery-2.1.0.min.js", "phrases.js", "gm_func.js", "options-page.js", "options.js" ],
