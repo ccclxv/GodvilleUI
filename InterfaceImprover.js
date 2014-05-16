@@ -10,6 +10,9 @@ var InterfaceImprover = {
 		});
 		this.nodeInserted();
 	},		
+	_escapeHTML: function(str) {
+		return str.replace(/[&"<>]/g, function (m) {({ "&": "&amp;", '"': "&quot;", "<": "&lt;", ">": "&gt;" })[m]});
+	},
 	nodeInserted : function(){
 		if (ui_storage.get('Option:useBackground') == 'cloud') {
 			if (!$('#fader.cloud').length) {
@@ -30,7 +33,7 @@ var InterfaceImprover = {
 			}
 			if (hash != this.hash) {
 				this.hash = hash;
-				$('body').css('background-image', 'url(' + ui_utils.escapeHTML(str) + ')');
+				$('body').css('background-image', 'url(' + this._escapeHTML(str) + ')');
 				$('#fader').hide().removeClass('cloud').addClass('custom');
 			}
 		} else if ($('#fader.cloud, #fader.custom').length) {

@@ -16,9 +16,24 @@ var ui_words = {
 			}
 		}
 	},
+	// Случайный индекс в массиве
+	_getRandomIndex: function(arr) {
+		return Math.floor(Math.random()*arr.length);
+	},
+// Случайный элемент массива
+	_getRandomItem: function(arr) {
+		return arr[ui_words._getRandomIndex(arr)];
+	},
+// Вытаскивает случайный элемент из массива
+	_popRandomItem: function(arr) {
+		var ind = ui_words._getRandomIndex(arr);
+		var res = arr[ind];
+		arr.splice(ind, 1);
+		return res;
+	},
 // single phrase gen
 	randomPhrase: function(sect) {
-		return ui_utils.getRandomItem(this.base['phrases'][sect]);
+		return this._getRandomItem(this.base['phrases'][sect]);
 	},
 // main phrase constructor
 	longPhrase: function(sect, item_name, len) {
@@ -93,7 +108,7 @@ var ui_words = {
 
 	_addHeil: function(text) {
 		if (!ui_storage.get('Option:useHeil')) return text;
-		return ui_utils.getRandomItem(this.base['phrases']['heil']) + ', ' + this._changeFirstLetter(text);
+		return this._getRandomItem(this.base['phrases']['heil']) + ', ' + this._changeFirstLetter(text);
 	},
 
 // Private (или типа того)
