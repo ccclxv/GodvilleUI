@@ -47,13 +47,17 @@ var Dispatcher = {
 		var value = parser($(this).text());		
 		if (id == 'Brick' || id == 'Wood')
 			value = Math.floor(value*10 + 0.5);
+		
+		// Я хз зачем, но разрабы обнуляют gold перед изменением
+		if (id == "Gold" && $(this).text() == "") {
+			return;
+		}
 		Dispatcher.fire("changed", {"id": id, "value": value});
 	},
 	watchProgress: function(mutation) {
 		var id = $(mutation.target).attr("id");
 		var value = $(mutation.target).attr('title').replace(/[^0-9]/g, '');		
 		Dispatcher.fire("changed", {"id": id, "value": value});
-		console.log(id, value);
 	},	
 };
 var gold_parser = function(val) {
@@ -88,7 +92,7 @@ var watchElements= function(params) {
 				    || window.MozMutationObserver;
 					var observer = new MutationObserver(function(mutations) {  
 						    mutations.map(function(obj){
-						    	console.log(obj);
+						    	Dispatcher.watchProgress(obj);
 						    });
 						  });
 						 
@@ -105,13 +109,15 @@ var starter = setInterval(function() {
 	if ($('#m_info').length || $('#stats').length) {
 		var start = new Date();
 		clearInterval(starter);
-		ui_data.init();
+		
+		
+		ui_data.create();
 		ui_storage.clearStorage();
 		if ($('#ui_css').length == 0) {
 			GM_addGlobalStyleURL('godville-ui.css', 'ui_css');
 		}  // why here?
 		ui_words.init();
-		ui_timeout_bar.create();
+		ui_timeout_bar.create(); // надо сделать lazy init или прямо в voiceImprover
 		ui_informer.init();
 			
 		// Инициализируем диспетчер.
@@ -135,7 +141,19 @@ var starter = setInterval(function() {
 		Dispatcher.registerModule(ui_menu_bar);
 		Dispatcher.registerModule(PetImprover);
 		Dispatcher.registerModule(InterfaceImprover);
-		
+		/*
+		params = {
+				'label': { 
+					'#id_блока': {				
+						'внутренний_id_значения': ['Текст, после которого идет значение',
+						 парсер(gold_parser/parseInt/parseFloat)],
+					},
+				},
+				'progress': {		
+					'внутренний_id_значения': 'селектор',
+				},
+			}
+			 */
 		if (ui_data.location == "field") {
 			watchElements({
 				'label': {
@@ -159,7 +177,26 @@ var starter = setInterval(function() {
 					'Task': '#hk_quests_completed .p_bar'
 				},
 			});
-		}	
+		} else {
+			watchElements({
+				'label': {
+					'#m_info': {				
+						'Gold': ['Золота', gold_parser],
+						'Inv': ['Инвентарь', parseInt],
+						'HP': ['Здоровье', parseInt],
+						'Level': ['Уровень', parseInt],
+						'Death': ['Смертей', parseInt],
+					},
+					'#cntrl':{
+						'Prana': ['Прана', parseInt],
+					}
+				},
+				'progress': {		
+					'Exp': '#hk_level .p_bar',
+					'Task': '#hk_quests_completed .p_bar'
+				},
+			});			
+		}		
 		var finish = new Date();		
 		GM_log('Godville UI+ initialized in ' + (finish.getTime() - start.getTime()) + ' msec.');
 		
