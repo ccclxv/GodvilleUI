@@ -3,7 +3,7 @@ var DungeonImprover = {
 		this.nodeInserted();
 	},				
 	nodeInserted: function() {
-		if (ui_data.isMap){
+		if (ui_data.location == "dungeon"){
 			var $box = $('#cntrl .voice_generator');
 			var $boxML = $('#map .dml');
 			var $boxMC = $('#map .dmc');
