@@ -8,72 +8,7 @@ var Monitor = {
 			ui_informer.update('dead', ui_storage.get('Stats:HP') == 0);			
 		},
 		nodeInserted: function() {	
-		/*	//	Парсер строки с золотом
-			var gold_parser = function(val) {
-				return parseInt(val.replace(/[^0-9]/g, '')) || 0;
-			};
-			
-			if (ui_data.location != "field") {
-				ui_storage.saveElements({
-					'label': {
-						'#m_info': {
-							'Hero_HP': ['Здоровье', parseInt],
-							'Hero_Gold': ['Золота', gold_parser],
-							'Hero_Inv': ['Инвентарь', parseInt]
-						}
-					},
-					'value': {
-						'Map_Battery': parseFloat($('#m_control .acc_val').text()),
-						'Map_Alls_HP': this.GroupHP(true)
-					}
-				});
-			if (ui_data.location == "arena" || ui_data.location == "boss") {
-				ui_storage.saveElements({
-					'label': {
-						'#o_info': {
-							'Enemy_Gold': ['Золота', gold_parser],
-							'Enemy_Inv': ['Инвентарь', parseInt]
-						}
-					},
-					'value': {
-						'Enemy_HP': this.GroupHP(false)				
-					}
-				});
-			}
-			}
-			if (ui_data.location == "field") {
-				for (var i = 0; i < 7; i++) {
-					ui_storage.set('Equip' + (i+1), parseInt($('#eq_' + i + ' .eq_level').text()) || 0);
-				}
-			}
-			ui_storage.saveElements({
-				'label': {
-					'#stats': {				
-						'Gold': ['Золота', gold_parser],
-						'Inv': ['Инвентарь', parseInt],
-						'HP': ['Здоровье', parseInt],
-						'Level': ['Уровень', parseInt],
-						'Monster': ['Убито монстров', parseInt],
-						'Death': ['Смертей', parseInt],
-						'Brick': ['Кирпичей для храма', parseFloat],
-						'Wood': ['Дерева для ковчега', parseFloat],
-						'Retirement': ['Сбережения', gold_parser]
-					},
-					'#cntrl':{
-						'Prana': ['Прана', parseInt],
-					}
-				},
-				'progress': {		
-					'Exp': '#hk_level .p_bar',
-					'Task': '#hk_quests_completed .p_bar'
-				},
-				'value': {
-					'Battery': parseFloat ($('#control .acc_val').text())
-				}
-			});	*/
-			
-			this.updateInformers();
-			
+			this.updateInformers();	
 		},
 		updateInformers: function() {
 			// наверное проверка на то дерется ли герой с монстром
