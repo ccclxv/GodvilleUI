@@ -2,27 +2,25 @@
 //		UTILS
 // ------------------------
 var ui_utils = {
-	isDeveloper: function () {
-		return ui_data.developers.indexOf(ui_data.god_name) >= 0;
-	},
+	// *SHARED* finds a label with given name 
+	findLabel: function($base_elem, label_name) {
+		return $('.l_capt', $base_elem).filter(function(index) {
+			return $(this).text() == label_name;
+		});
+	},	
+	// !!!!!!!!!!!!!! ВСЕ, ЧТО НИЖЕ, ОТНОСИТСЯ К VOICE IMPROVER !!!!!!!!!
 // base phrase say algorythm
 	sayToHero: function(phrase) {
 		$('#god_phrase').val(phrase).change();
 	},
-// checks if $elem already improved
+// *SHARED* checks if $elem already improved
 	isAlreadyImproved: function($elem) {
 		if ($elem.hasClass('improved')) return true;
 		$elem.addClass('improved');
 		return false;
 	},
-// finds a label with given name
-	findLabel: function($base_elem, label_name) {
-		return $('.l_capt', $base_elem).filter(function(index) {
-			return $(this).text() == label_name;
-		});
-	},
 // finds a label with given name and appends given elem after it
-	addAfterLabel: function($base_elem, label_name, $elem) {
+	_addAfterLabel: function($base_elem, label_name, $elem) {
 		ui_utils.findLabel($base_elem, label_name).after($elem.addClass('voice_generator'));
 	},
 // generic voice generator
@@ -36,26 +34,7 @@ var ui_utils = {
 // Хелпер объединяет addAfterLabel и getGenSayButton
 // + берет фразы из words['phrases']
 	addSayPhraseAfterLabel: function($base_elem, label_name, btn_name, section, hint) {
-		ui_utils.addAfterLabel($base_elem, label_name, ui_utils.getGenSayButton(btn_name, section, hint));
-	},
-// Случайный индекс в массиве
-	getRandomIndex: function(arr) {
-		return Math.floor(Math.random()*arr.length);
-	},
-// Случайный элемент массива
-	getRandomItem: function(arr) {
-		return arr[ui_utils.getRandomIndex(arr)];
-	},
-// Вытаскивает случайный элемент из массива
-	popRandomItem: function(arr) {
-		var ind = ui_utils.getRandomIndex(arr);
-		var res = arr[ind];
-		arr.splice(ind, 1);
-		return res;
-	},
-// Escapes HTML symbols
-	escapeHTML: function(str) {
-		return str.replace(/[&"<>]/g, function (m) {({ "&": "&amp;", '"': "&quot;", "<": "&lt;", ">": "&gt;" })[m]});
+		ui_utils._addAfterLabel($base_elem, label_name, ui_utils.getGenSayButton(btn_name, section, hint));
 	}
 };
 
@@ -66,56 +45,6 @@ var ui_storage = {
 	_old: {},
 	getOld: function(id) {
 		return this._old[id];
-	},
-	/*
-	 * Эта функция сохраняет указанные элементы DOM страницы superhero.
-	 * пример
-	params = {
-		'label': { 
-			'#id_блока': {				
-				'внутренний_id_значения': ['Текст, после которого идет значение',
-				 парсер(gold_parser/parseInt/parseFloat)],
-			},
-		},
-		'progress': {		
-			'внутренний_id_значения': 'селектор',
-		},
-		'value': {
-			'внутренний_id_значения': 'значение'
-		} 
-	}
-	 */
-	saveElements: function(params) {
-		for (var type in params) {
-			if (type == 'label') {
-				for (var container in params[type]) {
-					var a = params[type][container];
-					var $container = $(container);
-					for (var id in a) {
-						parser = a[id][1] || parseInt;
-						var $label = ui_utils.findLabel($container, a[id][0]);
-						var $field = $label.siblings('.l_val');
-						var value = parser($field.text());
-						if (id == 'Brick' || id == 'Wood') return this.set(id, Math.floor(value*10 + 0.5))
-						else return this.set(id, value);
-					}
-				}
-			}
-			if (type == 'progress') {
-				for (var id in params[type]) {
-					if ($(params[type][id]).length > 0) {
-						//this.setFromProgressBar(id, $(params[type][id]));
-						var value =  $(params[type][id]).attr('title').replace(/[^0-9]/g, '');
-						return this.set(id, value);
-					}
-				}
-			}
-			if (type == 'value') {
-				for (var id in params[type]) {
-					this.set(id, params[type][id]);
-				}
-			}
-		}
 	},
 	get_key: function(key) {
 		return "GM_" + ui_data.god_name + ':' + key;
@@ -200,8 +129,9 @@ var ui_data = {
 		monstersOfTheDay: '',
 		currentVersion: '0.4.31.0',
 		developers: ['Neniu', 'Ryoko', 'Опытный Кролик', 'Бэдлак', 'Ui Developer', 'Шоп'],
-	// base variables initialization
-		init: function() {
+		location: null,
+		create: function() {
+			// Режим страницы героя
 			if ($('#m_info').length == 0) {
 				this.location = "field";
 			} else if ($('#map .dml').length > 0) {
@@ -211,9 +141,7 @@ var ui_data = {
 			} else {
 				this.location = "arena";
 			}
-							
-			this.isArena = ($('#m_info').length > 0);
-			this.isMap = ($('#map .dml').length > 0);
+			// Имя бога и героя				
 			if (this.location != "field") {
 				this.god_name = $('#m_info .l_val')[0].textContent.replace('庙','').replace('畜','').replace('舟','');
 				this.char_name = $('#m_info .l_val')[1].textContent;
@@ -222,75 +150,17 @@ var ui_data = {
 				this.god_name = decodeURI($user.href.replace(/http(s)?:\/\/godville\.net\/gods\//, ''));
 				this.char_name = $user.textContent;
 			}
+			// Пол героя (используется в настройках, поэтому в storage)
 			ui_storage.set('sex', document.title.match('героиня') ? 'female' : 'male');
 			this.char_sex = document.title.match('героиня') ? ['героиню', 'героине'] : ['героя', 'герою'];
+			// ?????
 			ui_storage.set('ui_s', '');
 			
+			// Монстр дня
 			$('<div>', {id:"motd"}).insertAfter($('#menu_bar')).hide();
 			$('#motd').load('news .game.clearfix:first a', function() {
 				ui_data.monstersOfTheDay = $('#motd a').text();
 				$('#motd').remove()
-			});
-		},
-
-	// gets add-on's page and check it's version
-		checkLastVersion: function() {
-			$.get('forums/show_topic/2812', function(response) {
-				
-				if (ui_utils.isDeveloper() || ui_storage.get('Option:forbiddenInformers') != null && !ui_storage.get('Option:forbiddenInformers').match('new_posts')) {
-					var posts = parseInt(response.match(/Сообщений\: \d+/)[0].match(/\d+/));
-					if (posts > ui_storage.get('posts')) {
-						ui_storage.set('posts', posts);
-						ui_informer.update('new posts', false);
-						ui_informer.update('new posts', true);
-					}
-				}	
-				var data, timer = 0;
-				this.lastVersion = response.match(/Текущая версия[^<]*<[^<]*<[^<]*/)[0].replace(/[^>]*>[^>]*>/, '');
-				var r = new RegExp('<[^>]*>Ссылка на скачивание Godville UI\\+ для ' + GM_browser);
-				var link = response.match(r)[0].replace(/^([^\"]*\")/, '').replace(/(".*)$/, '');
-				if (this.lastVersion == '') {
-					data = '<span>Не удалось узнать номер последней версии. Попробуйте обновить страницу.</span>';
-				} else if (this.lastVersion > ui_data.currentVersion) {
-					data = 'Найдена новая версия аддона (<b>' + ui_utils.escapeHTML(this.lastVersion) + '</b>). Обновление доступно по <a href="' +
-					link + '" title="Откроется в новой вкладке" target="about:blank">этой ссылке</a>.';
-					$('<div id="version_check" class="hint_bar" style="position: fixed; top: 40px; left: 0; right: 0; z-index: 301; display: none;"><div class="hint_bar_capt"><b>Godville UI+ version check</b></div><div class="hint_bar_content" style="padding: 0.5em;"></div></div>').insertAfter($('#menu_bar'));
-					$('#version_check').css('box-shadow', '2px 2px 15px #' + ((localStorage.getItem('ui_s') == 'th_nightly') ? 'ffffff' : '000000'));
-					$('#version_check .hint_bar_content').append(data);
-					$('#version_check').fadeToggle(1500, function() {
-						setTimeout(function() {
-							$('#version_check').fadeToggle(1500, function() {
-								$('#version_check').remove();
-							});
-						}, 5000);
-					});
-					timer = 8000;
-				} else if (this.lastVersion < ui_data.currentVersion) {
-					var phrases = ['И пусть весь мир подождет',
-									 'На шаг впереди',
-									 'Пробуешь все новенькое',
-									 'Никому не говори об этом',
-									 'Салют ловцам багов',
-									 'Ты избранный',
-									 'Глюки, глюки повсюду',
-									 'Это не баг, а фича',
-									 'Откуда ты взял эту',
-									 'H̴͜͟҉̸͔̠͚̖̟̾ͦ́̓ę͈̹͈̓̑̿͗ͥͯͩ͝͏͘͢ ̶͔̠ͦ͘̕͜c͇̠̮̃҉̵̕ö͚͖͙̺̘̖́͑ͪ̅͑̉̕҉̷m̨̟̣̺̓ͤͤe̦̭̳̪̠͔̺̕͞͏̧͡s͈̝͗͋̏͆̄̈́͝͏҉'
-									]
-					var mark = ['.', '.', '?', '...', '!', '.', '!', '.', '?', '.']
-					var random = Math.floor(Math.random()*(9 + (GM_browser == 'Firefox')));
-					data = 'Публичная версия: <b>' + ui_utils.escapeHTML(this.lastVersion) + '</b>. ' + phrases[random] + ', ' + ui_data.god_name + mark[random];
-				} else {
-					data = 'У вас установлена последняя версия.';
-				}	
-				setTimeout(function() {
-					ui_informer.update('new version', false);
-					ui_informer.update('new version', timer != 0); //timer == 0 as false, timer != 0 as true
-					ui_menu_bar.append('<div>' + data + '</div>');
-				}, timer);
-			})
-			.error(function() {
-				ui_menu_bar.append('<span>Не удалось узнать номер последней версии. Попробуйте обновить страницу.</span>');
 			});
 		}
 	};
