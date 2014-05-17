@@ -52,11 +52,13 @@ var Dispatcher = {
 		if (id == "Gold" && $(this).text() == "") {
 			return;
 		}
+		ui_storage.set("Stats:" + id, value);
 		Dispatcher.fire("changed", {"id": id, "value": value});
 	},
 	watchProgress: function(mutation) {
 		var id = $(mutation.target).attr("id");
-		var value = $(mutation.target).attr('title').replace(/[^0-9]/g, '');		
+		var value = $(mutation.target).attr('title').replace(/[^0-9]/g, '');
+		ui_storage.set("Stats:" + id, value);
 		Dispatcher.fire("changed", {"id": id, "value": value});
 	},	
 };

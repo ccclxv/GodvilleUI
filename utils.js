@@ -42,16 +42,11 @@ var ui_utils = {
 //		STORAGE
 // ------------------------
 var ui_storage = {
-	_old: {},
-	getOld: function(id) {
-		return this._old[id];
-	},
 	get_key: function(key) {
 		return "GM_" + ui_data.god_name + ':' + key;
 	},
 // stores a value
 	set: function(id, value) {
-		this._old[id] = this.get(id);
 		localStorage.setItem(this.get_key(id), value);
 		return value;
 	},

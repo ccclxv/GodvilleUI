@@ -10,17 +10,24 @@
 
 
 var Logger = {
-	need_separator : false,
-	elem : null,
-	create : function(){
+	need_separator: false,
+	elem: null,
+	_old: {},
+	create: function(){
 		this.elem = $('<ul id="stats_log" />');
 		$('#menu_bar').after(this.elem);
 		this.elem.append('<div id="fader" style="position: absolute; left: 0; float: left; width: 50px; height: 100%;" />');
 	},
-	changed: function(data) {
-		var id = data.id;
-		var el = this.stats[id];
-		this.watchStatsValue(id, el[0], el[1], (el.length>2)? el[2]:id.toLowerCase());
+	
+	changed: function(parameter) {
+		var id = parameter.id;
+		if (this._old[id] == undefined)
+			this._old[id] = ui_storage.get("Stats:" + id);
+		var diff = parameter.value - this._old[id];
+		this._old[id] = parameter.value;
+		if (diff) {
+			this._writeLogItem(id, diff);
+		}
 	},
 	
 	// Appends element to logger
@@ -45,18 +52,19 @@ var Logger = {
 		
 	},
 
-	watchStatsValue : function(id, name, descr, css) {
-		var diff = ui_storage.get('Stats:' + id) - ui_storage.getOld('Stats:' + id);
-		if (diff) {
-			// Если нужно, то преобразовываем в число с одним знаком после запятой
-			if (parseInt(diff) != diff) 
-				diff = diff.toFixed(1);
-			// Добавление плюсика
-			var s = (diff < 0) 
-					? ("exp".match(name) ? '→' + ui_storage.get("Stats:" + id) : diff) 
-					: '+' + diff;
-			this.appendStr(id, css, name + s, descr);
-		}
+	_writeLogItem : function(id, diff) {
+		var el = this.stats[id];
+		var name = el[0];
+		var descr = el[1];
+		var css = (el.length>2)? el[2]:id.toLowerCase();
+
+		// Если нужно, то преобразовываем в число с одним знаком после запятой
+		if (parseInt(diff) != diff) 
+			diff = diff.toFixed(1);
+		// Добавление плюсика
+		var s = (diff > 0) ? '+' + diff : diff;  
+				//? ("exp".match(name) ? '→' + ui_storage.get("Stats:" + id) : diff)
+		this.appendStr(id, css, name + s, descr);
 	},
 	
 	nodeInserted : function() {

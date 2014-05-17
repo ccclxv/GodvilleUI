@@ -1,6 +1,7 @@
 var LootImprover = {
 	moduleProperties: {"locations": "field"},	
 	hucksterNews: '',
+	_nInvItems: 0,
 	create: function(){
 		this.nodeInserted();
 	},		
@@ -26,7 +27,9 @@ var LootImprover = {
 			});
 	},
 	nodeInserted: function() {
-		if (ui_storage.get('Stats:Inv') != ui_storage.getOld('Stats:Inv') || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length){
+		var nInvItemsCurrent = ui_storage.get('Stats:Inv');
+		if ( nInvItemsCurrent != this._nInvItems || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length){
+			this._nInvItems = nInvItemsCurrent;
 			setTimeout(function() {
 				$('#inventory li:hidden').remove();
 			}, 1000);
