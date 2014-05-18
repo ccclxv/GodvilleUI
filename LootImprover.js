@@ -9,7 +9,7 @@ var LootImprover = {
 	_createInspectButton: function(item_name) {
 		return $('<a class="inspect_button" style="margin-left:0.3em" title="Упросить ' + ui_data.char_sex[0] + ' потрясти ' + item_name + '">?</a>')
 			.click(function() {
-				ui_utils.sayToHero(ui_words.inspectPhrase(item_name));
+				VoiceImprover.sayToHero(ui_words.inspectPhrase(item_name));
 				return false;
 			});
 	},
@@ -22,7 +22,7 @@ var LootImprover = {
 				item_second = (LootImprover.trophyList[rand + 1] && LootImprover.trophyList[rand][0] == LootImprover.trophyList[rand + 1][0])
 							? LootImprover.trophyList[rand + 1]
 							: LootImprover.trophyList[rand - 1];
-				ui_utils.sayToHero(ui_words.mergePhrase(item_first + ' и ' + item_second));
+							VoiceImprover.sayToHero(ui_words.mergePhrase(item_first + ' и ' + item_second));
 				return false;
 			});
 	},

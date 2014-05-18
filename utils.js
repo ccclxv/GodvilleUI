@@ -8,33 +8,11 @@ var ui_utils = {
 			return $(this).text() == label_name;
 		});
 	},	
-	// !!!!!!!!!!!!!! ВСЕ, ЧТО НИЖЕ, ОТНОСИТСЯ К VOICE IMPROVER !!!!!!!!!
-// base phrase say algorythm
-	sayToHero: function(phrase) {
-		$('#god_phrase').val(phrase).change();
-	},
 // *SHARED* checks if $elem already improved
 	isAlreadyImproved: function($elem) {
 		if ($elem.hasClass('improved')) return true;
 		$elem.addClass('improved');
 		return false;
-	},
-// finds a label with given name and appends given elem after it
-	_addAfterLabel: function($base_elem, label_name, $elem) {
-		ui_utils.findLabel($base_elem, label_name).after($elem.addClass('voice_generator'));
-	},
-// generic voice generator
-	getGenSayButton: function(title, section, hint) {
-		return $('<a title="' + hint + '">' + title + '</a>').click(function() {
-					 ui_utils.sayToHero(ui_words.longPhrase(section));
-					 ui_words.currentPhrase = "";
-					 return false;
-				 });
-	},
-// Хелпер объединяет addAfterLabel и getGenSayButton
-// + берет фразы из words['phrases']
-	addSayPhraseAfterLabel: function($base_elem, label_name, btn_name, section, hint) {
-		ui_utils._addAfterLabel($base_elem, label_name, ui_utils.getGenSayButton(btn_name, section, hint));
 	}
 };
 

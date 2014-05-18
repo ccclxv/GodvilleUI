@@ -32,6 +32,22 @@ var ui_timeout_bar = {
 var VoiceImprover = {
 		voiceSubmitted: null,
 		Shovel: false,
+		sayToHero: function(phrase) {
+			$('#god_phrase').val(phrase).change();
+		},
+		_addAfterLabel: function($base_elem, label_name, $elem) {
+			ui_utils.findLabel($base_elem, label_name).after($elem.addClass('voice_generator'));
+		},
+		addSayPhraseAfterLabel: function($base_elem, label_name, btn_name, section, hint) {
+			VoiceImprover._addAfterLabel($base_elem, label_name, VoiceImprover.getGenSayButton(btn_name, section, hint));
+		},
+		getGenSayButton: function(title, section, hint) {
+			return $('<a title="' + hint + '">' + title + '</a>').click(function() {
+						 VoiceImprover.sayToHero(ui_words.longPhrase(section));
+						 ui_words.currentPhrase = "";
+						 return false;
+					 });
+		},
 		create: function(){
 			if (ui_data.location == "field" && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty'))
 				$('#voice_submit').attr('disabled', 'disabled');
@@ -47,7 +63,7 @@ var VoiceImprover = {
 			}
 			
 			if (ui_data.location == "field") {
-				ui_utils.addSayPhraseAfterLabel($('#news'), 'Противник', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
+				VoiceImprover.addSayPhraseAfterLabel($('#news'), 'Противник', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
 			}
 			this.appendVoiceLinks();
 			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.location != "field" ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');
@@ -124,27 +140,27 @@ var VoiceImprover = {
 				$('.gp_val').addClass('l_val');
 				if (ui_data.location == "dungeon"){
 					var isContradictions = $('#map')[0].textContent.match('Противоречия');
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'Восток', (isContradictions ? 'walk_w' : 'walk_e'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Восток');
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'Запад', (isContradictions ? 'walk_e' : 'walk_w'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Запад');
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'Юг', (isContradictions ? 'walk_s' : 'walk_n'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Юг');
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'Север', (isContradictions ? 'walk_n' : 'walk_s'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Север');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Восток', (isContradictions ? 'walk_w' : 'walk_e'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Восток');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Запад', (isContradictions ? 'walk_e' : 'walk_w'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Запад');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Юг', (isContradictions ? 'walk_s' : 'walk_n'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Юг');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Север', (isContradictions ? 'walk_n' : 'walk_s'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Север');
 					if ($('#map')[0].textContent.match('Бессилия'))
 						$('#actions').hide();
 				} else if (ui_data.location != "field") {
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'молись', 'pray', 'Попросить ' + ui_data.char_sex[0] + ' вознести молитву для пополнения праны');
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'молись', 'pray', 'Попросить ' + ui_data.char_sex[0] + ' вознести молитву для пополнения праны');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'бей', 'hit', 'Подсказать ' + ui_data.char_sex[1] + ' о возможности нанесения сильного удара вне очереди');
 				} else {
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'жертвуй', 'sacrifice', 'Послать ' + ui_data.char_sex[1] + ' требование кровавой или золотой жертвы для внушительного пополнения праны');
-					ui_utils.addSayPhraseAfterLabel($box, 'Прана', 'молись', 'pray', 'Попросить ' + ui_data.char_sex[0] + ' вознести молитву для пополнения праны');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'жертвуй', 'sacrifice', 'Послать ' + ui_data.char_sex[1] + ' требование кровавой или золотой жертвы для внушительного пополнения праны');
+					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'молись', 'pray', 'Попросить ' + ui_data.char_sex[0] + ' вознести молитву для пополнения праны');
 					$('#voice_submit').click(function () {VoiceImprover.voiceSubmitted = true;});
-					ui_utils.addSayPhraseAfterLabel($('#stats'), 'Уровень', 'учись', 'exp', 'Предложить ' + ui_data.char_sex[1] + ' получить порцию опыта');
-					ui_utils.addSayPhraseAfterLabel($('#stats'), 'Здоровье', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
-					ui_utils.addSayPhraseAfterLabel($('#stats'), 'Золота', 'копай', 'dig', 'Указать ' + ui_data.char_sex[1] + ' место для копания клада или босса');
-					ui_utils.addSayPhraseAfterLabel($('#stats'), 'Задание', 'отмени', 'cancel_task', 'Убедить ' + ui_data.char_sex[0] + ' отменить текущее задание');
-					ui_utils.addSayPhraseAfterLabel($('#stats'), 'Задание', 'делай', 'do_task', 'Открыть ' + ui_data.char_sex[1] + ' секрет более эффективного выполнения задания');
+					VoiceImprover.addSayPhraseAfterLabel($('#stats'), 'Уровень', 'учись', 'exp', 'Предложить ' + ui_data.char_sex[1] + ' получить порцию опыта');
+					VoiceImprover.addSayPhraseAfterLabel($('#stats'), 'Здоровье', 'лечись', 'heal', 'Посоветовать ' + ui_data.char_sex[1] + ' подлечиться подручными средствами');
+					VoiceImprover.addSayPhraseAfterLabel($('#stats'), 'Золота', 'копай', 'dig', 'Указать ' + ui_data.char_sex[1] + ' место для копания клада или босса');
+					VoiceImprover.addSayPhraseAfterLabel($('#stats'), 'Задание', 'отмени', 'cancel_task', 'Убедить ' + ui_data.char_sex[0] + ' отменить текущее задание');
+					VoiceImprover.addSayPhraseAfterLabel($('#stats'), 'Задание', 'делай', 'do_task', 'Открыть ' + ui_data.char_sex[1] + ' секрет более эффективного выполнения задания');
 					if (!$('#hk_distance .voice_generator').length)
-						ui_utils.addSayPhraseAfterLabel($box, 'Столбов от столицы', $('#main_wrapper.page_wrapper_5c').length ? '回' : 'дом', 'town', 'Наставить ' + ui_data.char_sex[0] + ' на путь в ближайший город');
+						VoiceImprover.addSayPhraseAfterLabel($box, 'Столбов от столицы', $('#main_wrapper.page_wrapper_5c').length ? '回' : 'дом', 'town', 'Наставить ' + ui_data.char_sex[0] + ' на путь в ближайший город');
 				}
 				//hide_charge_button
 				if (ui_data.location != "field")
