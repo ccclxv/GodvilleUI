@@ -1,4 +1,4 @@
-
+GVUI_PREFIX = "GVUI_";
 // Обработчик событий. Рассылает всем модулям уведомления.
 // Позже можно организовать приоритеты
 // потом можно отдельно на каждое событие делать массив (для оптимизации) 
@@ -61,6 +61,22 @@ var Dispatcher = {
 		ui_storage.set("Stats:" + id, value);
 		Dispatcher.fire("changed", {"id": id, "value": value});
 	},	
+	getId: function(element) {
+		var classes = element.classList;
+		for (var i = 0; i < classes.length; i++) {
+			if (classes[i].match(GVUI_PREFIX)){
+				return classes[i].replace(GVUI_PREFIX, "");
+			}
+		}
+		return null;
+	},
+	watchValue: function() {		
+		var id = Dispatcher.getId($(this)[0]);
+		var value = $(this).text();
+		ui_storage.set("Stats:" + id, value);
+		if (id)
+			Dispatcher.fire("changed", {"id": id, "value": value});		
+	},		
 };
 var gold_parser = function(val) {
 	return parseInt(val.replace(/[^0-9]/g, '')) || 0;
@@ -102,6 +118,15 @@ var watchElements= function(params) {
 				}
 			}
 		}
+		if (type == 'value') {
+			for (var id in params[type]) {
+				$obj = $(params[type][id]);
+				$obj.addClass(GVUI_PREFIX + id);
+				$obj.on("DOMSubtreeModified", Dispatcher.watchValue);	
+				// передает начальное значение					
+				$obj.trigger("DOMSubtreeModified");				
+			}
+		}		
 	}
 };
 
@@ -131,6 +156,16 @@ var starter = setInterval(function() {
 				setTimeout(function(){Dispatcher.fire("nodeInserted");},500);	
 			}
 		});		
+		
+		$(document).bind('DOMNodeInserted', function(e) {
+		    var $element = $(e.target);
+		    if ($element.hasClass("fr_msg_l")) {
+		    	Dispatcher.fire("chatMessageAdded", $element);
+		    }
+		    if ($element.hasClass("d_msg")) {
+		    	Dispatcher.fire("diaryMessageAdded", $element);
+		    }		    
+		});
 		
 		Dispatcher.registerModule(Monitor);
 		Dispatcher.registerModule(ButtonRelocator);
@@ -178,6 +213,15 @@ var starter = setInterval(function() {
 					'Exp': '#hk_level .p_bar',
 					'Task': '#hk_quests_completed .p_bar'
 				},
+				'value': {
+					'Equip1': '#eq_0 .eq_level',
+					'Equip2': '#eq_1 .eq_level',
+					'Equip3': '#eq_2 .eq_level',
+					'Equip4': '#eq_3 .eq_level',
+					'Equip5': '#eq_4 .eq_level',
+					'Equip6': '#eq_5 .eq_level',
+					'Equip7': '#eq_6 .eq_level'
+				}
 			});
 		} else {
 			watchElements({
