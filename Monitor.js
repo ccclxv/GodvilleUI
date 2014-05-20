@@ -9,18 +9,27 @@ var Monitor = {
 		nodeInserted: function() {	
 			this.updateInformers();	
 		},
+		
 		updateInformers: function() {
-			// наверное проверка на то дерется ли герой с монстром
+			var monsterWithCapabilities = false;
+			var monstersOfTheDay = false;
+			
+			// Если герой дерется с монстром
 			if (ui_data.location == "field") {
 				if ($('#news .line')[0].style.display != 'none') {
 					var currentMonster = $('#news .l_val').text();
 					var monsterTypes = ['Врачующий', 'Дарующий', 'Зажиточный', 'Запасливый', 'Кирпичный', 'Латающий', 'Лучезарный', 'Сияющий', 'Сюжетный', 'Линяющий'];
-					ui_informer.update('monster of the day', ui_data.monstersOfTheDay.match(currentMonster));
+					var monstersOfTheDay = ui_data.monstersOfTheDay.match(currentMonster);
 					for (var i = 0; i < monsterTypes.length; i++) {
-						ui_informer.update('monster with capabilities', currentMonster.match(monsterTypes[i]));
+						if (currentMonster.match(monsterTypes[i])) {
+							monsterWithCapabilities = true;
+							break;
+						}
 					}
 				}
 			}
+			ui_informer.update('monster of the day', monstersOfTheDay);
+			ui_informer.update('monster with capabilities', monsterWithCapabilities);
 			ui_informer.update('full prana', $('#control .p_val').width() == $('#control .p_bar').width());
 			ui_informer.update('pvp', ui_data.location != "field");
 		},
