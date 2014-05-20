@@ -50,6 +50,7 @@ var VoiceImprover = {
 		},
 		create: function(){
 			ui_timeout_bar.create();
+			ui_words.init();
 			if (ui_data.location == "field" && ui_storage.get('Option:freezeVoiceButton') && ui_storage.get('Option:freezeVoiceButton').match('when_empty'))
 				$('#voice_submit').attr('disabled', 'disabled');
 			$(document).on('change keypress paste focus textInput input', '#god_phrase', function() {

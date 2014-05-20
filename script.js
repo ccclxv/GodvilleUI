@@ -143,7 +143,6 @@ var starter = setInterval(function() {
 		if ($('#ui_css').length == 0) {
 			GM_addGlobalStyleURL('godville-ui.css', 'ui_css');
 		}  // why here?
-		ui_words.init();
 		ui_informer.init();
 			
 		// Инициализируем диспетчер.
