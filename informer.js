@@ -1,4 +1,36 @@
  
+var Monitor = {
+		create: function() {
+		},
+		changed: function(data) {
+			ui_informer.update('much_gold', ui_storage.get('Stats:Gold') >= (ui_storage.get('Stats:Brick') > 1000 ? 10000 : 3000));
+			ui_informer.update('dead', ui_storage.get('Stats:HP') == 0);			
+		},
+		diaryMessageAdded: function() {	
+			var monsterWithCapabilities = false;
+			var monstersOfTheDay = false;
+			
+			// Если герой дерется с монстром
+			if (ui_data.location == "field") {
+				if ($('#news .line')[0].style.display != 'none') {
+					var currentMonster = $('#news .l_val').text();
+					var monsterTypes = ['Врачующий', 'Дарующий', 'Зажиточный', 'Запасливый', 'Кирпичный', 'Латающий', 'Лучезарный', 'Сияющий', 'Сюжетный', 'Линяющий'];
+					var monstersOfTheDay = ui_data.monstersOfTheDay.match(currentMonster);
+					for (var i = 0; i < monsterTypes.length; i++) {
+						if (currentMonster.match(monsterTypes[i])) {
+							monsterWithCapabilities = true;
+							break;
+						}
+					}
+				}
+			}
+			ui_informer.update('monster of the day', monstersOfTheDay);
+			ui_informer.update('monster with capabilities', monsterWithCapabilities);
+			ui_informer.update('full prana', $('#control .p_val').width() == $('#control .p_bar').width());
+			ui_informer.update('pvp', ui_data.location != "field");
+		},
+	};
+
 
 // ------------------------------------
 // Информаер для важной информации
@@ -7,8 +39,10 @@
 // ------------------------------------
 var ui_informer = {
 	flags: {},
+	title: null,
+	container: null,
 	init: function() {
-		//title saver
+
 		this.title = document.title;
 		// container
 		this.container = $('<div id="informer_bar" style="position: fixed; top: 0; z-index: 301;"/>');
@@ -22,6 +56,8 @@ var ui_informer = {
 		// run flicker
 		this.tick();
 	},
+	
+	
 	// устанавливает или удаляет флаг
 	update: function(flag, value) {
 		if (value && (flag == 'pvp' || ui_data.location == "field") && !(ui_storage.get('Option:forbiddenInformers') &&
@@ -104,6 +140,7 @@ var ui_informer = {
 		$('head').append('<link rel="shortcut icon" href="images/favicon.ico" />');
 	},
 	
+	// мигающий favicon + заголовок
 	update_title: function(arr) {
 		this.odd_tick = ! this.odd_tick;
 		var sep, favicon;

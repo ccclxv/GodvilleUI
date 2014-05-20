@@ -10,7 +10,6 @@ contentLoad: function(event) {
 			loader.createScript(doc, 'chrome://godvilleui/content/phrases.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/gm_func.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/script.js');
-			loader.createScript(doc, 'chrome://godvilleui/content/Monitor.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/utils.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/improvements.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/DungeonImprover.js');
