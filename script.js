@@ -6,7 +6,6 @@ GVUI_PREFIX = "GVUI_";
 var Dispatcher = {
 	_modules: [],
 	parsers: {},
-	_states : {"nodeInserted": false},
 	create: function() {
 	},	
 	// Вызывает обработчик соответствующего события
@@ -20,7 +19,6 @@ var Dispatcher = {
 				}
 			}
 		}
-		this._states[event] = false;
 	},	
 	registerModule : function(module) {
 		if (module.moduleProperties)
@@ -146,14 +144,7 @@ var starter = setInterval(function() {
 		ui_informer.init();
 			
 		// Инициализируем диспетчер.
-		Dispatcher.create();
-
-		$(document).bind("DOMNodeInserted", function(){
-			if (!Dispatcher._states["nodeInserted"]) {
-				Dispatcher._states["nodeInserted"] = true;
-				setTimeout(function(){Dispatcher.fire("nodeInserted");},500);	
-			}
-		});		
+		Dispatcher.create();	
 		
 		$(document).bind('DOMNodeInserted', function(e) {
 		    var $element = $(e.target);
