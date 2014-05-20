@@ -1,8 +1,8 @@
 var DungeonImprover = {
 	create: function(){
-		this.nodeInserted();
+		this.diaryMessageAdded();
 	},				
-	nodeInserted: function() {
+	diaryMessageAdded: function() {
 		if (ui_data.location == "dungeon"){
 			var $box = $('#cntrl .voice_generator');
 			var $boxML = $('#map .dml');

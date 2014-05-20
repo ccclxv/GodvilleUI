@@ -128,7 +128,7 @@ var VoiceImprover = {
 				if ($('#hk_health .p_val').width() == $('#hk_health .p_bar').width()) $('#hk_health .voice_generator').hide();
 			}
 		},
-		nodeInserted: function() {
+		diaryMessageAdded: function() {
 			this.appendVoiceLinks();
 			this.startBarIfMessage();
 			this.shovelPic();
@@ -194,7 +194,7 @@ var LootImprover = {
 		hucksterNews: '',
 		_nInvItems: 0,
 		create: function(){
-			this.nodeInserted();
+			this.diaryMessageAdded();
 		},		
 		trophyList: [],
 		_createInspectButton: function(item_name) {
@@ -217,7 +217,7 @@ var LootImprover = {
 					return false;
 				});
 		},
-		nodeInserted: function() {
+		diaryMessageAdded: function() {
 			var nInvItemsCurrent = ui_storage.get('Stats:Inv');
 			if ( nInvItemsCurrent != this._nInvItems || $('#inventory li:not(.improved)').length || $('#inventory li:hidden').length){
 				this._nInvItems = nInvItemsCurrent;

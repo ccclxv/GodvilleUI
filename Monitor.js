@@ -6,7 +6,7 @@ var Monitor = {
 			ui_informer.update('much_gold', ui_storage.get('Stats:Gold') >= (ui_storage.get('Stats:Brick') > 1000 ? 10000 : 3000));
 			ui_informer.update('dead', ui_storage.get('Stats:HP') == 0);			
 		},
-		nodeInserted: function() {	
+		diaryMessageAdded: function() {	
 			this.updateInformers();	
 		},
 		

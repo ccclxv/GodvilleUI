@@ -67,7 +67,7 @@ var Logger = {
 		this.appendStr(id, css, name + s, descr);
 	},
 	
-	nodeInserted : function() {
+	diaryMessageAdded : function() {
 		this.need_separator = true;
 	},
 	stats: 	{	
