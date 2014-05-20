@@ -8,9 +8,11 @@
 
 ГОТОВО:
 improvements.js
+InterfaceImprover.js - не трогаю
 about.js - не трогаю
-DungeonImprover - не трогаю
+DungeonImprover.js - не трогаю
 
+-logger, informer, VoiceImprover.js
 =================================== Этап 2: Базовые объекты =============================
  + ui_data
  + "script.js" - диспетчер и инициализация
