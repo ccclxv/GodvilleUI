@@ -8,12 +8,7 @@ var InterfaceImprover = {
 				InterfaceImprover.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
 			}
 		});
-		this.nodeInserted();
-	},		
-	_escapeHTML: function(str) {
-		return str.replace(/[&"<>]/g, function (m) {({ "&": "&amp;", '"': "&quot;", "<": "&lt;", ">": "&gt;" })[m]});
-	},
-	nodeInserted : function(){
+		//this.nodeInserted();
 		if (ui_storage.get('Option:useBackground') == 'cloud') {
 			if (!$('#fader.cloud').length) {
 				$('body').css('background-image', 'url(' + GM_getResource("images/background.jpg") + ')');
@@ -57,7 +52,10 @@ var InterfaceImprover = {
 				$('#fader').css('background', background);
 			}
 		}
-		this.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();
+		this.improveWindowWidthChangeAndNewElementsInsertionRelatedStuff();		
+	},		
+	_escapeHTML: function(str) {
+		return str.replace(/[&"<>]/g, function (m) {({ "&": "&amp;", '"': "&quot;", "<": "&lt;", ">": "&gt;" })[m]});
 	},
 	improveWindowWidthChangeAndNewElementsInsertionRelatedStuff: function() {
 		if (ui_storage.get('Option:useBackground')) {
