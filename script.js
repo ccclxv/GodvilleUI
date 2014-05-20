@@ -144,7 +144,6 @@ var starter = setInterval(function() {
 			GM_addGlobalStyleURL('godville-ui.css', 'ui_css');
 		}  // why here?
 		ui_words.init();
-		ui_timeout_bar.create(); // надо сделать lazy init или прямо в voiceImprover
 		ui_informer.init();
 			
 		// Инициализируем диспетчер.

@@ -8,7 +8,6 @@
       "utils.js",
       "improvements.js",
       "DungeonImprover.js",
-      "LootImprover.js",
       "VoiceImprover.js",
       "Monitor.js",
       "InterfaceImprover.js",      
