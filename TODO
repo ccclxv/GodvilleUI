@@ -1,5 +1,7 @@
-доделать логгер
+VoiceImprover.js рефакторим LootImprover
 
+доделать логгер Alls_HP
+сделать префикс для всех id/классов
 
 
 
@@ -8,11 +10,28 @@
 
 ГОТОВО:
 improvements.js
-InterfaceImprover.js - не трогаю
+script.js
 about.js - не трогаю
 DungeonImprover.js - не трогаю
+phrases и words - пока не трогаю
+InterfaceImprover.js - не трогаю
 
--logger, informer, VoiceImprover.js
+-logger, informer, VoiceImprover.js, utils,
+options-page, options - не трогаю 3 этап 
+
+кусок кода, для логгера в режиме дуэли
+		GroupHP: function(flag) {		
+			var seq = 0;
+			var $box = flag ? $('#alls .opp_h') : $('#opps .opp_h');
+			var GroupCount =	$box.length;
+			if (GroupCount > 0)
+			{
+				for (var i = 0; i < GroupCount; i++) {
+					if (parseInt($box[i].textContent)) seq += parseInt($box[i].textContent);					
+				}
+			}
+			return seq; 
+		},	
 =================================== Этап 2: Базовые объекты =============================
  + ui_data
  + "script.js" - диспетчер и инициализация
@@ -26,29 +45,7 @@ DungeonImprover.js - не трогаю
 "phrases.js" - а это авторские константы
 "words.js" - а это то, что обрабатывает эти константы
 
-      
-======================================= Этап 1: Модули =================================
- 
-+ Monitor - мониторит состояние героя
-
-
-+ DungeonImprover - улучшение подземелий
-+ Logger - лог 
-
-
-~ VoiceImprover - ссылки на гласы | добавлять ссылки надо только один раз.
-~ LootImprover - ссылки на гласы для инвентаря
-
-~ InterfaceImprover - фон (интерфейс)
-
-// Вообще не нужен
-+ ui_menu_bar - эбаут
-
-InformerUpdater + <---
-
 Пока засунул обновления информера в монитор. Перенести в информер полную слежку пока не получится:
 лут импрувер дает очень много обновлений, которые завязаны на его логику. Может оно и не надо?
 
-ЛутИмпрувер - есть часть логическая войсимпрувера. Значит... значит их надо засунуть в один файл, 
-а может и собрать вместе ().
 
