@@ -70,7 +70,6 @@ var VoiceImprover = {
 			this.appendVoiceLinks();
 			$('#hk_clan .l_val').width(Math.floor(100 - 100*$('#hk_clan .l_capt').width() / (ui_data.location != "field" ? $('#m_info .block_content') : $('#stats .block_content')).width()) + '%');
 			this.shovelPic();
-			this.checkButtonsVisibility();
 		},	
 		shovelPic: function() {
 			//Shovel pictogramm start
@@ -111,28 +110,58 @@ var VoiceImprover = {
 			}
 		//Shovel pictogramm end	
 		},
-		checkButtonsVisibility: function() {
-			
-			$('#merge_button,.inspect_button,.voice_generator').hide();
-			if (ui_storage.get('Stats:Prana') >= 5 && !ui_storage.get('Option:disableVoiceGenerators')) {
-				$('.voice_generator,.inspect_button').show();
-				if (LootImprover.trophyList.length) 
+		isMonster: function() {
+			return $('#news .line')[0].style.display != 'none';
+		},
+		_maxPBarValue: function(id) {
+			return $(id + ' .p_val').width() == $(id + ' .p_bar').width();
+		},
+		changed: function(args) {
+			if (args["id"] == "Gold")
+				this.shovelPic();
+			else if (args["id"] == "Inv") {
+				if (LootImprover.trophyList.length && ui_data.location == "field") 
 					$('#merge_button').show();
-				if (ui_data.location == "field"){
-					if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || $('#news .line')[0].style.display != 'none') 
-						$('#hk_distance .voice_generator').hide();
-					if ($('#control .p_val').width() == $('#control .p_bar').width() || $('#news .line')[0].style.display != 'none') $('#control .voice_generator')[0].style.display = 'none';
-					if ($('#hk_distance .l_capt').text() == 'Город') $('#control .voice_generator')[1].style.display = 'none';
+				else
+					$('#merge_button').hide();
+			}
+			else if (args["id"] == "Prana") {
+				if (args["value"] >= 5 && !ui_storage.get('Option:disableVoiceGenerators')){
+					$('.voice_generator,.inspect_button').show();
+					
+					if (ui_data.location == "field"){
+						if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || this.isMonster()) 
+							$('#hk_distance .voice_generator').hide();
+						if (this._maxPBarValue('#control') || this.isMonster())
+								$('#control .voice_generator')[0].style.display = 'none';
+						if ($('#hk_distance .l_capt').text() == 'Город') 
+							$('#control .voice_generator')[1].style.display = 'none';
+					}
+					if ($('#hk_quests_completed .q_name').text().match(/\(выполнено\)/)) 
+						$('#hk_quests_completed .voice_generator').hide();
+					if (this._maxPBarValue('#hk_health')) 
+						$('#hk_health .voice_generator').hide();
+					
+				} else {
+					$('.inspect_button,.voice_generator').hide();
 				}
-				if ($('#hk_quests_completed .q_name').text().match(/\(выполнено\)/)) $('#hk_quests_completed .voice_generator').hide();
-				if ($('#hk_health .p_val').width() == $('#hk_health .p_bar').width()) $('#hk_health .voice_generator').hide();
 			}
 		},
-		diaryMessageAdded: function() {
-			this.appendVoiceLinks();
-			this.startBarIfMessage();
-			this.shovelPic();
-			this.checkButtonsVisibility();
+		diaryMessageAdded: function($element) {
+			if (ui_data.location == "field") {
+				if ($element.hasClass("m_infl")) {
+					this.infl = true;
+				} else {
+					if (this.voiceSubmitted) {
+						if (this.infl) {
+						ui_timeout_bar.start();
+							this.infl = false;
+						}
+						$('#god_phrase').change();
+						this.voiceSubmitted = false;
+					}
+				}
+			}
 		},
 		appendVoiceLinks: function() {
 
@@ -170,22 +199,6 @@ var VoiceImprover = {
 				else
 					$('#control .hch_link')[0].style.visibility = ui_storage.get('Option:hideChargeButton') ? 'hidden' : '';
 			}
-		},
-		
-		startBarIfMessage: function() {
-			if (ui_data.location != "field") 
-				return;
-			var newMessagesCount = $('#diary .d_msg:not(.parsed)').length;
-			if (newMessagesCount) {
-				if (VoiceImprover.voiceSubmitted) {
-					if (newMessagesCount >= 2)
-						ui_timeout_bar.start();
-					$('#god_phrase').change();
-					VoiceImprover.voiceSubmitted = false;
-				}
-				for (var i = 0; i < newMessagesCount; i++)
-					$('#diary .d_msg').eq(i).addClass('parsed');
-			}	
 		}
 };
 
