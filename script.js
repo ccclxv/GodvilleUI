@@ -216,14 +216,21 @@ var starter = setInterval(function() {
 			watchElements({
 				'label': {
 					'#m_info': {				
-						'Gold': ['Золота', gold_parser],
-						'Inv': ['Инвентарь', parseInt],
-						'HP': ['Здоровье', parseInt],
-						'Level': ['Уровень', parseInt],
-						'Death': ['Смертей', parseInt],
+						'Hero_Gold': ['Золота', gold_parser],
+						'Hero_Inv': ['Инвентарь'],
+						'Hero_HP': ['Здоровье'],
+						'Level': ['Уровень'],
+					
+					/*this.watchStatsValue('Hero_Alls_HP', 'a:hp', 'Здоровье союзников', 'brick');
+					this.watchStatsValue('Hero_Battery', 'h:bt', 'Заряды', 'battery');		*/			
+					},
+					'#o_info': {
+						'Enemy_HP': ['Здоровье'],
+						'Enemy_Gold': ['Золото', gold_parser],
+						'Enemy_Inv': ['Инвентарь']
 					},
 					'#cntrl':{
-						'Prana': ['Прана', parseInt],
+						'Prana': ['Прана'],
 					}
 				},
 				'progress': {		
