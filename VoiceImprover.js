@@ -170,6 +170,11 @@ var VoiceImprover = {
 				$('.gp_label').addClass('l_capt');
 				$('.gp_val').addClass('l_val');
 				if (ui_data.location == "dungeon"){
+					if (ui_storage.get('Option:relocateMap')){
+						$('#map').insertBefore($('#m_control')); 
+						$('#m_control').appendTo($('#a_right_block'));
+						$('#m_control .block_title').text('Пульт');
+					}
 					var isContradictions = $('#map')[0].textContent.match('Противоречия');
 					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Восток', (isContradictions ? 'walk_w' : 'walk_e'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Восток');
 					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Запад', (isContradictions ? 'walk_e' : 'walk_w'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Запад');
