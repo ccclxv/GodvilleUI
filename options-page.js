@@ -109,6 +109,15 @@ return '<p>\
 								<div class="g_desc">для тех кто не тратит деньги</div>\
 							</div>\
 							<div class="new_line">\
+								<label class="l_capt" for="relocate_map">Поменять местами пульт и карту</label>\
+								<div class="field_content">\
+									<input id="relocate_map" name="relocate_map" class="option-checkbox" type="checkbox">\
+								</div>\
+							</div>\
+							<div class="new_line">\
+								<div class="g_desc">для подземелья</div>\
+							</div>\
+							<div class="new_line">\
 								<label class="l_capt" for="freeze_voice_button">Замораживать кнопку гласа</label>\
 								<div class="field_content">\
 									<input id="freeze_voice_button" name="freeze_voice_button" class="menu-checkbox" type="checkbox">\
