@@ -14,7 +14,7 @@ var Dispatcher = {
 			if (id.match(this._sums[i])) {
 				var s = 0, j = 0;
 				do {
-					var c = ui_storage.get("Stats:" + id + j);
+					var c = ui_storage.get("Stats:" + this._sums[i] + j);
 					s += parseInt(c) || 0;
 					j++;
 				} while (c !== null);
@@ -25,7 +25,6 @@ var Dispatcher = {
 	},
 	// Вызывает обработчик соответствующего события
 	fire: function(event, args) {
-		console.log(event,args);
 		for (var i = 0; i < this._modules.length; i++) {
 			if (this._modules[i][event]) {
 				if (args) {
@@ -56,7 +55,7 @@ var Dispatcher = {
 		}
 	},
 	watchLabel: function() {
-		var id = $(this).attr("id");
+		var id = Dispatcher.getId(this);
 		var parser = Dispatcher.parsers[id];
 		var value = parser($(this).text());		
 		if (id == 'Brick' || id == 'Wood')
@@ -71,7 +70,7 @@ var Dispatcher = {
 
 	},
 	watchProgress: function(mutation) {
-		var id = $(mutation.target).attr("id");
+		var id = Dispatcher.getId(mutation.target);
 		var value = $(mutation.target).attr('title').replace(/[^0-9]/g, '');
 		ui_storage.set("Stats:" + id, value);
 		Dispatcher.fire("changed", {"id": id, "value": value});
@@ -95,7 +94,6 @@ var Dispatcher = {
 			if (obj != null)
 				Dispatcher.fire("changed", obj);
 		}
-		console.log(id, value);
 	},		
 };
 var gold_parser = function(val) {
@@ -111,7 +109,7 @@ var watchElements= function(params) {
 				for (var id in a) {
 					var $label = ui_utils.findLabel($container, a[id][0]);
 					var $field = $label.siblings('.l_val');
-					$field.attr("id", id);
+					$field.addClass(GVUI_PREFIX + id);
 					Dispatcher.parsers[id] = a[id][1] || parseInt;
 					$field.on("DOMSubtreeModified", Dispatcher.watchLabel);	
 					// передает начальное значение					
@@ -124,7 +122,7 @@ var watchElements= function(params) {
 				var $pbar = $(params[type][id]);
 				if ($pbar.length > 0) {
 					var value = $pbar.attr('title').replace(/[^0-9]/g, '');
-					$pbar.attr("id", id);
+					$pbar.addClass(GVUI_PREFIX + id);
 					var MutationObserver = window.MutationObserver
 				    || window.WebKitMutationObserver
 				    || window.MozMutationObserver;
@@ -262,7 +260,8 @@ var starter = setInterval(function() {
 					'Task': '#hk_quests_completed .p_bar'
 				},
 				'sum': [
-					'Friend_HP'
+					'Friend_HP',
+				//	'Enemy_HP'
 				]
 			});	
 			var values = {'value':{}};
@@ -274,7 +273,7 @@ var starter = setInterval(function() {
 			var values = {'value':{}};
 			var $box = $('#opps .opp_h');
 			for (var i = 0; i < $box.length; i++) {
-				values['value']["Enemy_HP" + i] = '#opps .opp_h';				
+				values['value']["Enemy_HP" + i] = '#opps .opp_h:eq('+ i + ')';				
 			}
 			watchElements(values);
 		}		

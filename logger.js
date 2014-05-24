@@ -1,14 +1,3 @@
-
-
-// ------------------------
-// Oneline logger
-// ------------------------
-// ui_logger.create -- создать объект
-// ui_logger.appendStr -- добавить строчку в конец лога
-// ui_logger.needSepratorHere -- перед первой же следующей записью вставится разделитель
-// 
-
-
 var Logger = {
 	need_separator: false,
 	elem: null,
@@ -79,7 +68,8 @@ var Logger = {
 		'Map_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_HP': ['h:hp', 'Здоровье героя', 'hp'],
 		'Enemy_HP': ['e:hp', 'Здоровье соперника', 'death'],
-		'Hero_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		//'Hero_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_Inv': ['h:inv', 'Инвентарь', 'inv'],
 		'Hero_Gold': ['h:gld', 'Золото', 'gold'],
 		'Hero_Battery': ['h:bt', 'Заряды', 'battery'],
