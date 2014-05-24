@@ -15,7 +15,7 @@ var Dispatcher = {
 				var s = 0, j = 0;
 				do {
 					var c = ui_storage.get("Stats:" + id + j);
-					s += c;
+					s += parseInt(c) || 0;
 					j++;
 				} while (c !== null);
 				return {"id": this._sums[i], "value": s};
@@ -25,6 +25,7 @@ var Dispatcher = {
 	},
 	// Вызывает обработчик соответствующего события
 	fire: function(event, args) {
+		console.log(event,args);
 		for (var i = 0; i < this._modules.length; i++) {
 			if (this._modules[i][event]) {
 				if (args) {
@@ -141,7 +142,6 @@ var watchElements= function(params) {
 			for (var id in params[type]) {
 				var $obj = $(params[type][id]);
 				$obj.addClass(GVUI_PREFIX + id);
-				console.log($());
 				$obj.on("DOMSubtreeModified", Dispatcher.watchValue);	
 				// передает начальное значение					
 				$obj.trigger("DOMSubtreeModified");				
@@ -268,7 +268,7 @@ var starter = setInterval(function() {
 			var values = {'value':{}};
 			var $box = $('#alls .opp_h');
 			for (var i = 0; i < $box.length; i++) {
-				values['value']["Friend_HP" + i] = '#alls .opp_h:nth-child('+ (i+1) + ')';				
+				values['value']["Friend_HP" + i] = '#alls .opp_h:eq('+ i + ')';				
 			}
 			watchElements(values);
 			var values = {'value':{}};
