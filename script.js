@@ -1,40 +1,29 @@
 GVUI_PREFIX = "GVUI_";
-// Обработчик событий. Рассылает всем модулям уведомления.
-// Позже можно организовать приоритеты
-// потом можно отдельно на каждое событие делать массив (для оптимизации) 
-// Касаясь уже jquery'вского bind'a, убрать лучше, если в тек версии jq есть on 			
+/* Обработчик событий. 
+ * Рассылает всем модулям уведомления при:
+ * - изменении значения элемента, для которого зарегистрированны наблюдатели
+ * - добавлении новой записи в дневник
+ * - добавлении сообщения в чат
+ * Инициализирует все зарегистрированные модули.
+ * Поддерживает условную загрузку в зависимости от режима страницы (поле/босс/арена/подземелье)
+ */
+// Возможно нужны будут когда-нибудь зависимости
+// Фильтрация событий
 var Dispatcher = {
 	_modules: [],
 	parsers: {},
-	_sums: [],
+	_sums: {},
 	create: function() {
+		var i = 0;
+		do {
+			c = ui_storage.get("Stats:" + "Friend_HP" + i);
+		    if (c != null) {
+		    	ui_storage.set("Stats:" + "Friend_HP" + i, null);
+		    }
+		    i++;
+		} while (c != null);
 	},	
-	_sum: function(id) {
-		for (var i = 0; i < this._sums.length; i++) {
-			if (id.match(this._sums[i])) {
-				var s = 0, j = 0;
-				do {
-					var c = ui_storage.get("Stats:" + this._sums[i] + j);
-					s += parseInt(c) || 0;
-					j++;
-				} while (c !== null);
-				return {"id": this._sums[i], "value": s};
-			}
-		}
-		return null;
-	},
-	// Вызывает обработчик соответствующего события
-	fire: function(event, args) {
-		for (var i = 0; i < this._modules.length; i++) {
-			if (this._modules[i][event]) {
-				if (args) {
-					this._modules[i][event](args);
-				} else {
-					this._modules[i][event]();
-				}
-			}
-		}
-	},	
+	
 	registerModule : function(module) {
 		if (module.moduleProperties)
 			if (module.moduleProperties['locations'])
@@ -54,6 +43,19 @@ var Dispatcher = {
 		    array.splice(index, 1);
 		}
 	},
+	// Вызывает обработчик соответствующего события
+	fire: function(event, args) {
+		for (var i = 0; i < this._modules.length; i++) {
+			if (this._modules[i][event]) {
+				if (args) {
+					this._modules[i][event](args);
+				} else {
+					this._modules[i][event]();
+				}
+			}
+		}
+	},	
+	// наблюдатели
 	watchLabel: function() {
 		var id = Dispatcher.getId(this);
 		var parser = Dispatcher.parsers[id];
@@ -75,6 +77,34 @@ var Dispatcher = {
 		ui_storage.set("Stats:" + id, value);
 		Dispatcher.fire("changed", {"id": id, "value": value});
 	},	
+	watchValue: function() {		
+		var id = Dispatcher.getId(this);
+		var value = $(this).text();
+		if (id) {
+			ui_storage.set("Stats:" + id, value);
+			Dispatcher.fire("changed", {"id": id, "value": value});
+			var obj = Dispatcher._sum(id);
+			if (obj != null)
+				Dispatcher.fire("changed", obj);
+		}
+	},
+	// сумматор для onchanged с id ID
+	_sum: function(id) {
+		for (var sum_id in this._sums) {
+			if (id.match(sum_id)) {
+				var s = 0;
+				for (var i = 0; i < this._sums[sum_id]; i++) {	
+					var c = ui_storage.get("Stats:" + sum_id + i);
+					if (c == null)
+						return null;
+					s += parseInt(c);
+				}
+				return {"id": sum_id, "value": s};
+			}
+		}
+		return null;
+	},
+	// возвращает внутренний id для элемента
 	getId: function(element) {
 		var classes = element.classList;
 		for (var i = 0; i < classes.length; i++) {
@@ -83,23 +113,13 @@ var Dispatcher = {
 			}
 		}
 		return null;
-	},
-	watchValue: function() {		
-		var id = Dispatcher.getId(this);
-		var value = $(this).text();
-		ui_storage.set("Stats:" + id, value);
-		if (id) {
-			Dispatcher.fire("changed", {"id": id, "value": value});
-			var obj = Dispatcher._sum(id);
-			if (obj != null)
-				Dispatcher.fire("changed", obj);
-		}
-	},		
+	},	
 };
 var gold_parser = function(val) {
 	return parseInt(val.replace(/[^0-9]/g, '')) || 0;
 };
 
+// связывает наблюдателей с элементами
 var watchElements= function(params) {
 	for (var type in params) {
 		if (type == 'label') {
@@ -146,8 +166,8 @@ var watchElements= function(params) {
 			}
 		}	
 		else if (type == 'sum') {
-			for (var i = 0; i < params[type].length; i++) {
-				Dispatcher._sums.push(params[type][i]);			
+			for (var id in params[type]) {
+				Dispatcher._sums[id] = $(params[type][id]).length;		
 			}
 		}			
 	}
@@ -259,10 +279,10 @@ var starter = setInterval(function() {
 					'Exp': '#hk_level .p_bar',
 					'Task': '#hk_quests_completed .p_bar'
 				},
-				'sum': [
-					'Friend_HP',
+				'sum': {
+					'Friend_HP': '#alls .opp_h'
 				//	'Enemy_HP'
-				]
+				}
 			});	
 			var values = {'value':{}};
 			var $box = $('#alls .opp_h');

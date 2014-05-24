@@ -7,8 +7,8 @@ var Logger = {
 		$('#menu_bar').after(this.elem);
 		this.elem.append('<div id="fader" style="position: absolute; left: 0; float: left; width: 50px; height: 100%;" />');
 	},
-	
 	changed: function(parameter) {
+		console.log(parameter);
 		var id = parameter.id;
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
@@ -18,6 +18,10 @@ var Logger = {
 			this._writeLogItem(id, diff);
 		}
 	},
+	diaryMessageAdded : function() {
+		this.need_separator = true;
+	},
+	
 	
 	// Appends element to logger
 	appendStr : function(id, cssClass, label, descr) {
@@ -54,10 +58,6 @@ var Logger = {
 		var s = (diff > 0) ? '+' + diff : diff;  
 				//? ("exp".match(name) ? '→' + ui_storage.get("Stats:" + id) : diff)
 		this.appendStr(id, css, name + s, descr);
-	},
-	
-	diaryMessageAdded : function() {
-		this.need_separator = true;
 	},
 	stats: 	{	
 		// ID      label     decription   css_class  
