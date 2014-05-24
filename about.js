@@ -38,7 +38,6 @@ var ui_menu_bar = {
 					 '<div class="hint_bar_capt"><b>Godville UI+ (v.' + ui_data.currentVersion + ')</b></div>' + 
 					 '<div class="hint_bar_content" style="padding: 0.5em 0.8em;"></div>' + 
 					 '<div class="hint_bar_close"></div></div>');
-		if (ui_storage.get('uiMenuVisible')) this.bar.show();
 		this.content = $('.hint_bar_content', this.bar);
 		this.append('<div style="text-align: left;">Если что-то работает не так, как должно, — ' +
 						(GM_browser == 'Firefox' ? 'загляните в веб-консоль (Ctrl+Shift+K), а также в консоль ошибок (Ctrl+Shift+J)'
@@ -83,6 +82,7 @@ var ui_menu_bar = {
 			$('#first_run').fadeToggle(1500);		
 			ui_storage.set('isStorage', true);			
 		}
+		if (ui_storage.get('uiMenuVisible')) this.bar.show();
 	},
 // gets toggle button
 	getToggleButton: function(text) {
