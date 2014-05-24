@@ -6,8 +6,23 @@ GVUI_PREFIX = "GVUI_";
 var Dispatcher = {
 	_modules: [],
 	parsers: {},
+	_sums: [],
 	create: function() {
 	},	
+	_sum: function(id) {
+		for (var i = 0; i < this._sums.length; i++) {
+			if (id.match(this._sums[i])) {
+				var s = 0, j = 0;
+				do {
+					var c = ui_storage.get("Stats:" + id + j);
+					s += c;
+					j++;
+				} while (c !== null);
+				return {"id": this._sums[i], "value": s};
+			}
+		}
+		return null;
+	},
 	// Вызывает обработчик соответствующего события
 	fire: function(event, args) {
 		for (var i = 0; i < this._modules.length; i++) {
@@ -52,6 +67,7 @@ var Dispatcher = {
 		}
 		ui_storage.set("Stats:" + id, value);
 		Dispatcher.fire("changed", {"id": id, "value": value});
+
 	},
 	watchProgress: function(mutation) {
 		var id = $(mutation.target).attr("id");
@@ -69,11 +85,16 @@ var Dispatcher = {
 		return null;
 	},
 	watchValue: function() {		
-		var id = Dispatcher.getId($(this)[0]);
+		var id = Dispatcher.getId(this);
 		var value = $(this).text();
 		ui_storage.set("Stats:" + id, value);
-		if (id)
-			Dispatcher.fire("changed", {"id": id, "value": value});		
+		if (id) {
+			Dispatcher.fire("changed", {"id": id, "value": value});
+			var obj = Dispatcher._sum(id);
+			if (obj != null)
+				Dispatcher.fire("changed", obj);
+		}
+		console.log(id, value);
 	},		
 };
 var gold_parser = function(val) {
@@ -97,7 +118,7 @@ var watchElements= function(params) {
 				}
 			}
 		}
-		if (type == 'progress') {
+		else if (type == 'progress') {
 			for (var id in params[type]) {
 				var $pbar = $(params[type][id]);
 				if ($pbar.length > 0) {
@@ -116,15 +137,21 @@ var watchElements= function(params) {
 				}
 			}
 		}
-		if (type == 'value') {
+		else if (type == 'value') {
 			for (var id in params[type]) {
-				$obj = $(params[type][id]);
+				var $obj = $(params[type][id]);
 				$obj.addClass(GVUI_PREFIX + id);
+				console.log($());
 				$obj.on("DOMSubtreeModified", Dispatcher.watchValue);	
 				// передает начальное значение					
 				$obj.trigger("DOMSubtreeModified");				
 			}
-		}		
+		}	
+		else if (type == 'sum') {
+			for (var i = 0; i < params[type].length; i++) {
+				Dispatcher._sums.push(params[type][i]);			
+			}
+		}			
 	}
 };
 
@@ -160,9 +187,9 @@ var starter = setInterval(function() {
 		Dispatcher.registerModule(ButtonRelocator);
 		Dispatcher.registerModule(EquipmentImprover);
 		Dispatcher.registerModule(ChatImprover);
-		Dispatcher.registerModule(DungeonImprover);
 		Dispatcher.registerModule(LootImprover);
 		Dispatcher.registerModule(VoiceImprover);
+		Dispatcher.registerModule(DungeonImprover);		
 		Dispatcher.registerModule(Logger);
 		Dispatcher.registerModule(ui_menu_bar);
 		Dispatcher.registerModule(PetImprover);
@@ -219,10 +246,7 @@ var starter = setInterval(function() {
 						'Hero_Gold': ['Золота', gold_parser],
 						'Hero_Inv': ['Инвентарь'],
 						'Hero_HP': ['Здоровье'],
-						'Level': ['Уровень'],
-					
-					/*this.watchStatsValue('Hero_Alls_HP', 'a:hp', 'Здоровье союзников', 'brick');
-					this.watchStatsValue('Hero_Battery', 'h:bt', 'Заряды', 'battery');		*/			
+						'Level': ['Уровень'],		
 					},
 					'#o_info': {
 						'Enemy_HP': ['Здоровье'],
@@ -237,7 +261,22 @@ var starter = setInterval(function() {
 					'Exp': '#hk_level .p_bar',
 					'Task': '#hk_quests_completed .p_bar'
 				},
-			});			
+				'sum': [
+					'Friend_HP'
+				]
+			});	
+			var values = {'value':{}};
+			var $box = $('#alls .opp_h');
+			for (var i = 0; i < $box.length; i++) {
+				values['value']["Friend_HP" + i] = '#alls .opp_h:nth-child('+ (i+1) + ')';				
+			}
+			watchElements(values);
+			var values = {'value':{}};
+			var $box = $('#opps .opp_h');
+			for (var i = 0; i < $box.length; i++) {
+				values['value']["Enemy_HP" + i] = '#opps .opp_h';				
+			}
+			watchElements(values);
 		}		
 		var finish = new Date();		
 		GM_log('Godville UI+ initialized in ' + (finish.getTime() - start.getTime()) + ' msec.');
