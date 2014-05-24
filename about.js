@@ -60,6 +60,29 @@ var ui_menu_bar = {
 		$('.hint_bar_close', this.bar).append(this.getToggleButton('закрыть'));
 		$('#menu_bar').after(this.bar);
 		$('#menu_bar ul').append($('<li> | </li>')).append(this.getToggleButton('<strong>ui</strong>'));
+		
+		
+		if (ui_storage.get('isStorage') != true) {
+			ui_storage.set('uiMenuVisible', true);
+			$('<div id="first_run" class="hint_bar" style="position: fixed; top: 40px; left: 0; right: 0; z-index: 301; display: none; padding-bottom: 0.7em;">'+
+				'<div class="hint_bar_capt"><b>Godville UI+ first run message</b></div>'+
+				'<div class="hint_bar_content" style="padding: 0 1em;"></div>'+
+				'<div class="hint_bar_close"><a onclick="$(\'#first_run\').fadeToggle(function() {$(\'#first_run\').remove();}); return false;">закрыть</a></div></div>'
+				 ).insertAfter($('#menu_bar'));
+			var fem = ui_storage.get('sex') == 'female' ? true : false;
+			var data = 'Приветствую ' +
+						 'бог' + (fem ? 'иню' : 'а') + ', использующ' + (fem ? 'ую' : 'его') + ' аддон расширения интерфейса <b>Godville UI+</b>.<br>'+
+						 '<div style="text-align: justify; margin: 0.2em 0 0.3em;">&emsp;<b>Опции</b> находятся в <b>профиле</b> героя, на вкладке <b>Настройки UI</b>. '+
+						 'Информация о наличии новых версий аддона отображается в&nbsp;виде <i>всплывающего сообщения</i> (как это) и дублируется' +
+						 ' в <i>диалоговом окне</i> (под этим всплывающим сообщением), '+
+						 'которое можно открыть/закрыть нажатием на кнопку <b>ui</b>, что чуть правее кнопки <i>выход</i> в верхнем меню.<br style="margin-bottom: 0.5em;">' +
+						 '&emsp;Информер можно убрать щелчком мыши по нему (при этом заголовок перестанет мигать) до следующего срабатывания условий информера. Например, Если у вас было <i>больше трех тысяч золота</i> и вы нажали на информер, то он появится в следующий раз только после того, как золота станет меньше, а потом опять больше трех тысяч.</div>' + 
+						 'Отображение <b>всех</b> информеров по-умолчанию <b>включено</b>. Возможно, вы захотите отключить информер <b>ВРЕМЕНИ ПЛАВКИ ПРЕДМЕТОВ</b>. Я предупредил.';								 
+			$('#first_run').css('box-shadow', '2px 2px 15px #' + ((localStorage.getItem('ui_s') == 'th_nightly') ? 'ffffff' : '000000'));
+			$('#first_run .hint_bar_content').append(data);
+			$('#first_run').fadeToggle(1500);		
+			ui_storage.set('isStorage', true);			
+		}
 	},
 // gets toggle button
 	getToggleButton: function(text) {
