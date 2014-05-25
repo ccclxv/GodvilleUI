@@ -44,11 +44,13 @@ var Dispatcher = {
 		}
 	},
 	// Вызывает обработчик соответствующего события
-	fire: function(event, args) {
+	fire: function(event, arg1, arg2) {
 		for (var i = 0; i < this._modules.length; i++) {
 			if (this._modules[i][event]) {
-				if (args) {
-					this._modules[i][event](args);
+				if (arg2) {
+					this._modules[i][event](arg1, arg2);
+				} else if (arg1) {
+					this._modules[i][event](arg1);
 				} else {
 					this._modules[i][event]();
 				}
