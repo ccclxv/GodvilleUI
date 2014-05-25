@@ -68,24 +68,24 @@ var Dispatcher = {
 			return;
 		}
 		ui_storage.set("Stats:" + id, value);
-		Dispatcher.fire("changed", {"id": id, "value": value});
+		Dispatcher.fire("changed", id, value);
 
 	},
 	watchProgress: function(mutation) {
 		var id = Dispatcher.getId(mutation.target);
 		var value = $(mutation.target).attr('title').replace(/[^0-9]/g, '');
 		ui_storage.set("Stats:" + id, value);
-		Dispatcher.fire("changed", {"id": id, "value": value});
+		Dispatcher.fire("changed", id, value);
 	},	
 	watchValue: function() {		
 		var id = Dispatcher.getId(this);
 		var value = $(this).text();
 		if (id) {
 			ui_storage.set("Stats:" + id, value);
-			Dispatcher.fire("changed", {"id": id, "value": value});
+			Dispatcher.fire("changed", id, value);
 			var obj = Dispatcher._sum(id);
 			if (obj != null)
-				Dispatcher.fire("changed", obj);
+				Dispatcher.fire("changed", obj.id, obj.value);
 		}
 	},
 	// сумматор для onchanged с id ID

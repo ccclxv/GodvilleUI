@@ -14,12 +14,11 @@ var Logger = {
 			}
 		}
 	},
-	changed: function(parameter) {
-		var id = parameter.id;
+	changed: function(id, value) {
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
-		var diff = parameter.value - this._old[id];
-		this._old[id] = parameter.value;
+		var diff = value - this._old[id];
+		this._old[id] = value;
 		if (diff) {
 			this._writeLogItem(id, diff);
 		}

@@ -116,17 +116,17 @@ var VoiceImprover = {
 		_maxPBarValue: function(id) {
 			return $(id + ' .p_val').width() == $(id + ' .p_bar').width();
 		},
-		changed: function(args) {
-			if (args["id"] == "Gold")
+		changed: function(id, value) {
+			if (id == "Gold")
 				this.shovelPic();
-			else if (args["id"] == "Inv") {
+			else if (id == "Inv") {
 				if (LootImprover.trophyList.length && ui_data.location == "field") 
 					$('#merge_button').show();
 				else
 					$('#merge_button').hide();
 			}
-			else if (args["id"] == "Prana") {
-				if (args["value"] >= 5 && !ui_storage.get('Option:disableVoiceGenerators')){
+			else if (id == "Prana") {
+				if (value >= 5 && !ui_storage.get('Option:disableVoiceGenerators')){
 					$('.voice_generator,.inspect_button').show();
 					
 					if (ui_data.location == "field"){

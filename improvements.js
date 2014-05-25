@@ -23,10 +23,10 @@ var ButtonRelocator = {
 		} 			
 	},	
 	
-	changed: function(args) {
-		if (args["id"] != "Prana")
+	changed: function(id, value) {
+		if (id != "Prana")
 			return;
-		if (args["value"] >= 50){
+		if (value >= 50){
 			$('#relocated_control_wraper').show();
 		} else {
 			$('#relocated_control_wraper').hide();
@@ -41,8 +41,8 @@ var EquipmentImprover = {
 		$('#equipment .block_title').after($('<div id="equip_badge" class="fr_new_badge gc_new_badge gu_new_badge_pos" style="display: block;">0</div>'));
 	},
 	
-	changed: function(args) {
-		if (!args["id"].match("Equip"))
+	changed: function(id, value) {
+		if (!id.match("Equip"))
 			return;
 		
 		var s = 0;
