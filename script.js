@@ -47,9 +47,9 @@ var Dispatcher = {
 	fire: function(event, arg1, arg2) {
 		for (var i = 0; i < this._modules.length; i++) {
 			if (this._modules[i][event]) {
-				if (arg2) {
+				if (arg2 !== undefined) {
 					this._modules[i][event](arg1, arg2);
-				} else if (arg1) {
+				} else if (arg1 !== undefined) {
 					this._modules[i][event](arg1);
 				} else {
 					this._modules[i][event]();
