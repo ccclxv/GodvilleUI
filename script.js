@@ -66,7 +66,7 @@ var Dispatcher = {
 			value = Math.floor(value*10 + 0.5);
 		
 		// Я хз зачем, но разрабы обнуляют gold перед изменением
-		if (id == "Gold" && $(this).text() == "") {
+		if (id == "Gold" || id == "Enemy_Gold" && $(this).text() == "") {
 			return;
 		}
 		ui_storage.set("Stats:" + id, value);
@@ -270,7 +270,7 @@ var starter = setInterval(function() {
 					},
 					'#o_info': {
 						'Enemy_HP': ['Здоровье'],
-						'Enemy_Gold': ['Золото', gold_parser],
+						'Enemy_Gold': ['Золота', gold_parser],
 						'Enemy_Inv': ['Инвентарь']
 					},
 					'#cntrl':{
