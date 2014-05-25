@@ -6,9 +6,15 @@ var Logger = {
 		this.elem = $('<ul id="stats_log" />');
 		$('#menu_bar').after(this.elem);
 		this.elem.append('<div id="fader" style="position: absolute; left: 0; float: left; width: 50px; height: 100%;" />');
+		// инициализация для изменений до загрузки.
+		for (var id in this.stats) {
+			var value = ui_storage.get("Stats:" + id);
+			if (value) {
+				this._old[id] = value;
+			}
+		}
 	},
 	changed: function(parameter) {
-		console.log(parameter);
 		var id = parameter.id;
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
