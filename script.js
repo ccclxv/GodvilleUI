@@ -81,7 +81,8 @@ var Dispatcher = {
 	},	
 	watchValue: function() {		
 		var id = Dispatcher.getId(this);
-		var value = $(this).text();
+		var parser = Dispatcher.parsers[id];
+		var value = parser($(this).text());
 		if (id) {
 			ui_storage.set("Stats:" + id, value);
 			Dispatcher.fire("changed", id, value);
@@ -160,7 +161,8 @@ var watchElements= function(params) {
 		}
 		else if (type == 'value') {
 			for (var id in params[type]) {
-				var $obj = $(params[type][id]);
+				Dispatcher.parsers[id] = params[type][id][1] || parseInt;
+				var $obj = $(params[type][id][0]);
 				$obj.addClass(GVUI_PREFIX + id);
 				$obj.on("DOMSubtreeModified", Dispatcher.watchValue);	
 				// передает начальное значение					
@@ -250,13 +252,14 @@ var starter = setInterval(function() {
 					'Task': '#hk_quests_completed .p_bar'
 				},
 				'value': {
-					'Equip1': '#eq_0 .eq_level',
-					'Equip2': '#eq_1 .eq_level',
-					'Equip3': '#eq_2 .eq_level',
-					'Equip4': '#eq_3 .eq_level',
-					'Equip5': '#eq_4 .eq_level',
-					'Equip6': '#eq_5 .eq_level',
-					'Equip7': '#eq_6 .eq_level'
+					'Equip1': ['#eq_0 .eq_level'],
+					'Equip2': ['#eq_1 .eq_level'],
+					'Equip3': ['#eq_2 .eq_level'],
+					'Equip4': ['#eq_3 .eq_level'],
+					'Equip5': ['#eq_4 .eq_level'],
+					'Equip6': ['#eq_5 .eq_level'],
+					'Equip7': ['#eq_6 .eq_level'],
+					'Battery': ['#control .acc_val', parseFloat],
 				}
 			});
 		} else {
