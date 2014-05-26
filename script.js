@@ -303,4 +303,4 @@ var starter = setInterval(function() {
 		GM_log('Godville UI+ initialized in ' + (finish.getTime() - start.getTime()) + ' msec.');
 		
 	}
-});
+}, 200);
