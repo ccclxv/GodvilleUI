@@ -1,7 +1,6 @@
 VoiceImprover.js рефакторим LootImprover
 
-доделать логгер Alls_HP
-сделать префикс для всех id/классов
+логгер-сумматор. обсудить поведение. (включается ли герой игрока)
 
 
 
@@ -11,27 +10,14 @@ VoiceImprover.js рефакторим LootImprover
 ГОТОВО:
 improvements.js
 script.js
+utils
 about.js - не трогаю
 DungeonImprover.js - не трогаю
 phrases и words - пока не трогаю
 InterfaceImprover.js - не трогаю
-
--logger, informer, VoiceImprover.js, utils,
+logger - пока не трогаю
+-informer, VoiceImprover.js
 options-page, options - не трогаю 3 этап 
-
-кусок кода, для логгера в режиме дуэли
-		GroupHP: function(flag) {		
-			var seq = 0;
-			var $box = flag ? $('#alls .opp_h') : $('#opps .opp_h');
-			var GroupCount =	$box.length;
-			if (GroupCount > 0)
-			{
-				for (var i = 0; i < GroupCount; i++) {
-					if (parseInt($box[i].textContent)) seq += parseInt($box[i].textContent);					
-				}
-			}
-			return seq; 
-		},	
 =================================== Этап 2: Базовые объекты =============================
  + ui_data
  + "script.js" - диспетчер и инициализация

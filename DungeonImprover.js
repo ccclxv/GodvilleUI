@@ -116,7 +116,7 @@ var DungeonImprover = {
 				for (var i = 0; i < kRow; i++)
 					for (var j = 0; j < kColumn; j++){
 						if (MapArray[i][j] == MaxMap)
-							$boxMC[i * kColumn + j].style.color = 'red';
+							$boxMC[i * kColumn + j].style.color = ($boxML[i].textContent[j] == '@') ? 'blue' : 'red';
 			}
 		}
 	},

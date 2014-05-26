@@ -1,14 +1,3 @@
-
-
-// ------------------------
-// Oneline logger
-// ------------------------
-// ui_logger.create -- создать объект
-// ui_logger.appendStr -- добавить строчку в конец лога
-// ui_logger.needSepratorHere -- перед первой же следующей записью вставится разделитель
-// 
-
-
 var Logger = {
 	need_separator: false,
 	elem: null,
@@ -17,18 +6,27 @@ var Logger = {
 		this.elem = $('<ul id="stats_log" />');
 		$('#menu_bar').after(this.elem);
 		this.elem.append('<div id="fader" style="position: absolute; left: 0; float: left; width: 50px; height: 100%;" />');
+		// инициализация для изменений до загрузки.
+		for (var id in this.stats) {
+			var value = ui_storage.get("Stats:" + id);
+			if (value) {
+				this._old[id] = value;
+			}
+		}
 	},
-	
-	changed: function(parameter) {
-		var id = parameter.id;
+	changed: function(id, value) {
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
-		var diff = parameter.value - this._old[id];
-		this._old[id] = parameter.value;
+		var diff = value - this._old[id];
+		this._old[id] = value;
 		if (diff) {
 			this._writeLogItem(id, diff);
 		}
 	},
+	diaryMessageAdded : function() {
+		this.need_separator = true;
+	},
+	
 	
 	// Appends element to logger
 	appendStr : function(id, cssClass, label, descr) {
@@ -66,10 +64,6 @@ var Logger = {
 				//? ("exp".match(name) ? '→' + ui_storage.get("Stats:" + id) : diff)
 		this.appendStr(id, css, name + s, descr);
 	},
-	
-	diaryMessageAdded : function() {
-		this.need_separator = true;
-	},
 	stats: 	{	
 		// ID      label     decription   css_class  
 		'Map_HP': ['hp', 'Здоровье героя', 'hp'],
@@ -79,7 +73,8 @@ var Logger = {
 		'Map_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_HP': ['h:hp', 'Здоровье героя', 'hp'],
 		'Enemy_HP': ['e:hp', 'Здоровье соперника', 'death'],
-		'Hero_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		//'Hero_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_Inv': ['h:inv', 'Инвентарь', 'inv'],
 		'Hero_Gold': ['h:gld', 'Золото', 'gold'],
 		'Hero_Battery': ['h:bt', 'Заряды', 'battery'],

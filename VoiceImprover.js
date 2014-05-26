@@ -116,17 +116,17 @@ var VoiceImprover = {
 		_maxPBarValue: function(id) {
 			return $(id + ' .p_val').width() == $(id + ' .p_bar').width();
 		},
-		changed: function(args) {
-			if (args["id"] == "Gold")
+		changed: function(id, value) {
+			if (id == "Gold")
 				this.shovelPic();
-			else if (args["id"] == "Inv") {
+			else if (id == "Inv") {
 				if (LootImprover.trophyList.length && ui_data.location == "field") 
 					$('#merge_button').show();
 				else
 					$('#merge_button').hide();
 			}
-			else if (args["id"] == "Prana") {
-				if (args["value"] >= 5 && !ui_storage.get('Option:disableVoiceGenerators')){
+			else if (id == "Prana") {
+				if (value >= 5 && !ui_storage.get('Option:disableVoiceGenerators')){
 					$('.voice_generator,.inspect_button').show();
 					
 					if (ui_data.location == "field"){
@@ -170,6 +170,11 @@ var VoiceImprover = {
 				$('.gp_label').addClass('l_capt');
 				$('.gp_val').addClass('l_val');
 				if (ui_data.location == "dungeon"){
+					if (ui_storage.get('Option:relocateMap')){
+						$('#map').insertBefore($('#m_control')); 
+						$('#m_control').appendTo($('#a_right_block'));
+						$('#m_control .block_title').text('Пульт');
+					}
 					var isContradictions = $('#map')[0].textContent.match('Противоречия');
 					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Восток', (isContradictions ? 'walk_w' : 'walk_e'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Восток');
 					VoiceImprover.addSayPhraseAfterLabel($box, 'Прана', 'Запад', (isContradictions ? 'walk_e' : 'walk_w'), 'Попросить ' + ui_data.char_sex[0] + ' повести команду на Запад');
