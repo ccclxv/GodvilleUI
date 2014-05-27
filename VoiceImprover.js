@@ -224,7 +224,7 @@ var LootImprover = {
 		},
 
 		_createMergeButton: function() {
-			return $('<a id="merge_button" title="Уговорить ' + ui_data.char_sex[0] + ' склеить два случайных предмета из инвентаря">Склеить что-нибудь</a>')
+			return $('<a id="merge_button" class="voice_generator" style="float: none;" title="Уговорить ' + ui_data.char_sex[0] + ' склеить два случайных предмета из инвентаря">Склеить что-нибудь</a>')
 				.click(function() {
 					var rand = Math.floor(Math.random()*LootImprover.trophyList.length);
 					item_first = LootImprover.trophyList[rand];
