@@ -14,14 +14,10 @@ var Dispatcher = {
 	parsers: {},
 	_sums: {},
 	create: function() {
-		var i = 0;
-		do {
-			c = ui_storage.get("Stats:" + "Friend_HP" + i);
-		    if (c != null) {
-		    	ui_storage.set("Stats:" + "Friend_HP" + i, null);
-		    }
-		    i++;
-		} while (c != null);
+		if (ui_storage.get("Logger:LocationPrev") == "field" && ui_data.location != "field"){
+				ui_storage.clearWithPrefix("Stats:Hero_");
+				ui_storage.clearWithPrefix("Stats:Enemy_");
+			}
 	},	
 	
 	registerModule : function(module) {
@@ -87,8 +83,10 @@ var Dispatcher = {
 			ui_storage.set("Stats:" + id, value);
 			Dispatcher.fire("changed", id, value);
 			var obj = Dispatcher._sum(id);
-			if (obj != null)
+			if (obj != null) {
+				ui_storage.set("Stats:" + obj.id, obj.value);
 				Dispatcher.fire("changed", obj.id, obj.value);
+			}
 		}
 	},
 	// сумматор для onchanged с id ID
@@ -263,18 +261,67 @@ var starter = setInterval(function() {
 				}
 			});
 		} else {
+			if (ui_data.location == "dungeon") {
+				watchElements({
+					'label': {
+						'#m_info': {				
+							'Map_Gold': ['Золота', gold_parser],
+							'Map_Inv': ['Инвентарь'],
+							'Map_HP': ['Здоровье'],
+						}
+					},
+					'value': {
+						'Map_Battery': ['#control .acc_val', parseFloat],
+					},		
+					'sum': {
+						'Map_Friend_HP': '#alls .opp_h'
+					}
+				});
+				var values = {'value':{}};
+				var $box = $('#alls .opp_h');
+				for (var i = 0; i < $box.length; i++) {
+					values['value']["Map_Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')'];				
+				}
+				watchElements(values);	
+			} else {
+				watchElements({
+					'label': {
+						'#m_info': {				
+							'Hero_Gold': ['Золота', gold_parser],
+							'Hero_Inv': ['Инвентарь'],
+							'Hero_HP': ['Здоровье'],
+						},
+						'#o_info': {
+							'Enemy_HP': ['Здоровье'],
+							'Enemy_Gold': ['Золота', gold_parser],
+							'Enemy_Inv': ['Инвентарь']
+						},
+					},
+					'value': {
+						'Hero_Battery': ['#control .acc_val', parseFloat],
+					},		
+					'sum': {
+						'Hero_Friend_HP': '#alls .opp_h'
+					//	'Enemy_HP'
+					}
+				});
+				var values = {'value':{}};
+				var $box = $('#alls .opp_h');
+				for (var i = 0; i < $box.length; i++) {
+					values['value']["Hero_Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')'];				
+				}
+				watchElements(values);					
+					/*var values = {'value':{}};
+					var $box = $('#opps .opp_h');
+					for (var i = 0; i < $box.length; i++) {
+						values['value']["Enemy_HP" + i] = ['#opps .opp_h:eq('+ i + ')'];				
+					}
+					watchElements(values);*/
+			}
 			watchElements({
 				'label': {
 					'#m_info': {				
-						'Hero_Gold': ['Золота', gold_parser],
-						'Hero_Inv': ['Инвентарь'],
-						'Hero_HP': ['Здоровье'],
 						'Level': ['Уровень'],		
-					},
-					'#o_info': {
-						'Enemy_HP': ['Здоровье'],
-						'Enemy_Gold': ['Золота', gold_parser],
-						'Enemy_Inv': ['Инвентарь']
 					},
 					'#cntrl':{
 						'Prana': ['Прана'],
@@ -284,24 +331,18 @@ var starter = setInterval(function() {
 					'Exp': '#hk_level .p_bar',
 					'Task': '#hk_quests_completed .p_bar'
 				},
-				'sum': {
-					'Friend_HP': '#alls .opp_h'
-				//	'Enemy_HP'
+				'value': {
+					'Equip1': ['#eq_0 .eq_level'],
+					'Equip2': ['#eq_1 .eq_level'],
+					'Equip3': ['#eq_2 .eq_level'],
+					'Equip4': ['#eq_3 .eq_level'],
+					'Equip5': ['#eq_4 .eq_level'],
+					'Equip6': ['#eq_5 .eq_level'],
+					'Equip7': ['#eq_6 .eq_level'],
 				}
 			});	
-			var values = {'value':{}};
-			var $box = $('#alls .opp_h');
-			for (var i = 0; i < $box.length; i++) {
-				values['value']["Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')'];				
-			}
-			watchElements(values);
-			var values = {'value':{}};
-			var $box = $('#opps .opp_h');
-			for (var i = 0; i < $box.length; i++) {
-				values['value']["Enemy_HP" + i] = ['#opps .opp_h:eq('+ i + ')'];				
-			}
-			watchElements(values);
 		}		
+		ui_storage.set("Logger:LocationPrev", ui_data.location);
 		var finish = new Date();		
 		GM_log('Godville UI+ initialized in ' + (finish.getTime() - start.getTime()) + ' msec.');
 		
