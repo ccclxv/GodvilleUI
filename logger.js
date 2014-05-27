@@ -52,6 +52,8 @@ var Logger = {
 
 	_writeLogItem : function(id, diff) {
 		var el = this.stats[id];
+		if (el === undefined)
+			return;
 		var name = el[0];
 		var descr = el[1];
 		var css = (el.length>2)? el[2]:id.toLowerCase();

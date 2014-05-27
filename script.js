@@ -292,13 +292,13 @@ var starter = setInterval(function() {
 			var values = {'value':{}};
 			var $box = $('#alls .opp_h');
 			for (var i = 0; i < $box.length; i++) {
-				values['value']["Friend_HP" + i] = '#alls .opp_h:eq('+ i + ')';				
+				values['value']["Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')'];				
 			}
 			watchElements(values);
 			var values = {'value':{}};
 			var $box = $('#opps .opp_h');
 			for (var i = 0; i < $box.length; i++) {
-				values['value']["Enemy_HP" + i] = '#opps .opp_h:eq('+ i + ')';				
+				values['value']["Enemy_HP" + i] = ['#opps .opp_h:eq('+ i + ')'];				
 			}
 			watchElements(values);
 		}		
