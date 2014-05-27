@@ -114,7 +114,7 @@ var ui_words = {
 // Private (или типа того)
 	_longPhrase_recursion: function(source, len) {
 		while (source.length) {
-			var next = ui_utils.popRandomItem(source);
+			var next = this._popRandomItem(source);
 			var remainder = len - next.length - 2; // 2 for ', '
 			if (remainder > 0) {
 				return [next].concat(this._longPhrase_recursion(source, remainder));
