@@ -52,6 +52,8 @@ var Logger = {
 
 	_writeLogItem : function(id, diff) {
 		var el = this.stats[id];
+		if (el === undefined)
+			return;
 		var name = el[0];
 		var descr = el[1];
 		var css = (el.length>2)? el[2]:id.toLowerCase();
@@ -70,11 +72,11 @@ var Logger = {
 		'Map_Inv': ['inv', 'Инвентарь', 'inv'],
 		'Map_Gold': ['gld', 'Золото', 'gold'],
 		'Map_Battery': ['bt', 'Заряды', 'battery'],
-		'Map_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Map_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_HP': ['h:hp', 'Здоровье героя', 'hp'],
 		'Enemy_HP': ['e:hp', 'Здоровье соперника', 'death'],
-		'Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
-		//'Hero_Alls_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+	//	'Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Hero_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_Inv': ['h:inv', 'Инвентарь', 'inv'],
 		'Hero_Gold': ['h:gld', 'Золото', 'gold'],
 		'Hero_Battery': ['h:bt', 'Заряды', 'battery'],

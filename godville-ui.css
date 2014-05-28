@@ -137,30 +137,10 @@ body {
 	cursor: pointer;
 }
 
-.msgDockWrapper {
-	z-index: auto;
-}
-
-.msgDock {
-	z-index: 301;
-}
-
-.msgDock.frbutton_pressed {
-	z-index: 302;
-}
-
 a {
 	cursor: pointer;
 }
 
 .dockfrname_w {
 	height: 100%
-}
-
-#facebox {
-	z-index: 303;
-}
-
-#facebox_overlay {
-	z-index: 302;
 }

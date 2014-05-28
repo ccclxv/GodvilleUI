@@ -55,6 +55,17 @@ var ui_storage = {
 		location.reload();
 		return "Storage cleared. Reloading...";
 	},
+	clearWithPrefix: function(prefix) {
+		for (var i = 0; i < localStorage.length; i++) {
+			var key = localStorage.key(i);
+			var r = new RegExp(this.get_key(prefix + ".*"));
+			if (key.match(r)) {
+				console.log(key);
+				if (localStorage.getItem(key) != null)
+					localStorage.setItem(key, "");
+			}
+		}
+	},
 // deletes all values related to current god_name
 	clearStorage: function() {
 		if (localStorage.getItem('GM_clean050613') != 'true') {
