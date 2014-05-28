@@ -274,6 +274,10 @@ var starter = setInterval(function() {
 							'Map_Gold': ['Золота', gold_parser],
 							'Map_Inv': ['Инвентарь'],
 							'Map_HP': ['Здоровье'],
+							'Map_Level': ['Уровень']
+						},
+						'#cntrl':{
+							'Map_Prana': ['Прана'],
 						}
 					},
 					'value': {
@@ -296,12 +300,16 @@ var starter = setInterval(function() {
 							'Hero_Gold': ['Золота', gold_parser],
 							'Hero_Inv': ['Инвентарь'],
 							'Hero_HP': ['Здоровье'],
+							'Hero_Level': ['Уровень']
 						},
 						'#o_info': {
 							'Enemy_HP': ['Здоровье'],
 							'Enemy_Gold': ['Золота', gold_parser],
 							'Enemy_Inv': ['Инвентарь']
 						},
+						'#cntrl':{
+							'Hero_Prana': ['Прана'],
+						}
 					},
 					'value': {
 						'Hero_Battery': ['#control .acc_val', parseFloat],
@@ -324,29 +332,6 @@ var starter = setInterval(function() {
 					}
 					watchElements(values);*/
 			}
-			watchElements({
-				'label': {
-					'#m_info': {				
-						'Level': ['Уровень'],		
-					},
-					'#cntrl':{
-						'Prana': ['Прана'],
-					}
-				},
-				'progress': {		
-					'Exp': '#hk_level .p_bar',
-					'Task': '#hk_quests_completed .p_bar'
-				},
-				'value': {
-					'Equip1': ['#eq_0 .eq_level'],
-					'Equip2': ['#eq_1 .eq_level'],
-					'Equip3': ['#eq_2 .eq_level'],
-					'Equip4': ['#eq_3 .eq_level'],
-					'Equip5': ['#eq_4 .eq_level'],
-					'Equip6': ['#eq_5 .eq_level'],
-					'Equip7': ['#eq_6 .eq_level'],
-				}
-			});	
 		}		
 		ui_storage.set("Logger:LocationPrev", ui_data.location);
 		var finish = new Date();		
