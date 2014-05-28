@@ -79,7 +79,7 @@ var Dispatcher = {
 		var id = Dispatcher.getId(this);
 		var parser = Dispatcher.parsers[id];
 		var value = parser($(this).text());
-		if (id) {
+		if (id && value === parser($(this).text())) {
 			ui_storage.set("Stats:" + id, value);
 			Dispatcher.fire("changed", id, value);
 			var obj = Dispatcher._sum(id);
@@ -118,6 +118,12 @@ var Dispatcher = {
 };
 var gold_parser = function(val) {
 	return parseInt(val.replace(/[^0-9]/g, '')) || 0;
+};
+
+var hp_parser = function(val) {
+	if (val == "повержен")
+		val = 0;
+	return parseInt(val);
 };
 
 // связывает наблюдателей с элементами
@@ -280,7 +286,7 @@ var starter = setInterval(function() {
 				var values = {'value':{}};
 				var $box = $('#alls .opp_h');
 				for (var i = 0; i < $box.length; i++) {
-					values['value']["Map_Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')'];				
+					values['value']["Map_Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')', hp_parser];				
 				}
 				watchElements(values);	
 			} else {
