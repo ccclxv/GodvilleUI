@@ -314,7 +314,7 @@ var starter = setInterval(function() {
 				var values = {'value':{}};
 				var $box = $('#alls .opp_h');
 				for (var i = 0; i < $box.length; i++) {
-					values['value']["Hero_Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')'];				
+					values['value']["Hero_Friend_HP" + i] = ['#alls .opp_h:eq('+ i + ')', hp_parser];				
 				}
 				watchElements(values);					
 					/*var values = {'value':{}};
