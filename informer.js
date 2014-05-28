@@ -16,9 +16,9 @@ var Monitor = {
 				if ($('#news .line')[0].style.display != 'none') {
 					var currentMonster = $('#news .l_val').text();
 					var monsterTypes = ['Врачующий', 'Дарующий', 'Зажиточный', 'Запасливый', 'Кирпичный', 'Латающий', 'Лучезарный', 'Сияющий', 'Сюжетный', 'Линяющий'];
-					monstersOfTheDay = ui_data.monstersOfTheDay.match(currentMonster);
+					monstersOfTheDay = ui_data.monstersOfTheDay.indexOf(currentMonster) != -1;
 					for (var i = 0; i < monsterTypes.length; i++) {
-						if (currentMonster.match(monsterTypes[i])) {
+						if (currentMonster.indexOf(monsterTypes[i]) != -1) {
 							monsterWithCapabilities = true;
 							break;
 						}
