@@ -25,6 +25,11 @@ var Logger = {
 	},
 	diaryMessageAdded : function() {
 		this.need_separator = true;
+		if (ui_data.location == "dungeon") {
+			this.changed("Map_All_HP", ui_storage.get("Stats:Map_Friend_HP"));
+		} else if (ui_data.location != "field") {
+			this.changed("Hero_All_HP", ui_storage.get("Stats:Hero_Friend_HP"));
+		}
 	},
 	
 	
@@ -72,15 +77,16 @@ var Logger = {
 		'Map_Inv': ['inv', 'Инвентарь', 'inv'],
 		'Map_Gold': ['gld', 'Золото', 'gold'],
 		'Map_Battery': ['bt', 'Заряды', 'battery'],
-		'Map_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		//'Map_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Map_All_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Map_Level': ['lvl', 'Уровень'],
 		'Map_Prana': ['pr', 'Прана (проценты)'],
 		'Hero_Level': ['lvl', 'Уровень'],
 		'Hero_Prana': ['pr', 'Прана (проценты)'],
 		'Hero_HP': ['h:hp', 'Здоровье героя', 'hp'],
 		'Enemy_HP': ['e:hp', 'Здоровье соперника', 'death'],
-	//	'Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
-		'Hero_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		//'Hero_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Hero_All_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_Inv': ['h:inv', 'Инвентарь', 'inv'],
 		'Hero_Gold': ['h:gld', 'Золото', 'gold'],
 		'Hero_Battery': ['h:bt', 'Заряды', 'battery'],
