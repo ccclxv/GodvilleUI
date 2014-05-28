@@ -98,7 +98,7 @@ var Dispatcher = {
 					var c = ui_storage.get("Stats:" + sum_id + i);
 					if (c == null)
 						return null;
-					s += parseInt(c);
+					s += parseInt(c) || 0;
 				}
 				return {"id": sum_id, "value": s};
 			}
