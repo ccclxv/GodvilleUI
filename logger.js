@@ -24,12 +24,12 @@ var Logger = {
 		}
 	},
 	diaryMessageAdded : function() {
-		this.need_separator = true;
 		if (ui_data.location == "dungeon") {
 			this.changed("Map_All_HP", ui_storage.get("Stats:Map_Friend_HP"));
 		} else if (ui_data.location != "field") {
 			this.changed("Hero_All_HP", ui_storage.get("Stats:Hero_Friend_HP"));
 		}
+		this.need_separator = true;
 	},
 	
 	
