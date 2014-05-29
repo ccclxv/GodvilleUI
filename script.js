@@ -14,10 +14,14 @@ var Dispatcher = {
 	parsers: {},
 	_sums: {},
 	create: function() {
-		if (ui_storage.get("Logger:LocationPrev") == "field" && ui_data.location != "field"){
+		if (ui_storage.get("Logger:LocationPrev") != "boss" && ui_data.location == "boss"){
+			ui_storage.clearWithPrefix("Stats:Hero_");
+			ui_storage.clearWithPrefix("Stats:Enemy_");
+		} else if (ui_storage.get("Logger:LocationPrev") == "field" && ui_data.location != "field"){
 				ui_storage.clearWithPrefix("Stats:Hero_");
 				ui_storage.clearWithPrefix("Stats:Enemy_");
-			}
+				ui_storage.clearWithPrefix("Stats:Map_");
+		}
 	},	
 	
 	registerModule : function(module) {
@@ -206,7 +210,20 @@ var starter = setInterval(function() {
 		    }
 		    if ($element.hasClass("d_msg")) {
 		    	Dispatcher.fire("diaryMessageAdded", $element);
-		    }		    
+		    }	
+		    if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
+		    	console.log("+ inventory", e.target);
+		    	//Dispatcher.fire("diaryMessageAdded", $element);
+		    }
+		    //console.log('!LOG! Inserted| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
+		});
+		$(document).bind('DOMNodeRemoved', function(e) {
+			var $element = $(e.target);
+			if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
+		    	console.log("- inventory", e.target);
+		    	//Dispatcher.fire("diaryMessageAdded", $element);
+		    }
+			//console.log('!LOG! Removed| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
 		});
 		
 		Dispatcher.registerModule(Monitor);
