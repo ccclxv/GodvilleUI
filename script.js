@@ -66,7 +66,7 @@ var Dispatcher = {
 			value = Math.floor(value*10 + 0.5);
 		
 		// Я хз зачем, но разрабы обнуляют gold перед изменением
-		if ((id == "Gold" || id == "Enemy_Gold") && $(this).text() == "") {
+		if ((id == "Gold" || id == "Enemy_Gold" || id == "Hero_Gold" || id == "Map_Gold" ) && $(this).text() == "") {
 			return;
 		}
 		ui_storage.set("Stats:" + id, value);
