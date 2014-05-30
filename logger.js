@@ -2,6 +2,7 @@ var Logger = {
 	need_separator: false,
 	elem: null,
 	_old: {},
+	_old_sum: null,
 	create: function(){
 		this.elem = $('<ul id="stats_log" />');
 		$('#menu_bar').after(this.elem);
@@ -13,14 +14,12 @@ var Logger = {
 				this._old[id] = value;
 			}
 		}
-		if (this._old["Map_Friend_HP"]) {
-			this._old["Map_All_HP"] = this._old["Map_Friend_HP"];
-		}
-		if (this._old["Hero_Friend_HP"]) {
-			this._old["Hero_All_HP"] = this._old["Map_Friend_HP"];
-		}
+
+		this._old["Map_All_HP"] = this._sum("Map_Friend_HP");
+		this._old["Hero_All_HP"] = this._sum("Hero_Friend_HP");
 	},
 	changed: function(id, value) {
+		console.log(id, value);
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
 		var diff = value - this._old[id];
@@ -28,14 +27,29 @@ var Logger = {
 		if (diff) {
 			this._writeLogItem(id, diff);
 		}
+		// Здесь надо как-то обновить в первый раз AllHP
+	},
+	_change_sum: function() {
+		if (ui_data.location == "dungeon") {
+			this.changed("Map_All_HP", this._sum("Map_Friend_HP"));
+		} else if (ui_data.location != "field") {
+			this.changed("Hero_All_HP", this._sum("Hero_Friend_HP"));
+		}
 	},
 	diaryMessageAdded : function() {
-		if (ui_data.location == "dungeon") {
-			this.changed("Map_All_HP", ui_storage.get("Stats:Map_Friend_HP"));
-		} else if (ui_data.location != "field") {
-			this.changed("Hero_All_HP", ui_storage.get("Stats:Hero_Friend_HP"));
-		}
+		this._change_sum();
 		this.need_separator = true;
+	},
+	_sum: function(sum_id) {
+		var s = 0;
+		var i = 0;
+		do {	
+			var c = ui_storage.get("Stats:" + sum_id + i);
+			i++;
+			if (c === null)
+				return s;
+			s += parseInt(c) || 0;
+		} while (true);
 	},
 	
 	

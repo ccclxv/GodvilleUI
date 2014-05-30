@@ -12,7 +12,6 @@ GVUI_PREFIX = "GVUI_";
 var Dispatcher = {
 	_modules: [],
 	parsers: {},
-	_sums: {},
 	create: function() {
 		if (ui_storage.get("Logger:LocationPrev") != "boss" && ui_data.location == "boss"){
 			ui_storage.clearWithPrefix("Stats:Hero_");
@@ -86,28 +85,7 @@ var Dispatcher = {
 		if (id && value === parser($(this).text())) {
 			ui_storage.set("Stats:" + id, value);
 			Dispatcher.fire("changed", id, value);
-			var obj = Dispatcher._sum(id);
-			if (obj != null) {
-				ui_storage.set("Stats:" + obj.id, obj.value);
-				Dispatcher.fire("changed", obj.id, obj.value);
-			}
 		}
-	},
-	// сумматор для onchanged с id ID
-	_sum: function(id) {
-		for (var sum_id in this._sums) {
-			if (id.match(sum_id)) {
-				var s = 0;
-				for (var i = 0; i < this._sums[sum_id]; i++) {	
-					var c = ui_storage.get("Stats:" + sum_id + i);
-					if (c == null)
-						return null;
-					s += parseInt(c) || 0;
-				}
-				return {"id": sum_id, "value": s};
-			}
-		}
-		return null;
 	},
 	// возвращает внутренний id для элемента
 	getId: function(element) {
@@ -176,11 +154,6 @@ var watchElements= function(params) {
 				// передает начальное значение					
 				$obj.trigger("DOMSubtreeModified");				
 			}
-		}	
-		else if (type == 'sum') {
-			for (var id in params[type]) {
-				Dispatcher._sums[id] = $(params[type][id]).length;		
-			}
 		}			
 	}
 };
@@ -237,19 +210,7 @@ var starter = setInterval(function() {
 		Dispatcher.registerModule(ui_menu_bar);
 		Dispatcher.registerModule(PetImprover);
 		Dispatcher.registerModule(InterfaceImprover);
-		/*
-		params = {
-				'label': { 
-					'#id_блока': {				
-						'внутренний_id_значения': ['Текст, после которого идет значение',
-						 парсер(gold_parser/parseInt/parseFloat)],
-					},
-				},
-				'progress': {		
-					'внутренний_id_значения': 'селектор',
-				},
-			}
-			 */
+
 		if (ui_data.location == "field") {
 			watchElements({
 				'label': {
@@ -291,7 +252,6 @@ var starter = setInterval(function() {
 							'Map_Gold': ['Золота', gold_parser],
 							'Map_Inv': ['Инвентарь'],
 							'Map_HP': ['Здоровье'],
-							'Map_Level': ['Уровень']
 						},
 						'#cntrl':{
 							'Map_Prana': ['Прана'],
@@ -300,9 +260,6 @@ var starter = setInterval(function() {
 					'value': {
 						'Map_Battery': ['#control .acc_val', parseFloat],
 					},		
-					'sum': {
-						'Map_Friend_HP': '#alls .opp_h'
-					}
 				});
 				var values = {'value':{}};
 				var $box = $('#alls .opp_h');
@@ -317,7 +274,6 @@ var starter = setInterval(function() {
 							'Hero_Gold': ['Золота', gold_parser],
 							'Hero_Inv': ['Инвентарь'],
 							'Hero_HP': ['Здоровье'],
-							'Hero_Level': ['Уровень']
 						},
 						'#o_info': {
 							'Enemy_HP': ['Здоровье'],
@@ -331,10 +287,6 @@ var starter = setInterval(function() {
 					'value': {
 						'Hero_Battery': ['#control .acc_val', parseFloat],
 					},		
-					'sum': {
-						'Hero_Friend_HP': '#alls .opp_h'
-					//	'Enemy_HP'
-					}
 				});
 				var values = {'value':{}};
 				var $box = $('#alls .opp_h');
