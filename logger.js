@@ -13,6 +13,12 @@ var Logger = {
 				this._old[id] = value;
 			}
 		}
+		if (this._old["Map_Friend_HP"]) {
+			this._old["Map_All_HP"] = this._old["Map_Friend_HP"];
+		}
+		if (this._old["Hero_Friend_HP"]) {
+			this._old["Hero_All_HP"] = this._old["Map_Friend_HP"];
+		}
 	},
 	changed: function(id, value) {
 		if (this._old[id] == undefined)
