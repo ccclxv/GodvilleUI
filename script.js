@@ -14,10 +14,10 @@ var Dispatcher = {
 	parsers: {},
 	create: function() {
 		// При входе из поля в подземелье чистим соответствующие записи
-		if (ui_storage.get("Logger:LocationPrev") == "field" && ui_data.location == "dungeon"){{
+		if (ui_storage.get("Logger:LocationPrev") == "field" && ui_data.location == "dungeon") {
 			ui_storage.clearWithPrefix("Stats:Map_");
 		// Не в поле при смене режима чистим соответствующие записи
-		} else if (ui_storage.get("Logger:LocationPrev") != ui_data.location && ui_data.location != "field"){
+		} else if (ui_storage.get("Logger:LocationPrev") != ui_data.location && ui_data.location != "field") {
 				ui_storage.clearWithPrefix("Stats:Hero_");
 				ui_storage.clearWithPrefix("Stats:Enemy_");
 		}
