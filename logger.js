@@ -14,9 +14,25 @@ var Logger = {
 				this._old[id] = value;
 			}
 		}
-
-		this._old["Map_All_HP"] = this._sum("Map_Friend_HP");
-		this._old["Hero_All_HP"] = this._sum("Hero_Friend_HP");
+		
+		var hp_parser = function(val) {
+			if (val == "повержен")
+				val = 0;
+			return parseInt(val);
+		};
+		
+		if (ui_data.location == "dungeon") {
+			this._old["Map_All_HP"] = this._sum("Map_Friend_HP");
+			var s = 0;
+			$("#alls .opp_h").each(function(index, value){s += hp_parser(value);});
+			this.changed("Map_All_HP", s);	
+		} else if (ui_data.location == "boss") {
+			this._old["Hero_All_HP"] = this._sum("Hero_Friend_HP");
+			var s = 0;
+			$("#alls .opp_h").each(function(index, value){s += hp_parser(value);});
+			this.changed("Hero_All_HP", s);			
+		}
+		
 	},
 	changed: function(id, value) {
 		console.log(id, value);
