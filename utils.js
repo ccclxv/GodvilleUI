@@ -96,6 +96,7 @@ var ui_data = {
 		currentVersion: '0.4.31.0',
 		developers: ['Neniu', 'Ryoko', 'Опытный Кролик', 'Бэдлак', 'Ui Developer', 'Шоп'],
 		location: null,
+		isWindowActive: true,
 		create: function() {
 			// Режим страницы героя
 			if ($('#m_info').length == 0) {
@@ -128,5 +129,14 @@ var ui_data = {
 				ui_data.monstersOfTheDay = $('#motd a').text();
 				$('#motd').remove()
 			});
+			$(window).focus(function() {
+				ui_data.isWindowActive = true;
+				Dispatcher.fire("windowActivated", true);
+			});
+			$(window).blur(function() {
+				ui_data.isWindowActive = false;
+				Dispatcher.fire("windowActivated", false);
+			});
+			// document.hidden chrome.app.window.current().isMinimized() xul sizemodechange
 		}
 	};

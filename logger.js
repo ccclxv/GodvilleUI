@@ -3,6 +3,7 @@ var Logger = {
 	elem: null,
 	_old: {},
 	_old_sum: null,
+	_needUpdate: {},
 	create: function(){
 		this.elem = $('<ul id="stats_log" />');
 		$('#menu_bar').after(this.elem);
@@ -34,7 +35,20 @@ var Logger = {
 		}
 		
 	},
+	windowActivated: function(isActivated) {
+		if (isActivated && ui_data.location == "field") {
+			for (var id in this._needUpdate) {
+				this.changed(id, this._needUpdate[id]);
+			}
+		} else {
+			this._needUpdate = {};
+		}
+	},
 	changed: function(id, value) {
+		if (!ui_data.isWindowActive && ui_data.location == "field") {
+			this._needUpdate[id] = value;
+			return;
+		}
 		console.log(id, value);
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
@@ -43,7 +57,6 @@ var Logger = {
 		if (diff) {
 			this._writeLogItem(id, diff);
 		}
-		// Здесь надо как-то обновить в первый раз AllHP
 	},
 	_change_sum: function() {
 		if (ui_data.location == "dungeon") {
