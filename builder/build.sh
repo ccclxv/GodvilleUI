@@ -35,7 +35,6 @@ if [ -n "$chrome" ]; then
 	
 	# копируем исходные файлы
 	cp *.js *.json *.css *.png $tmp_path
-	rm $tmp_path/TestModule.js
 	cp -r $path/images $tmp_path
 	
 	# если ключ разработчика есть в папке build передаем его в параметре 
@@ -67,7 +66,6 @@ rm -f $build_path/$name.xpi
 # копируем исходные файлы
 cp -r firefox/content/ $tmp_path/content/
 cp -n *.js *.css *.png $tmp_path/content/
-rm $tmp_path/content/TestModule.js
 cp -r images $tmp_path/content/
 cp logo48.png $tmp_path/icon.png
 cp firefox/icon64.png $tmp_path/content/images/icon64.png
