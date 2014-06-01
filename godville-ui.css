@@ -144,3 +144,29 @@ a {
 .dockfrname_w {
 	height: 100%
 }
+
+
+/* Правила для Debug.js*/
+#GVUI_debug {
+	text-align: left; 
+	padding-left: 20px; 
+	background: #fff; 
+	overflow: auto; 
+	height: 250px;'
+}
+
+#GVUI_debug .GVUI_debug_error_line, #GVUI_debug .GVUI_debug_log_line {
+	display: none;
+}
+#GVUI_debug.GVUI_debug_error_show .GVUI_debug_error_line {
+	display: inline;
+}
+#GVUI_debug.GVUI_debug_log_show .GVUI_debug_log_line {
+	display: inline;
+}
+#GVUI_debug .GVUI_debug_number_of {
+	color: blue;
+}
+#GVUI_debug .GVUI_debug_error_line {
+	color: red;
+}

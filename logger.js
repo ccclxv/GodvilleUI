@@ -1,4 +1,5 @@
 var Logger = {
+	moduleProperties: {"name": "Logger"},	
 	need_separator: false,
 	elem: null,
 	_old: {},
@@ -49,7 +50,6 @@ var Logger = {
 			this._needUpdate[id] = value;
 			return;
 		}
-		console.log(id, value);
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
 		var diff = value - this._old[id];

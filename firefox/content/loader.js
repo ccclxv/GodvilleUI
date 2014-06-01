@@ -20,6 +20,7 @@ contentLoad: function(event) {
 			loader.createScript(doc, 'chrome://godvilleui/content/words.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/logger.js');
 			loader.createScript(doc, 'chrome://godvilleui/content/about.js');
+			loader.createScript(doc, 'chrome://godvilleui/content/Debug.js');
 			
 		}
 	}

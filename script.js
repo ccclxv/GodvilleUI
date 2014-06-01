@@ -11,6 +11,7 @@ GVUI_PREFIX = "GVUI_";
 // Фильтрация событий
 var Dispatcher = {
 	_modules: [],
+	_names: {},
 	parsers: {},
 	create: function() {
 		// При входе из поля в подземелье чистим соответствующие записи
@@ -24,13 +25,24 @@ var Dispatcher = {
 	},	
 	
 	registerModule : function(module) {
-		if (module.moduleProperties)
-			if (module.moduleProperties['locations'])
+		moduleName = "";
+		if (module.moduleProperties) {
+			if (module.moduleProperties['locations']) {
 				if (!module.moduleProperties['locations'].match(ui_data.location))
 					return;
+			}
+			if (module.moduleProperties['name']) {
+				moduleName = "(" + module.moduleProperties['name'] + ") "; 
+			}
+		}
 		this._modules.push(module);
+		this._names[module] = moduleName;
 		if (module["create"]) {
-			module.create();
+			try {
+				module.create();
+			} catch(e) {
+				Debug.error(this._names[module] + " |constructor| " + e);
+			}
 		}
 	},
 	unregisterModule : function(module) {
@@ -46,12 +58,16 @@ var Dispatcher = {
 	fire: function(event, arg1, arg2) {
 		for (var i = 0; i < this._modules.length; i++) {
 			if (this._modules[i][event]) {
-				if (arg2 !== undefined) {
-					this._modules[i][event](arg1, arg2);
-				} else if (arg1 !== undefined) {
-					this._modules[i][event](arg1);
-				} else {
-					this._modules[i][event]();
+				try {
+					if (arg2 !== undefined) {
+						this._modules[i][event](arg1, arg2);
+					} else if (arg1 !== undefined) {
+						this._modules[i][event](arg1);
+					} else {
+						this._modules[i][event]();
+					}
+				} catch(e) {
+					Debug.error(this._names[this._modules[i]] + " |fire: " + event + "| " + e);
 				}
 			}
 		}
@@ -141,7 +157,8 @@ var watchElements= function(params) {
 						    });
 						  });
 						 
-					observer.observe($pbar[0], {attributes: true});				
+					observer.observe($pbar[0], {attributes: true});		
+					Dispatcher.watchProgress({"target":$pbar[0]});
 				}
 			}
 		}
@@ -164,7 +181,7 @@ var starter = setInterval(function() {
 	if ($('#m_info').length || $('#stats').length) {
 		var start = new Date();
 		clearInterval(starter);
-		
+		$("#main_wrapper").append("<div id='tmp_element' style='display: none'>");
 		
 		ui_data.create();
 		ui_storage.clearStorage();
@@ -185,7 +202,7 @@ var starter = setInterval(function() {
 		    	Dispatcher.fire("diaryMessageAdded", $element);
 		    }	
 		    if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
-		    	console.log("+ inventory", e.target);
+		    	Debug.log("+ inventory", e.target);
 		    	//Dispatcher.fire("diaryMessageAdded", $element);
 		    }
 		    //console.log('!LOG! Inserted| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
@@ -193,23 +210,37 @@ var starter = setInterval(function() {
 		$(document).bind('DOMNodeRemoved', function(e) {
 			var $element = $(e.target);
 			if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
-		    	console.log("- inventory", e.target);
+		    	Debug.log("- inventory", e.target);
 		    	//Dispatcher.fire("diaryMessageAdded", $element);
 		    }
 			//console.log('!LOG! Removed| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
 		});
+		if (typeof ui_menu_bar !== 'undefined') Dispatcher.registerModule(ui_menu_bar);
+		else Debug.error("Невозможно найти модуль ui_menu_bar");
+		if (typeof Debug !== 'undefined') Dispatcher.registerModule(Debug);
+		else Debug.error("Невозможно найти модуль Debug");
+		if (typeof Monitor !== 'undefined') Dispatcher.registerModule(Monitor);
+		else Debug.error("Невозможно найти модуль Monitor");
+		if (typeof ButtonRelocator !== 'undefined') Dispatcher.registerModule(ButtonRelocator);
+		else Debug.error("Невозможно найти модуль ButtonRelocator");
+		if (typeof EquipmentImprover !== 'undefined') Dispatcher.registerModule(EquipmentImprover);
+		else Debug.error("Невозможно найти модуль EquipmentImprover");
+		if (typeof ChatImprover !== 'undefined') Dispatcher.registerModule(ChatImprover);
+		else Debug.error("Невозможно найти модуль ChatImprover");
+		if (typeof LootImprover !== 'undefined') Dispatcher.registerModule(LootImprover);
+		else Debug.error("Невозможно найти модуль LootImprover");
+		if (typeof VoiceImprover !== 'undefined') Dispatcher.registerModule(VoiceImprover);
+		else Debug.error("Невозможно найти модуль VoiceImprover");
+		if (typeof DungeonImprover !== 'undefined') Dispatcher.registerModule(DungeonImprover);
+		else Debug.error("Невозможно найти модуль DungeonImprover");
+		if (typeof Logger !== 'undefined') Dispatcher.registerModule(Logger);
+		else Debug.error("Невозможно найти модуль Logger");
+		if (typeof PetImprover !== 'undefined') Dispatcher.registerModule(PetImprover);
+		else Debug.error("Невозможно найти модуль PetImprover");
+		if (typeof InterfaceImprover !== 'undefined') Dispatcher.registerModule(InterfaceImprover);
+		else Debug.error("Невозможно найти модуль InterfaceImprover");
 		
-		Dispatcher.registerModule(Monitor);
-		Dispatcher.registerModule(ButtonRelocator);
-		Dispatcher.registerModule(EquipmentImprover);
-		Dispatcher.registerModule(ChatImprover);
-		Dispatcher.registerModule(LootImprover);
-		Dispatcher.registerModule(VoiceImprover);
-		Dispatcher.registerModule(DungeonImprover);		
-		Dispatcher.registerModule(Logger);
-		Dispatcher.registerModule(ui_menu_bar);
-		Dispatcher.registerModule(PetImprover);
-		Dispatcher.registerModule(InterfaceImprover);
+		
 
 		if (ui_data.location == "field") {
 			watchElements({

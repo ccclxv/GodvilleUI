@@ -30,6 +30,7 @@ var ui_timeout_bar = {
 };
 
 var VoiceImprover = {
+		moduleProperties: {"name": "VoiceImprover"},
 		voiceSubmitted: null,
 		Shovel: false,
 		sayToHero: function(phrase) {
@@ -208,7 +209,7 @@ var VoiceImprover = {
 };
 
 var LootImprover = {
-		moduleProperties: {"locations": "field"},	
+		moduleProperties: {"locations": "field", "name": "LootImprover"},	
 		hucksterNews: '',
 		_nInvItems: 0,
 		create: function(){

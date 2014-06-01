@@ -60,7 +60,6 @@ var ui_storage = {
 			var key = localStorage.key(i);
 			var r = new RegExp(this.get_key(prefix + ".*"));
 			if (key.match(r)) {
-				console.log(key);
 				if (localStorage.getItem(key) != null)
 					localStorage.setItem(key, "");
 			}
@@ -95,6 +94,7 @@ var ui_data = {
 		monstersOfTheDay: '',
 		currentVersion: '0.4.31.0',
 		developers: ['Neniu', 'Ryoko', 'Опытный Кролик', 'Бэдлак', 'Ui Developer', 'Шоп'],
+		debugMode: true,
 		location: null,
 		isWindowActive: true,
 		create: function() {

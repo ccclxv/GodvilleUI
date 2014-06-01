@@ -1,4 +1,5 @@
 var DungeonImprover = {
+	moduleProperties: {"name": "DungeonImprover"},
 	create: function(){
 		this.diaryMessageAdded();
 	},				
