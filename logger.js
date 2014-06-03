@@ -1,7 +1,10 @@
 var Logger = {
+	moduleProperties: {"name": "Logger"},	
 	need_separator: false,
 	elem: null,
 	_old: {},
+	_old_sum: null,
+	_needUpdate: {},
 	create: function(){
 		this.elem = $('<ul id="stats_log" />');
 		$('#menu_bar').after(this.elem);
@@ -13,8 +16,40 @@ var Logger = {
 				this._old[id] = value;
 			}
 		}
+		
+		var hp_parser = function(val) {
+			if (val == "повержен")
+				val = 0;
+			return parseInt(val);
+		};
+		
+		if (ui_data.location == "dungeon") {
+			this._old["Map_All_HP"] = this._sum("Map_Friend_HP");
+			var s = 0;
+			$("#alls .opp_h").each(function(index, value){s += hp_parser(value);});
+			this.changed("Map_All_HP", s);	
+		} else if (ui_data.location == "boss") {
+			this._old["Hero_All_HP"] = this._sum("Hero_Friend_HP");
+			var s = 0;
+			$("#alls .opp_h").each(function(index, value){s += hp_parser(value);});
+			this.changed("Hero_All_HP", s);			
+		}
+		
+	},
+	windowActivated: function(isActivated) {
+		if (isActivated && ui_data.location == "field") {
+			for (var id in this._needUpdate) {
+				this.changed(id, this._needUpdate[id]);
+			}
+		} else {
+			this._needUpdate = {};
+		}
 	},
 	changed: function(id, value) {
+		if (!ui_data.isWindowActive && ui_data.location == "field") {
+			this._needUpdate[id] = value;
+			return;
+		}
 		if (this._old[id] == undefined)
 			this._old[id] = ui_storage.get("Stats:" + id);
 		var diff = value - this._old[id];
@@ -23,8 +58,27 @@ var Logger = {
 			this._writeLogItem(id, diff);
 		}
 	},
+	_change_sum: function() {
+		if (ui_data.location == "dungeon") {
+			this.changed("Map_All_HP", this._sum("Map_Friend_HP"));
+		} else if (ui_data.location != "field") {
+			this.changed("Hero_All_HP", this._sum("Hero_Friend_HP"));
+		}
+	},
 	diaryMessageAdded : function() {
+		this._change_sum();
 		this.need_separator = true;
+	},
+	_sum: function(sum_id) {
+		var s = 0;
+		var i = 0;
+		do {	
+			var c = ui_storage.get("Stats:" + sum_id + i);
+			i++;
+			if (c === null)
+				return s;
+			s += parseInt(c) || 0;
+		} while (true);
 	},
 	
 	
@@ -72,11 +126,16 @@ var Logger = {
 		'Map_Inv': ['inv', 'Инвентарь', 'inv'],
 		'Map_Gold': ['gld', 'Золото', 'gold'],
 		'Map_Battery': ['bt', 'Заряды', 'battery'],
-		'Map_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		//'Map_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Map_All_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Map_Level': ['lvl', 'Уровень'],
+		'Map_Prana': ['pr', 'Прана (проценты)'],
+		'Hero_Level': ['lvl', 'Уровень'],
+		'Hero_Prana': ['pr', 'Прана (проценты)'],
 		'Hero_HP': ['h:hp', 'Здоровье героя', 'hp'],
 		'Enemy_HP': ['e:hp', 'Здоровье соперника', 'death'],
-	//	'Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
-		'Hero_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		//'Hero_Friend_HP': ['a:hp', 'Здоровье союзников', 'brick'],
+		'Hero_All_HP': ['a:hp', 'Здоровье союзников', 'brick'],
 		'Hero_Inv': ['h:inv', 'Инвентарь', 'inv'],
 		'Hero_Gold': ['h:gld', 'Золото', 'gold'],
 		'Hero_Battery': ['h:bt', 'Заряды', 'battery'],

@@ -30,6 +30,7 @@ var ui_timeout_bar = {
 };
 
 var VoiceImprover = {
+		moduleProperties: {"name": "VoiceImprover"},
 		voiceSubmitted: null,
 		Shovel: false,
 		sayToHero: function(phrase) {
@@ -208,10 +209,13 @@ var VoiceImprover = {
 };
 
 var LootImprover = {
-		moduleProperties: {"locations": "field"},	
+		moduleProperties: {"locations": "field", "name": "LootImprover"},	
 		hucksterNews: '',
 		_nInvItems: 0,
 		create: function(){
+			this._createMergeButton().insertAfter($('#inventory ul'));
+			$('#inventory ul').css('text-align', 'left');
+			$('#inventory').css('text-align', 'center');
 			this.diaryMessageAdded();
 		},		
 		trophyList: [],
@@ -288,12 +292,6 @@ var LootImprover = {
 						}
 					}
 				});
-				
-				if (!ui_utils.isAlreadyImproved($('#inventory'))) {
-					this._createMergeButton().insertAfter($('#inventory ul'));
-					$('#inventory ul').css('text-align', 'left');
-					$('#inventory').css('text-align', 'center');
-				}
 				
 				LootImprover.trophyList.sort();
 				for (var i = LootImprover.trophyList.length - 1; i >= 0; i--) {

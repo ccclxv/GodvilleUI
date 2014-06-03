@@ -11,7 +11,7 @@
       "VoiceImprover.js",
       "InterfaceImprover.js",      
       "informer.js",
-      "words.js", "about.js"],
+      "words.js", "about.js", "Debug.js"],
       "matches": [ "http://godville.net/superhero*", "https://godville.net/superhero*" ]
    }, {
       "js": [ "jquery-2.1.0.min.js", "phrases.js", "gm_func.js", "options-page.js", "options.js" ],

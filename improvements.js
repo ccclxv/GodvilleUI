@@ -1,7 +1,7 @@
 
 // Перемещает выбранные пользователям ссылки в другой блок
 var ButtonRelocator = {
-	moduleProperties: {"locations": "field"},
+	moduleProperties: {"locations": "field", "name": "ButtonRelocator"},
 	
 	create: function() {
 		
@@ -36,7 +36,7 @@ var ButtonRelocator = {
 
 // Помещает значок со средним уровнем снаряжения в заголовок блока снаряжения
 var EquipmentImprover = {
-		
+	moduleProperties: {"name": "EquipmentImprover"},	
 	create: function() {
 		$('#equipment .block_title').after($('<div id="equip_badge" class="fr_new_badge gc_new_badge gu_new_badge_pos" style="display: block;">0</div>'));
 	},
@@ -56,34 +56,34 @@ var EquipmentImprover = {
 
 // Делает ссылки кликабельными, добавляет переход на новую строку по ctrl + пробел
 var ChatImprover = {
-		
-		create: function(){
-			// Событие 	keypress не работает в хроме с ctrl
-			$(document).on("keydown", '.frInputArea textarea', function(event) {
-				if (event.which == 32 && event.ctrlKey) {
-					event.preventDefault();
-					var pos = this.selectionStart;
-					$(this).val($(this).val().substr(0, pos) + '\n' + $(this).val().substr(pos));
-					this.setSelectionRange(pos + 1, pos + 1);
-				}
-			});
-		},
-		
-		chatMessageAdded: function($element) {
-			if (!$element.hasClass("improved")) {
-				$element.addClass("improved");
-				$('#fader').append($('.fr_msg_meta', $element)).append($('.fr_msg_delete', $element));
-				var text = $element.text();
-				$element.empty();
-				$element.append(text.replace(/(https?:\/\/[^ \n\t]*[^\?\!\.\n\t ]+)/g, '<a href="$1" target="_blank" title="Откроется в новой вкладке">$1</a>'));
-				$element.append($('#fader .fr_msg_meta')).append($('#fader .fr_msg_delete'));	
+	moduleProperties: {"name": "ChatImprover"},
+	create: function(){
+		// Событие 	keypress не работает в хроме с ctrl
+		$(document).on("keydown", '.frInputArea textarea', function(event) {
+			if (event.which == 32 && event.ctrlKey) {
+				event.preventDefault();
+				var pos = this.selectionStart;
+				$(this).val($(this).val().substr(0, pos) + '\n' + $(this).val().substr(pos));
+				this.setSelectionRange(pos + 1, pos + 1);
 			}
+		});
+	},
+	
+	chatMessageAdded: function($element) {
+		if (!$element.hasClass("improved")) {
+			$element.addClass("improved");
+			$('#tmp_element').append($('.fr_msg_meta', $element)).append($('.fr_msg_delete', $element));
+			var text = $element.text();
+			$element.empty();
+			$element.append(text.replace(/(https?:\/\/[^ \n\t]*[^\?\!\.\n\t ]+)/g, '<a href="$1" target="_blank" title="Откроется в новой вкладке">$1</a>'));
+			$element.append($('#tmp_element .fr_msg_meta')).append($('#tmp_element .fr_msg_delete'));	
 		}
+	}
 };
 
 // Показывает время, в течении которого еще можно воскресить питомца, когда блок свернут.
 var PetImprover = {
-	moduleProperties: {"locations": "field"},
+	moduleProperties: {"locations": "field", "name": "PetImprover"},
 	
 	create: function() {
 		$('#pet .block_title').after($('<div id="pet_badge" class="fr_new_badge gc_new_badge gu_new_badge_pos" style="display: block;">0</div>').hide());

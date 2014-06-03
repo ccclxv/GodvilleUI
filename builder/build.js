@@ -4,16 +4,15 @@ var shell = new ActiveXObject("Shell.Application");
 var wsShell = new ActiveXObject("WScript.Shell");
 
 var CurrentDirectory = WScript.ScriptFullName.slice(0, WScript.ScriptFullName.length - WScript.ScriptName.length);
-// �� ��������� � ��������, ����������� �� ������� �����, ����� ��������� � ����� � �����������
 CurrentDirectory = fso.GetAbsolutePathName(CurrentDirectory + "..\\");
 
-var name = "godville_ui"; // ��� ��������� �����
+var name = "godville_ui"; // output file name
 var buildPath = CurrentDirectory + "\\build";
 var tmpPath = CurrentDirectory + "\\build\\"+ name;
 
 var message = "";
 
-// ������ �� ���������� ��������� �����	
+// pack folder into a zip archive using standard system archiver	
 var zip = function(source, destination) {
 
 	var zipFileHeader = "PK\x05\x06\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"
@@ -81,8 +80,8 @@ var buildFirefox = function() {
 	fso.MoveFile(fso.BuildPath(buildPath, name + ".zip"), addonPath);
 	fso.DeleteFolder(tmpPath);
 	if (fso.FileExists(addonPath)) {	
-		message += "���������: " + addonPath + "\n";
-		message += "-----������ ��� firefox ������ ������!-----\n\n\n";
+		message += "Output file: " + addonPath + "\n";
+		message += "----- firefox addon has been successfully built!-----\n\n\n";
 	}
 }
 
@@ -102,7 +101,7 @@ var buildChrome = function() {
 
 	var chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 	if (!fso.fileExists(chrome)) {
-		WScript.Echo("������� Google Chrome �� ������!");
+		WScript.Echo("Cannot make an extension without installed Google Chrome browser!");
 		return;
 	}
 	initBuildFolders();
@@ -112,7 +111,6 @@ var buildChrome = function() {
 	}	
 
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.js"), tmpPath);
-	fso.DeleteFile(fso.BuildPath(tmpPath, "TestModule.js"));
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.json"), tmpPath);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.css"), tmpPath);
 	fso.CopyFile(fso.BuildPath(CurrentDirectory, "*.png"), tmpPath);
@@ -128,7 +126,7 @@ var buildChrome = function() {
 		var key = files.item().Path;
 		if (fso.GetExtensionName(key) == "pem") {
 			keyParam = "--pack-extension-key=\"" + key + "\"";
-			message += "����: " + key + "\n";
+			message += "Key file: " + key + "\n";
 		}
 		files.moveNext();
 	}
@@ -142,13 +140,13 @@ var buildChrome = function() {
 
 	fso.DeleteFolder(tmpPath);
 	if (fso.FileExists(fso.BuildPath(buildPath, name + ".crx"))) {	
-		message += "-----������ ��� chrome ������ ������!-----\n"
+		message += "-----chrome extension has been successfully built!-----\n"
 	}	
 	
 }
 
 if (!fso.FileExists(fso.BuildPath(CurrentDirectory, "jquery-2.1.0.min.js"))){
-	WScript.Echo("����������, ��������� jquery-2.1.0.min.js � ��������� � ����� � �������� �����!");
+	WScript.Echo("The extension won't work without jquery-2.1.0.min.js!");
 	WScript.Quit(1);
 }
 

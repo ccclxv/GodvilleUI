@@ -60,7 +60,6 @@ var ui_storage = {
 			var key = localStorage.key(i);
 			var r = new RegExp(this.get_key(prefix + ".*"));
 			if (key.match(r)) {
-				console.log(key);
 				if (localStorage.getItem(key) != null)
 					localStorage.setItem(key, "");
 			}
@@ -95,7 +94,9 @@ var ui_data = {
 		monstersOfTheDay: '',
 		currentVersion: '0.4.31.0',
 		developers: ['Neniu', 'Ryoko', 'Опытный Кролик', 'Бэдлак', 'Ui Developer', 'Шоп'],
+		debugMode: true,
 		location: null,
+		isWindowActive: true,
 		create: function() {
 			// Режим страницы героя
 			if ($('#m_info').length == 0) {
@@ -128,5 +129,14 @@ var ui_data = {
 				ui_data.monstersOfTheDay = $('#motd a').text();
 				$('#motd').remove()
 			});
+			$(window).focus(function() {
+				ui_data.isWindowActive = true;
+				Dispatcher.fire("windowActivated", true);
+			});
+			$(window).blur(function() {
+				ui_data.isWindowActive = false;
+				Dispatcher.fire("windowActivated", false);
+			});
+			// document.hidden chrome.app.window.current().isMinimized() xul sizemodechange
 		}
 	};

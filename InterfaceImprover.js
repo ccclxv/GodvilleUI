@@ -1,4 +1,5 @@
 var InterfaceImprover = {
+	moduleProperties: {"name": "InterfaceImprover"},
 	create: function(){
 		$('a[href=#]').removeAttr('href');
 		ui_storage.set('windowWidth', $(window).width());

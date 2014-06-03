@@ -5,6 +5,7 @@
 
 
 var ui_menu_bar = {
+	moduleProperties: {"name": "ui_menu_bar"},
 // appends element in ui dialog
 	append: function($append) {
 		this.content.append($append);
@@ -42,10 +43,8 @@ var ui_menu_bar = {
 		this.append('<div style="text-align: left;">Если что-то работает не так, как должно, — ' +
 						(GM_browser == 'Firefox' ? 'загляните в веб-консоль (Ctrl+Shift+K), а также в консоль ошибок (Ctrl+Shift+J)'
 												 : 'обновите страницу и проверьте консоль (Ctrl+Shift+J) на наличие ошибок') +
-						'. Если обновление страницы и дымовые сигналы не помогли, напишите об этом в ' + 
-						'<a href="skype:angly_cat">скайп</a>,' + 
-						' богу <a href="http://godville.net/gods/Бэдлак" title="Откроется в новом окне" target="about:blank">Бэдлак</a>' + 
-						' или в <a href="https://godville.net/forums/show_topic/2812" title="Откроется в новой вкладке" target="about:blank">данную тему на форуме</a>.</div>');
+						'. Если обновление страницы и дымовые сигналы не помогли, напишите об этом в ' +  
+						'<a href="https://godville.net/forums/show_topic/2812" title="Откроется в новой вкладке" target="about:blank">данную тему на форуме</a>.</div>');
 		if (this.isDeveloper()) {
 			this.append($('<span>dump: </span>'));
 			this.append(this.getDumpButton('all'));
