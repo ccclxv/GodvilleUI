@@ -1,5 +1,6 @@
 // Отладочный вывод в окошке about
 var Debug = {
+	max_lines: 200,
 	create: function() {
 		if (ui_data.debugMode) {
 			$("#ui_menu_bar .hint_bar_content").append("<p>Лог отладочной версии</p>");
@@ -27,6 +28,9 @@ var Debug = {
 		console.error.apply(console, arguments);		
 	},
 	_write: function(mode, args) {
+		if ($(".GVUI_debug_line_content").length == this.max_lines) {
+			$(".GVUI_debug_line_content")[0].remove();
+		}
 		var s = "";
 		for (var i = 0; i < args.length; i++) {
 			s += args[i] + " ";
