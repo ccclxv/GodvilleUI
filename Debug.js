@@ -29,7 +29,7 @@ var Debug = {
 	},
 	_write: function(mode, args) {
 		if ($(".GVUI_debug_line_content").length == this.max_lines) {
-			$(".GVUI_debug_line_content")[0].remove();
+			$($(".GVUI_debug_line_content")[0]).parent().remove();
 		}
 		var s = "";
 		for (var i = 0; i < args.length; i++) {
