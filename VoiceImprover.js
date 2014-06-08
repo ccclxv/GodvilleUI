@@ -133,8 +133,8 @@ var VoiceImprover = {
 					if (ui_data.location == "field"){
 						if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || this.isMonster()) 
 							$('#hk_distance .voice_generator').hide();
-						if (this._maxPBarValue('#control'))
-								$('#control .voice_generator')[0].style.display = 'none';
+						if (this._maxPBarValue('#control') || this.isMonster())
+							$($('#control .voice_generator')[0]).hide();
 						if ($('#hk_distance .l_capt').text() == 'Город') 
 							$('#control .voice_generator')[1].style.display = 'none';
 					}
@@ -151,9 +151,9 @@ var VoiceImprover = {
 		diaryMessageAdded: function($element) {
 			if (ui_data.location == "field") {
 				if (this._maxPBarValue('#control') || this.isMonster())
-					$('#control .voice_generator')[0].style.display = 'none';
+					$($('#control .voice_generator')[0]).hide();
 				else
-					$('#control .voice_generator')[0].style.display = 'block';
+					$($('#control .voice_generator')[0]).show();
 				if ($element.hasClass("m_infl")) {
 					this.infl = true;
 				} else {
