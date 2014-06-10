@@ -41,7 +41,6 @@ var Debug = {
 				$log = $("#GVUI_debug");
 				if ($log) {
 					var $last = $("#GVUI_debug .GVUI_debug_line_content:last");
-					console.log(s, $last[0]);
 					if (!$last || !$last.hasClass("GVUI_debug_" + mode + "_line") && s != $last.text()) {
 						$log.append("<span class=GVUI_debug_" + mode + "_line>" +
 								"<span class='GVUI_debug_number_of'></span>"
