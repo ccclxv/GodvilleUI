@@ -103,6 +103,34 @@ var Dispatcher = {
 			Dispatcher.fire("changed", id, value);
 		}
 	},
+	// Индивидуальные наблюдатели
+	monsterVisible: false,
+	lastMonster: null,
+	watchMonster: function(obj) {	
+		if ($(obj).is(":visible") != Dispatcher.monsterVisible || $(obj).is(":visible") && Dispatcher.lastMonster !== $('#news .line .l_val').text()) {
+			Dispatcher.monsterVisible = $(obj).is(":visible");
+			Dispatcher.lastMonster = $('#news .line .l_val').text();
+			if (Dispatcher.monsterVisible) {
+				Dispatcher.fire("monster", Dispatcher.lastMonster);
+			} else {
+				Dispatcher.fire("monster", "");
+			} 
+		}
+	},
+	setMonsterWatcher: function() {
+		var MutationObserver = window.MutationObserver
+	    || window.WebKitMutationObserver
+	    || window.MozMutationObserver;
+		var observer = new MutationObserver(function(mutations) {  
+			    mutations.map(function(mutation){
+			    	Dispatcher.watchMonster(mutation.target);
+			    });
+			  });
+			 
+		observer.observe($('#news .line')[0], {attributes: true, subtree: true});
+		this.watchMonster($('#news .line')[0]);
+	},
+	
 	// возвращает внутренний id для элемента
 	getId: function(element) {
 		var classes = element.classList;
@@ -275,6 +303,7 @@ var starter = setInterval(function() {
 					'Battery': ['#control .acc_val', parseFloat],
 				}
 			});
+			Dispatcher.setMonsterWatcher();	
 		} else {
 			if (ui_data.location == "dungeon") {
 				watchElements({
