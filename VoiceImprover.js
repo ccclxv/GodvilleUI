@@ -118,7 +118,6 @@ var VoiceImprover = {
 		},
 		updateVisibility: function() {
 			var hide = function($obj, flag) {
-				Debug.log($obj[0], flag);
 				if (!flag) {
 					$obj.show();
 				} else {

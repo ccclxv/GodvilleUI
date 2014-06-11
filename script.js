@@ -233,7 +233,7 @@ var starter = setInterval(function() {
 		    	Dispatcher.fire("diaryMessageAdded", $element);
 		    }	
 		    if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
-		    	Debug.log("+ inventory", e.target);
+		    	//Debug.log("+ inventory", e.target);
 		    	//Dispatcher.fire("diaryMessageAdded", $element);
 		    }
 		    //console.log('!LOG! Inserted| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
@@ -241,7 +241,7 @@ var starter = setInterval(function() {
 		$(document).bind('DOMNodeRemoved', function(e) {
 			var $element = $(e.target);
 			if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
-		    	Debug.log("- inventory", e.target);
+		    	//Debug.log("- inventory", e.target);
 		    	//Dispatcher.fire("diaryMessageAdded", $element);
 		    }
 			//console.log('!LOG! Removed| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
