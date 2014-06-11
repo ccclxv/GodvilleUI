@@ -52,7 +52,25 @@ var Debug = {
 				}
 			}
 		}
+	},
+	_extractLineNumberFromStack: function (stack) {
+        var line = stack.split('\n')[2];
+        if (line) {
+        	line = (line.indexOf(' (') >= 0
+        			? line.split(' (')[1].substring(0, line.length - 1)
+        					: line.split('at ')[1]
+            	);
+        	return line;
+		}else {
+			return "";
+		}
+    },
+	lineNumber: function(e){
+	/*	if (GM_browser == 'Firefox')
+			return e.lineNumber;
+		else
+			return this._extractLineNumberFromStack(e.stack);*/
+		return "";
 	}
-	
 	
 };
