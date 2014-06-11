@@ -1,5 +1,6 @@
 // Отладочный вывод в окошке about
 var Debug = {
+	max_lines: 200,
 	create: function() {
 		if (ui_data.debugMode) {
 			$("#ui_menu_bar .hint_bar_content").append("<p>Лог отладочной версии</p>");
@@ -27,6 +28,9 @@ var Debug = {
 		console.error.apply(console, arguments);		
 	},
 	_write: function(mode, args) {
+		if ($(".GVUI_debug_line_content").length == this.max_lines) {
+			$($(".GVUI_debug_line_content")[0]).parent().remove();
+		}
 		var s = "";
 		for (var i = 0; i < args.length; i++) {
 			s += args[i] + " ";
@@ -37,7 +41,6 @@ var Debug = {
 				$log = $("#GVUI_debug");
 				if ($log) {
 					var $last = $("#GVUI_debug .GVUI_debug_line_content:last");
-					console.log(s, $last[0]);
 					if (!$last || !$last.hasClass("GVUI_debug_" + mode + "_line") && s != $last.text()) {
 						$log.append("<span class=GVUI_debug_" + mode + "_line>" +
 								"<span class='GVUI_debug_number_of'></span>"
@@ -49,7 +52,25 @@ var Debug = {
 				}
 			}
 		}
+	},
+	_extractLineNumberFromStack: function (stack) {
+        var line = stack.split('\n')[2];
+        if (line) {
+        	line = (line.indexOf(' (') >= 0
+        			? line.split(' (')[1].substring(0, line.length - 1)
+        					: line.split('at ')[1]
+            	);
+        	return line;
+		}else {
+			return "";
+		}
+    },
+	lineNumber: function(e){
+	/*	if (GM_browser == 'Firefox')
+			return e.lineNumber;
+		else
+			return this._extractLineNumberFromStack(e.stack);*/
+		return "";
 	}
-	
 	
 };

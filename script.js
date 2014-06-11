@@ -11,7 +11,6 @@ GVUI_PREFIX = "GVUI_";
 // Фильтрация событий
 var Dispatcher = {
 	_modules: [],
-	_names: {},
 	parsers: {},
 	create: function() {
 		// При входе из поля в подземелье чистим соответствующие записи
@@ -23,7 +22,14 @@ var Dispatcher = {
 				ui_storage.clearWithPrefix("Stats:Enemy_");
 		}
 	},	
-	
+	getModuleName: function(module){
+		if (module.moduleProperties) {
+			if (module.moduleProperties['name']) {
+				return module.moduleProperties['name']; 
+			}
+		}
+		return "";
+	},
 	registerModule : function(module) {
 		moduleName = "";
 		if (module.moduleProperties) {
@@ -31,17 +37,13 @@ var Dispatcher = {
 				if (!module.moduleProperties['locations'].match(ui_data.location))
 					return;
 			}
-			if (module.moduleProperties['name']) {
-				moduleName = "(" + module.moduleProperties['name'] + ") "; 
-			}
 		}
 		this._modules.push(module);
-		this._names[module] = moduleName;
 		if (module["create"]) {
 			try {
 				module.create();
 			} catch(e) {
-				Debug.error(this._names[module] + " |constructor| " + e);
+				Debug.error("(" + this.getModuleName(module) + ":" + Debug.lineNumber(e) + ") |constructor| " + e);
 			}
 		}
 	},
@@ -57,17 +59,18 @@ var Dispatcher = {
 	// Вызывает обработчик соответствующего события
 	fire: function(event, arg1, arg2) {
 		for (var i = 0; i < this._modules.length; i++) {
-			if (this._modules[i][event]) {
+			var module = this._modules[i];
+			if (module[event]) {
 				try {
 					if (arg2 !== undefined) {
-						this._modules[i][event](arg1, arg2);
+						module[event](arg1, arg2);
 					} else if (arg1 !== undefined) {
-						this._modules[i][event](arg1);
+						module[event](arg1);
 					} else {
-						this._modules[i][event]();
+						module[event]();
 					}
 				} catch(e) {
-					Debug.error(this._names[this._modules[i]] + " |fire: " + event + "| " + e);
+					Debug.error("(" + this.getModuleName(module) + ":" + Debug.lineNumber(e) + ") |fire: " + event + "| " + e);
 				}
 			}
 		}
@@ -103,6 +106,34 @@ var Dispatcher = {
 			Dispatcher.fire("changed", id, value);
 		}
 	},
+	// Индивидуальные наблюдатели
+	monsterVisible: false,
+	lastMonster: "",
+	watchMonster: function(obj) {	
+		if ($(obj).is(":visible") != Dispatcher.monsterVisible || $(obj).is(":visible") && Dispatcher.lastMonster !== $('#news .line .l_val').text()) {
+			Dispatcher.monsterVisible = $(obj).is(":visible");
+			Dispatcher.lastMonster = $('#news .line .l_val').text();
+			if (Dispatcher.monsterVisible) {
+				Dispatcher.fire("monster", Dispatcher.lastMonster);
+			} else {
+				Dispatcher.fire("monster", "");
+			} 
+		}
+	},
+	setMonsterWatcher: function() {
+		var MutationObserver = window.MutationObserver
+	    || window.WebKitMutationObserver
+	    || window.MozMutationObserver;
+		var observer = new MutationObserver(function(mutations) {  
+			    mutations.map(function(mutation){
+			    	Dispatcher.watchMonster(mutation.target);
+			    });
+			  });
+			 
+		observer.observe($('#news .line')[0], {attributes: true, subtree: true});
+		this.watchMonster($('#news .line')[0]);
+	},
+	
 	// возвращает внутренний id для элемента
 	getId: function(element) {
 		var classes = element.classList;
@@ -202,7 +233,7 @@ var starter = setInterval(function() {
 		    	Dispatcher.fire("diaryMessageAdded", $element);
 		    }	
 		    if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
-		    	Debug.log("+ inventory", e.target);
+		    	//Debug.log("+ inventory", e.target);
 		    	//Dispatcher.fire("diaryMessageAdded", $element);
 		    }
 		    //console.log('!LOG! Inserted| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
@@ -210,7 +241,7 @@ var starter = setInterval(function() {
 		$(document).bind('DOMNodeRemoved', function(e) {
 			var $element = $(e.target);
 			if ($element.prop("tagName") == "LI" && $element.parent().parent().attr("id") == "inv_block_content") {
-		    	Debug.log("- inventory", e.target);
+		    	//Debug.log("- inventory", e.target);
 		    	//Dispatcher.fire("diaryMessageAdded", $element);
 		    }
 			//console.log('!LOG! Removed| ', 'id: ' + $element.attr('id'), 'class: ' + $element.attr('class'), e.target);
@@ -275,6 +306,7 @@ var starter = setInterval(function() {
 					'Equip7': ['#eq_6 .eq_level'],
 				}
 			});
+			Dispatcher.setMonsterWatcher();	
 		} else {
 			if (ui_data.location == "dungeon") {
 				watchElements({

@@ -32,6 +32,8 @@ var ui_timeout_bar = {
 var VoiceImprover = {
 		moduleProperties: {"name": "VoiceImprover"},
 		voiceSubmitted: null,
+		_isMonster: false,
+		_isEnabled: false,
 		Shovel: false,
 		sayToHero: function(phrase) {
 			$('#god_phrase').val(phrase).change();
@@ -111,51 +113,65 @@ var VoiceImprover = {
 			}
 		//Shovel pictogramm end	
 		},
-		isMonster: function() {
-			return $('#news .line')[0].style.display != 'none';
-		},
 		_maxPBarValue: function(id) {
 			return $(id + ' .p_val').width() == $(id + ' .p_bar').width();
 		},
-		changed: function(id, value) {
-			if (id == "Gold")
-				this.shovelPic();
-			else if (id == "Inv") {
-				if (LootImprover.trophyList.length && ui_data.location == "field") 
-					$('#merge_button').show();
-				else
-					$('#merge_button').hide();
-			}
-			else if (id == "Prana") {
-				if (value >= 5 && !ui_storage.get('Option:disableVoiceGenerators')){
-					$('.voice_generator,.inspect_button').show();
-					
-					if (ui_data.location == "field"){
-						if ($('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || this.isMonster()) 
-							$('#hk_distance .voice_generator').hide();
-						if (this._maxPBarValue('#control') || this.isMonster())
-								$('#control .voice_generator')[0].style.display = 'none';
-						if ($('#hk_distance .l_capt').text() == 'Город') 
-							$('#control .voice_generator')[1].style.display = 'none';
-					}
-					if ($('#hk_quests_completed .q_name').text().match(/\(выполнено\)/)) 
-						$('#hk_quests_completed .voice_generator').hide();
-					if (this._maxPBarValue('#hk_health')) 
-						$('#hk_health .voice_generator').hide();
-					
+		updateVisibility: function() {
+			var hide = function($obj, flag) {
+				if (!flag) {
+					$obj.show();
 				} else {
+					$obj.hide();
+				}
+			};
+			// Скрываем в городе, при поиске дороги и бое с монстром
+			hide($('#hk_distance .voice_generator'), $('#hk_distance .l_capt').text() == 'Город' || $('.f_news').text().match('дорогу') || this._isMonster);
+			// Скрываем при бое с монстром и полной полоске праны
+			hide($($('#control .voice_generator')[0]), this._maxPBarValue('#control') || this._isMonster);
+			// В городе не жертвуем
+			hide($($('#control .voice_generator')[1]), $('#hk_distance .l_capt').text() == 'Город');
+			// Скрываем кнопку ускорения, если задание выполнено
+			hide($('#hk_quests_completed .voice_generator'), $('#hk_quests_completed .q_name').text().match(/\(выполнено\)/));
+			hide($('#merge_button'), !LootImprover.trophyList.length || ui_data.location != "field"); 
+			// При полной полоске не лечимся
+			hide($('#hk_health .voice_generator'), this._maxPBarValue('#hk_health'));
+		},
+		changed: function(id, value) {	
+			if (id == "Prana") {
+				if (value >= 5 && !ui_storage.get('Option:disableVoiceGenerators')){
+					this._isEnabled = true;
+					$('.voice_generator,.inspect_button').show();					
+					this.updateVisibility();				
+				} else {
+					this._isEnabled = false;
 					$('.inspect_button,.voice_generator').hide();
 				}
+			} 
+			if (this._isEnabled && (id == "Gold" || id == "Inv" || id == "HP")){
+				this.updateVisibility();			 
+			}
+		},
+		monster: function(name) {
+			if (!this._isEnabled)
+				return;
+			if (ui_data.location == "field"){				
+				this._isMoster = (name != "");
+				this.updateVisibility();
 			}
 		},
 		diaryMessageAdded: function($element) {
+			if (!this._isEnabled)
+				return;
 			if (ui_data.location == "field") {
+				this.updateVisibility();
+				// Индикатор кулдауна
 				if ($element.hasClass("m_infl")) {
 					this.infl = true;
+					this._lastDiaryMessage = (new Date).getTime();
 				} else {
 					if (this.voiceSubmitted) {
-						if (this.infl) {
-						ui_timeout_bar.start();
+						if (this.infl && ((new Date).getTime() - this._lastDiaryMessage) <= 20000) {
+							ui_timeout_bar.start();
 							this.infl = false;
 						}
 						$('#god_phrase').change();
