@@ -11,7 +11,6 @@ GVUI_PREFIX = "GVUI_";
 // Фильтрация событий
 var Dispatcher = {
 	_modules: [],
-	_names: {},
 	parsers: {},
 	create: function() {
 		// При входе из поля в подземелье чистим соответствующие записи
@@ -23,7 +22,14 @@ var Dispatcher = {
 				ui_storage.clearWithPrefix("Stats:Enemy_");
 		}
 	},	
-	
+	getModuleName: function(module){
+		if (module.moduleProperties) {
+			if (module.moduleProperties['name']) {
+				return module.moduleProperties['name']; 
+			}
+		}
+		return "";
+	},
 	registerModule : function(module) {
 		moduleName = "";
 		if (module.moduleProperties) {
@@ -31,17 +37,13 @@ var Dispatcher = {
 				if (!module.moduleProperties['locations'].match(ui_data.location))
 					return;
 			}
-			if (module.moduleProperties['name']) {
-				moduleName = "(" + module.moduleProperties['name'] + ") "; 
-			}
 		}
 		this._modules.push(module);
-		this._names[module] = moduleName;
 		if (module["create"]) {
 			try {
 				module.create();
 			} catch(e) {
-				Debug.error(this._names[module] + " |constructor| " + e);
+				Debug.error("(" + this.getModuleName(module) + ":" + Debug.lineNumber(e) + ") |constructor| " + e);
 			}
 		}
 	},
@@ -57,17 +59,18 @@ var Dispatcher = {
 	// Вызывает обработчик соответствующего события
 	fire: function(event, arg1, arg2) {
 		for (var i = 0; i < this._modules.length; i++) {
-			if (this._modules[i][event]) {
+			var module = this._modules[i];
+			if (module[event]) {
 				try {
 					if (arg2 !== undefined) {
-						this._modules[i][event](arg1, arg2);
+						module[event](arg1, arg2);
 					} else if (arg1 !== undefined) {
-						this._modules[i][event](arg1);
+						module[event](arg1);
 					} else {
-						this._modules[i][event]();
+						module[event]();
 					}
 				} catch(e) {
-					Debug.error(this._names[this._modules[i]] + " |fire: " + event + "| " + e);
+					Debug.error("(" + this.getModuleName(module) + ":" + Debug.lineNumber(e) + ") |fire: " + event + "| " + e);
 				}
 			}
 		}
@@ -105,7 +108,7 @@ var Dispatcher = {
 	},
 	// Индивидуальные наблюдатели
 	monsterVisible: false,
-	lastMonster: null,
+	lastMonster: "",
 	watchMonster: function(obj) {	
 		if ($(obj).is(":visible") != Dispatcher.monsterVisible || $(obj).is(":visible") && Dispatcher.lastMonster !== $('#news .line .l_val').text()) {
 			Dispatcher.monsterVisible = $(obj).is(":visible");
