@@ -167,10 +167,10 @@ var VoiceImprover = {
 				// Индикатор кулдауна
 				if ($element.hasClass("m_infl")) {
 					this.infl = true;
-					this._lastDiaryMessage = Date.getTime();
+					this._lastDiaryMessage = (new Date).getTime();
 				} else {
 					if (this.voiceSubmitted) {
-						if (this.infl && (Date.getTime() - this._lastDiaryMessage) <= 20000) {
+						if (this.infl && ((new Date).getTime() - this._lastDiaryMessage) <= 20000) {
 							ui_timeout_bar.start();
 							this.infl = false;
 						}
