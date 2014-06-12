@@ -289,7 +289,6 @@ var starter = setInterval(function() {
 					},
 					'#cntrl':{
 						'Prana': ['Прана', parseInt],
-						'Battery': ['Заряды', parseFloat],
 					}
 				},
 				'progress': {		
@@ -304,6 +303,7 @@ var starter = setInterval(function() {
 					'Equip5': ['#eq_4 .eq_level'],
 					'Equip6': ['#eq_5 .eq_level'],
 					'Equip7': ['#eq_6 .eq_level'],
+					'Battery': ['#cntrl .acc_val', parseFloat],
 				}
 			});
 			Dispatcher.setMonsterWatcher();	
@@ -318,8 +318,10 @@ var starter = setInterval(function() {
 						},
 						'#cntrl':{
 							'Map_Prana': ['Прана'],
-							'Map_Battery': ['Заряды', parseFloat],
 						}
+					},
+					'value': {
+						'Map_Battery': ['#cntrl .acc_val', parseFloat],
 					},
 				});
 				var values = {'value':{}};
@@ -343,8 +345,10 @@ var starter = setInterval(function() {
 						},
 						'#cntrl':{
 							'Hero_Prana': ['Прана'],
-							'Hero_Battery': ['Заряды', parseFloat],
 						}
+					},
+					'value': {
+						'Hero_Battery': ['#cntrl .acc_val', parseFloat],
 					},
 				});
 				var values = {'value':{}};
